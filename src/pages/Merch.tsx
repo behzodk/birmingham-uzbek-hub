@@ -62,48 +62,32 @@ const products = [
 const Merch = () => {
   return (
     <Layout>
-      {/* Hero Section - Bazaar/Market Theme */}
-      <section className="relative bg-secondary overflow-hidden py-24">
-        {/* Animated decorative elements - bazaar/textile motif */}
+      {/* Hero Section - Bazaar Theme */}
+      <section className="relative bg-secondary overflow-hidden py-16 md:py-24">
+        {/* Animated decorative elements - simplified */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Hanging fabric/textile strips */}
-          <div className="absolute top-0 left-[10%] w-8 h-32 bg-coral border-[2px] border-foreground animate-sway origin-top" />
-          <div className="absolute top-0 left-[25%] w-6 h-24 bg-accent border-[2px] border-foreground animate-sway origin-top hidden md:block" style={{ animationDelay: '0.3s' }} />
-          <div className="absolute top-0 right-[15%] w-10 h-36 bg-primary border-[2px] border-foreground animate-sway origin-top" style={{ animationDelay: '0.6s' }} />
-          <div className="absolute top-0 right-[30%] w-5 h-20 bg-coral border-[2px] border-foreground animate-sway origin-top hidden lg:block" style={{ animationDelay: '0.9s' }} />
+          {/* Hanging fabric strips */}
+          <div className="absolute top-0 left-[10%] w-6 md:w-8 h-20 md:h-32 bg-coral border-[2px] border-foreground animate-sway origin-top" />
+          <div className="absolute top-0 right-[15%] w-8 md:w-10 h-24 md:h-36 bg-primary border-[2px] border-foreground animate-sway origin-top" style={{ animationDelay: '0.6s' }} />
           
-          {/* Floating shopping elements */}
-          <div className="absolute bottom-24 right-[10%] animate-float">
-            <div className="w-14 h-14 bg-coral border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] rotate-6">
-              <span className="flex items-center justify-center h-full text-2xl">👕</span>
+          {/* Floating shopping icon */}
+          <div className="absolute bottom-16 md:bottom-24 right-[8%] md:right-[10%] animate-float">
+            <div className="w-10 h-10 md:w-14 md:h-14 bg-coral border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] rotate-6">
+              <span className="flex items-center justify-center h-full text-lg md:text-2xl">👕</span>
             </div>
           </div>
-          <div className="absolute top-32 right-[25%] animate-float hidden md:block" style={{ animationDelay: '0.8s' }}>
-            <div className="w-12 h-12 bg-accent border-[3px] border-foreground shadow-[2px_2px_0px_0px_hsl(var(--foreground))] -rotate-12">
-              <span className="flex items-center justify-center h-full text-xl">🧢</span>
-            </div>
-          </div>
-          <div className="absolute bottom-28 left-[18%] animate-float hidden lg:block" style={{ animationDelay: '1.2s' }}>
-            <div className="w-10 h-10 bg-primary border-[3px] border-foreground shadow-[2px_2px_0px_0px_hsl(var(--foreground))]">
-              <span className="flex items-center justify-center h-full text-lg">👜</span>
-            </div>
-          </div>
-          
-          {/* Coin/price tag decorations */}
-          <div className="absolute top-1/2 left-[5%] w-8 h-8 rounded-full bg-accent border-[2px] border-foreground animate-bounce-gentle hidden md:block" />
-          <div className="absolute bottom-1/3 right-[8%] w-6 h-6 rounded-full bg-coral border-[2px] border-foreground animate-bounce-gentle" style={{ animationDelay: '0.5s' }} />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
-            <span className="neo-badge bg-coral text-coral-foreground mb-4 inline-block">
+            <span className="neo-badge bg-coral text-coral-foreground mb-4 inline-block text-sm">
               <ShoppingBag className="h-3 w-3 inline mr-1" />
               Rep the Soc
             </span>
-            <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6">
               The <span className="text-stroke text-transparent">Bazaar</span>
             </h1>
-            <p className="font-body text-xl text-secondary-foreground/80 max-w-xl">
+            <p className="font-body text-base md:text-xl text-secondary-foreground/80 max-w-xl">
               Wear your pride! Official UzSoc merchandise designed with love and Uzbek flair. Like treasures from the Silk Road. 🛍️
             </p>
           </div>

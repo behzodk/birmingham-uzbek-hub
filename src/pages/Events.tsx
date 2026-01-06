@@ -69,32 +69,22 @@ const Events = () => {
   return (
     <Layout>
       {/* Hero Section - Dastarkhan Theme */}
-      <section className="relative bg-accent overflow-hidden py-24">
-        {/* Animated decorative elements - plates and dishes motif */}
+      <section className="relative bg-accent overflow-hidden py-16 md:py-24">
+        {/* Animated decorative elements - simplified */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Large decorative circles (plates) */}
-          <div className="absolute -top-8 -left-8 w-40 h-40 rounded-full border-[6px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '30s' }} />
-          <div className="absolute -bottom-10 -right-10 w-52 h-52 rounded-full border-[6px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '25s', animationDirection: 'reverse' }} />
+          {/* Spinning circles */}
+          <div className="absolute -top-8 -left-8 w-24 md:w-40 h-24 md:h-40 rounded-full border-[4px] md:border-[6px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '30s' }} />
+          <div className="absolute -bottom-10 -right-10 w-32 md:w-52 h-32 md:h-52 rounded-full border-[4px] md:border-[6px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '25s', animationDirection: 'reverse' }} />
           
-          {/* Floating food icons represented as shapes */}
-          <div className="absolute top-20 right-[10%] flex flex-col items-center animate-float">
-            <div className="w-16 h-16 rounded-full bg-coral border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
-              <span className="flex items-center justify-center h-full text-2xl">🍚</span>
-            </div>
-          </div>
-          <div className="absolute bottom-20 left-[15%] animate-float hidden md:block" style={{ animationDelay: '1s' }}>
-            <div className="w-14 h-14 rounded-full bg-secondary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
-              <span className="flex items-center justify-center h-full text-xl">🫖</span>
-            </div>
-          </div>
-          <div className="absolute top-32 left-[20%] animate-float hidden lg:block" style={{ animationDelay: '0.5s' }}>
-            <div className="w-12 h-12 rounded-full bg-primary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
-              <span className="flex items-center justify-center h-full text-lg">🎉</span>
+          {/* Floating food icon */}
+          <div className="absolute top-16 md:top-20 right-[5%] md:right-[10%] animate-float">
+            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-coral border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
+              <span className="flex items-center justify-center h-full text-xl md:text-2xl">🍚</span>
             </div>
           </div>
           
           {/* Decorative pattern strip */}
-          <div className="absolute bottom-0 left-0 right-0 h-4 bg-foreground/10 flex">
+          <div className="absolute bottom-0 left-0 right-0 h-3 md:h-4 bg-foreground/10 flex">
             {[...Array(20)].map((_, i) => (
               <div key={i} className={`flex-1 ${i % 2 === 0 ? 'bg-secondary/30' : 'bg-coral/30'}`} />
             ))}
@@ -103,14 +93,14 @@ const Events = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
-            <span className="neo-badge bg-coral text-coral-foreground mb-4 inline-block">
+            <span className="neo-badge bg-coral text-coral-foreground mb-4 inline-block text-sm">
               <Calendar className="h-3 w-3 inline mr-1" />
               What's On
             </span>
-            <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6">
               Gather & <span className="text-stroke text-transparent">Celebrate</span>
             </h1>
-            <p className="font-body text-xl text-accent-foreground/80 max-w-xl">
+            <p className="font-body text-base md:text-xl text-accent-foreground/80 max-w-xl">
               From cultural celebrations to casual hangouts, there's always something happening at UzSoc. Join the dastarkhan! 🍽️
             </p>
           </div>

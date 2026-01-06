@@ -71,13 +71,13 @@ const News = () => {
 
   return (
     <Layout>
-      {/* Hero Section - Storytelling/Manuscript Theme */}
-      <section className="relative bg-coral overflow-hidden py-24">
-        {/* Animated decorative elements - paper/manuscript motif */}
+      {/* Hero Section - Storytelling Theme */}
+      <section className="relative bg-coral overflow-hidden py-16 md:py-24">
+        {/* Animated decorative elements - simplified */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Floating paper/scroll shapes */}
-          <div className="absolute top-16 right-[8%] animate-float">
-            <div className="w-20 h-28 bg-background border-[3px] border-foreground shadow-[4px_4px_0px_0px_hsl(var(--foreground))] -rotate-6">
+          {/* Floating paper shape */}
+          <div className="absolute top-12 md:top-16 right-[5%] md:right-[8%] animate-float">
+            <div className="w-14 h-20 md:w-20 md:h-28 bg-background border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] -rotate-6">
               <div className="p-2 space-y-1">
                 <div className="h-1 bg-foreground/30 w-full" />
                 <div className="h-1 bg-foreground/30 w-3/4" />
@@ -85,41 +85,21 @@ const News = () => {
               </div>
             </div>
           </div>
-          <div className="absolute bottom-20 left-[12%] animate-float hidden md:block" style={{ animationDelay: '1.2s' }}>
-            <div className="w-16 h-20 bg-secondary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] rotate-12">
-              <div className="p-2 space-y-1">
-                <div className="h-1 bg-foreground/40 w-full" />
-                <div className="h-1 bg-foreground/40 w-2/3" />
-              </div>
-            </div>
-          </div>
-          <div className="absolute top-28 left-[25%] animate-float hidden lg:block" style={{ animationDelay: '0.6s' }}>
-            <div className="w-12 h-12 bg-accent border-[3px] border-foreground shadow-[2px_2px_0px_0px_hsl(var(--foreground))] rotate-45">
-              <span className="flex items-center justify-center h-full text-lg -rotate-45">📰</span>
-            </div>
-          </div>
           
-          {/* Ink splatter-style decorative dots */}
-          <div className="absolute top-1/2 right-[20%] w-3 h-3 rounded-full bg-foreground/20 animate-pulse" />
-          <div className="absolute top-1/3 right-[30%] w-2 h-2 rounded-full bg-foreground/15 animate-pulse" style={{ animationDelay: '0.5s' }} />
-          <div className="absolute bottom-1/3 left-[35%] w-4 h-4 rounded-full bg-foreground/10 animate-pulse" style={{ animationDelay: '1s' }} />
-          
-          {/* Decorative quill line */}
-          <div className="absolute bottom-0 left-0 right-0 flex items-end justify-center pb-2">
-            <div className="w-32 h-1 bg-foreground/20 animate-pulse" />
-          </div>
+          {/* Spinning decorative square */}
+          <div className="absolute bottom-20 left-[10%] w-8 h-8 md:w-12 md:h-12 border-[2px] border-foreground/30 animate-spin-slow hidden md:block" style={{ animationDuration: '20s' }} />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
-            <span className="neo-badge bg-background text-foreground mb-4 inline-block">
+            <span className="neo-badge bg-background text-foreground mb-4 inline-block text-sm">
               <User className="h-3 w-3 inline mr-1" />
               Stay Updated
             </span>
-            <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6">
               Stories & <span className="text-stroke text-transparent">Voices</span>
             </h1>
-            <p className="font-body text-xl text-coral-foreground/90 max-w-xl">
+            <p className="font-body text-base md:text-xl text-coral-foreground/90 max-w-xl">
               The latest updates, stories, and announcements from our community. Like the ancient storytellers of the Silk Road. 📜
             </p>
           </div>
