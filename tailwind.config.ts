@@ -89,12 +89,47 @@ export default {
           "50%": { transform: "scale(1.02)" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        "spin-slow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "bounce-gentle": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-15px)" },
+        },
+        "pulse-scale": {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.1)", opacity: "0.8" },
+        },
+        "slide-left": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        "orbit": {
+          "0%": { transform: "rotate(0deg) translateX(280px) rotate(0deg)" },
+          "100%": { transform: "rotate(360deg) translateX(280px) rotate(-360deg)" },
+        },
+        "wiggle": {
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
+        "sway": {
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "float": "float 3s ease-in-out infinite",
         "bounce-in": "bounce-in 0.4s ease-out",
+        "spin-slow": "spin-slow 20s linear infinite",
+        "bounce-gentle": "bounce-gentle 2s ease-in-out infinite",
+        "pulse-scale": "pulse-scale 2s ease-in-out infinite",
+        "slide-left": "slide-left 15s linear infinite",
+        "orbit": "orbit 10s linear infinite",
+        "wiggle": "wiggle 1s ease-in-out infinite",
+        "sway": "sway 2s ease-in-out infinite",
       },
     },
   },

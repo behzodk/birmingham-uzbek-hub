@@ -14,14 +14,61 @@ const committee = [
 const About = () => {
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="bg-primary uzbek-pattern py-20">
-        <div className="container mx-auto px-4">
+      {/* Hero Section - Architecture/Dome Theme (Registan inspired) */}
+      <section className="relative bg-primary overflow-hidden py-24">
+        {/* Animated decorative elements - Islamic architecture motif */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Dome shapes */}
+          <div className="absolute -top-20 right-[15%] w-40 h-40 rounded-full border-[4px] border-primary-foreground/20 animate-pulse" style={{ animationDuration: '3s' }} />
+          <div className="absolute -top-16 right-[18%] w-32 h-32 rounded-full border-[3px] border-primary-foreground/15 animate-pulse" style={{ animationDuration: '3s', animationDelay: '0.5s' }} />
+          
+          {/* Minaret-like vertical elements */}
+          <div className="absolute top-0 left-[8%] w-4 h-full bg-primary-foreground/10 hidden md:block" />
+          <div className="absolute top-0 left-[10%] w-2 h-3/4 bg-primary-foreground/5 hidden md:block" />
+          <div className="absolute top-0 right-[8%] w-4 h-full bg-primary-foreground/10 hidden md:block" />
+          <div className="absolute top-0 right-[10%] w-2 h-3/4 bg-primary-foreground/5 hidden md:block" />
+          
+          {/* Floating geometric stars (Islamic pattern) */}
+          <div className="absolute top-20 right-[30%] animate-spin-slow" style={{ animationDuration: '15s' }}>
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 border-[2px] border-primary-foreground/30 rotate-0" />
+              <div className="absolute inset-0 border-[2px] border-primary-foreground/30 rotate-45" />
+            </div>
+          </div>
+          <div className="absolute bottom-32 left-[25%] animate-spin-slow hidden lg:block" style={{ animationDuration: '20s', animationDirection: 'reverse' }}>
+            <div className="relative w-16 h-16">
+              <div className="absolute inset-0 border-[2px] border-primary-foreground/20 rotate-0" />
+              <div className="absolute inset-0 border-[2px] border-primary-foreground/20 rotate-45" />
+            </div>
+          </div>
+          
+          {/* Floating community icons */}
+          <div className="absolute bottom-24 right-[12%] animate-float">
+            <div className="w-14 h-14 bg-secondary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
+              <span className="flex items-center justify-center h-full text-2xl">🤝</span>
+            </div>
+          </div>
+          <div className="absolute top-36 left-[20%] animate-float hidden md:block" style={{ animationDelay: '0.7s' }}>
+            <div className="w-12 h-12 bg-accent border-[3px] border-foreground shadow-[2px_2px_0px_0px_hsl(var(--foreground))]">
+              <span className="flex items-center justify-center h-full text-xl">🏛️</span>
+            </div>
+          </div>
+          
+          {/* Arch decoration at bottom */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-64 h-16 border-t-[3px] border-l-[3px] border-r-[3px] border-primary-foreground/20 rounded-t-full hidden md:block" />
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
-            <span className="neo-badge bg-secondary text-secondary-foreground mb-4 inline-block">Est. 2021</span>
-            <h1 className="font-display text-5xl md:text-6xl font-bold text-primary-foreground mb-6">About Us</h1>
-            <p className="font-body text-xl text-primary-foreground/90">
-              The heart of Uzbek culture at the University of Birmingham. Building bridges, creating memories, sharing traditions.
+            <span className="neo-badge bg-secondary text-secondary-foreground mb-4 inline-block">
+              <Heart className="h-3 w-3 inline mr-1" />
+              Est. 2021
+            </span>
+            <h1 className="font-display text-5xl md:text-7xl font-bold text-primary-foreground mb-6">
+              Our <span className="text-primary-foreground/60">Mehmonxona</span>
+            </h1>
+            <p className="font-body text-xl text-primary-foreground/90 max-w-xl">
+              The heart of Uzbek culture at UoB. Like a guest house on the Silk Road — building bridges, creating memories, sharing traditions. 🏛️
             </p>
           </div>
         </div>

@@ -3,52 +3,91 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
 import uzbekIkatPattern from "@/assets/uzbek-ikat-pattern.png";
 
+// Animated geometric shapes component
+function AnimatedShapes() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Large spinning square - top left */}
+      <div className="absolute top-[10%] left-[5%] w-16 h-16 md:w-24 md:h-24 border-[3px] border-foreground bg-secondary animate-spin-slow" 
+           style={{ animationDuration: '20s' }} />
+      
+      {/* Bouncing diamond - top right */}
+      <div className="absolute top-[15%] right-[10%] w-12 h-12 md:w-16 md:h-16 border-[3px] border-foreground bg-coral rotate-45 animate-bounce-gentle"
+           style={{ animationDelay: '0.5s' }} />
+      
+      {/* Pulsing circle - mid left */}
+      <div className="absolute top-[40%] left-[8%] w-10 h-10 md:w-14 md:h-14 border-[3px] border-foreground bg-accent rounded-full animate-pulse-scale" />
+      
+      {/* Floating squares cluster - right side */}
+      <div className="absolute top-[30%] right-[5%] flex flex-col gap-2">
+        <div className="w-8 h-8 md:w-12 md:h-12 border-[3px] border-foreground bg-primary animate-float" />
+        <div className="w-6 h-6 md:w-8 md:h-8 border-[2px] border-foreground bg-secondary animate-float ml-4" style={{ animationDelay: '0.3s' }} />
+        <div className="w-4 h-4 md:w-6 md:h-6 border-[2px] border-foreground bg-accent animate-float" style={{ animationDelay: '0.6s' }} />
+      </div>
+      
+      {/* Rotating ikat square - bottom left */}
+      <div className="absolute bottom-[20%] left-[10%] w-20 h-20 md:w-28 md:h-28 border-[3px] border-foreground shadow-[4px_4px_0px_0px_hsl(var(--foreground))] animate-spin-slow overflow-hidden hidden md:block"
+           style={{ animationDuration: '25s', animationDirection: 'reverse' }}>
+        <img src={uzbekIkatPattern} alt="" className="w-full h-full object-cover" />
+      </div>
+      
+      {/* Sliding horizontal bars - bottom */}
+      <div className="absolute bottom-[10%] left-0 w-full hidden lg:block">
+        <div className="flex gap-4 animate-slide-left">
+          <div className="h-4 w-24 bg-secondary border-[2px] border-foreground" />
+          <div className="h-4 w-16 bg-coral border-[2px] border-foreground" />
+          <div className="h-4 w-32 bg-accent border-[2px] border-foreground" />
+          <div className="h-4 w-20 bg-primary border-[2px] border-foreground" />
+          <div className="h-4 w-28 bg-secondary border-[2px] border-foreground" />
+        </div>
+      </div>
+      
+      {/* Orbiting squares around center */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] hidden xl:block">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-8 border-[2px] border-foreground bg-accent animate-orbit" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-6 border-[2px] border-foreground bg-coral animate-orbit" style={{ animationDelay: '-5s' }} />
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 border-[2px] border-foreground bg-secondary animate-orbit" style={{ animationDelay: '-2.5s' }} />
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-7 h-7 border-[2px] border-foreground bg-primary animate-orbit" style={{ animationDelay: '-7.5s' }} />
+      </div>
+      
+      {/* Scattered small shapes */}
+      <div className="absolute top-[60%] right-[15%] w-5 h-5 border-[2px] border-foreground bg-coral rotate-12 animate-wiggle" />
+      <div className="absolute top-[25%] left-[25%] w-6 h-6 border-[2px] border-foreground bg-accent -rotate-12 animate-wiggle" style={{ animationDelay: '0.5s' }} />
+      <div className="absolute bottom-[35%] right-[25%] w-4 h-4 border-[2px] border-foreground bg-secondary rotate-45 animate-wiggle" style={{ animationDelay: '1s' }} />
+    </div>
+  );
+}
+
 export function Hero() {
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Uzbek Ikat Pattern Background */}
       <div className="absolute inset-0">
         <div 
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-15"
           style={{
             backgroundImage: `url(${uzbekIkatPattern})`,
             backgroundSize: '400px',
             backgroundRepeat: 'repeat',
           }}
         />
-        {/* Gradient overlay for readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background" />
       </div>
 
       {/* Large Decorative Ikat Strip - Left */}
-      <div className="absolute left-0 top-0 h-full w-24 md:w-32 lg:w-40 hidden md:block border-r-[3px] border-foreground overflow-hidden">
-        <img 
-          src={uzbekIkatPattern} 
-          alt="" 
-          className="h-full w-full object-cover opacity-90"
-        />
+      <div className="absolute left-0 top-0 h-full w-20 md:w-28 lg:w-36 hidden md:block border-r-[3px] border-foreground overflow-hidden">
+        <img src={uzbekIkatPattern} alt="" className="h-full w-full object-cover opacity-90" />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-background/50" />
       </div>
 
       {/* Large Decorative Ikat Strip - Right */}
-      <div className="absolute right-0 top-0 h-full w-24 md:w-32 lg:w-40 hidden md:block border-l-[3px] border-foreground overflow-hidden">
-        <img 
-          src={uzbekIkatPattern} 
-          alt="" 
-          className="h-full w-full object-cover opacity-90"
-        />
+      <div className="absolute right-0 top-0 h-full w-20 md:w-28 lg:w-36 hidden md:block border-l-[3px] border-foreground overflow-hidden">
+        <img src={uzbekIkatPattern} alt="" className="h-full w-full object-cover opacity-90" />
         <div className="absolute inset-0 bg-gradient-to-l from-transparent to-background/50" />
       </div>
 
-      {/* Floating Decorative Cards with Pattern */}
-      <div className="absolute top-24 right-48 w-20 h-20 border-[3px] border-foreground shadow-[6px_6px_0px_0px_hsl(var(--foreground))] rotate-12 animate-float hidden lg:block overflow-hidden">
-        <img src={uzbekIkatPattern} alt="" className="w-full h-full object-cover" />
-      </div>
-      <div className="absolute bottom-32 left-48 w-16 h-16 border-[3px] border-foreground shadow-[4px_4px_0px_0px_hsl(var(--foreground))] -rotate-6 animate-float hidden lg:block overflow-hidden" style={{ animationDelay: '1s' }}>
-        <img src={uzbekIkatPattern} alt="" className="w-full h-full object-cover" />
-      </div>
-      <div className="absolute top-48 left-1/4 w-14 h-14 bg-secondary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] rotate-45 animate-float hidden lg:block" style={{ animationDelay: '0.5s' }} />
-      <div className="absolute bottom-48 right-1/4 w-12 h-12 bg-accent border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1.5s' }} />
+      {/* Animated Geometric Shapes */}
+      <AnimatedShapes />
 
       <div className="container mx-auto px-4 py-20 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
