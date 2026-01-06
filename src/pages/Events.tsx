@@ -68,14 +68,50 @@ const events = [
 const Events = () => {
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="bg-accent uzbek-pattern py-20">
-        <div className="container mx-auto px-4">
+      {/* Hero Section - Dastarkhan Theme */}
+      <section className="relative bg-accent overflow-hidden py-24">
+        {/* Animated decorative elements - plates and dishes motif */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Large decorative circles (plates) */}
+          <div className="absolute -top-8 -left-8 w-40 h-40 rounded-full border-[6px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '30s' }} />
+          <div className="absolute -bottom-10 -right-10 w-52 h-52 rounded-full border-[6px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '25s', animationDirection: 'reverse' }} />
+          
+          {/* Floating food icons represented as shapes */}
+          <div className="absolute top-20 right-[10%] flex flex-col items-center animate-float">
+            <div className="w-16 h-16 rounded-full bg-coral border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
+              <span className="flex items-center justify-center h-full text-2xl">🍚</span>
+            </div>
+          </div>
+          <div className="absolute bottom-20 left-[15%] animate-float hidden md:block" style={{ animationDelay: '1s' }}>
+            <div className="w-14 h-14 rounded-full bg-secondary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
+              <span className="flex items-center justify-center h-full text-xl">🫖</span>
+            </div>
+          </div>
+          <div className="absolute top-32 left-[20%] animate-float hidden lg:block" style={{ animationDelay: '0.5s' }}>
+            <div className="w-12 h-12 rounded-full bg-primary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
+              <span className="flex items-center justify-center h-full text-lg">🎉</span>
+            </div>
+          </div>
+          
+          {/* Decorative pattern strip */}
+          <div className="absolute bottom-0 left-0 right-0 h-4 bg-foreground/10 flex">
+            {[...Array(20)].map((_, i) => (
+              <div key={i} className={`flex-1 ${i % 2 === 0 ? 'bg-secondary/30' : 'bg-coral/30'}`} />
+            ))}
+          </div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
-            <span className="neo-badge bg-primary text-primary-foreground mb-4 inline-block">What's On</span>
-            <h1 className="font-display text-5xl md:text-6xl font-bold mb-6">Events</h1>
-            <p className="font-body text-xl text-accent-foreground/80">
-              From cultural celebrations to casual hangouts, there's always something happening at UzSoc!
+            <span className="neo-badge bg-coral text-coral-foreground mb-4 inline-block">
+              <Calendar className="h-3 w-3 inline mr-1" />
+              What's On
+            </span>
+            <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
+              Gather & <span className="text-stroke text-transparent">Celebrate</span>
+            </h1>
+            <p className="font-body text-xl text-accent-foreground/80 max-w-xl">
+              From cultural celebrations to casual hangouts, there's always something happening at UzSoc. Join the dastarkhan! 🍽️
             </p>
           </div>
         </div>
