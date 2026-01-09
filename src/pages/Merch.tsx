@@ -1,63 +1,8 @@
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Star } from "lucide-react";
-
-const products = [
-  {
-    id: 1,
-    name: "UzSoc Classic Hoodie",
-    price: "£35",
-    description: "Premium quality hoodie featuring our iconic logo. Warm, cozy, and perfect for campus life.",
-    sizes: ["S", "M", "L", "XL"],
-    color: "bg-primary",
-    bestseller: true,
-  },
-  {
-    id: 2,
-    name: "Uzbekistan Flag Tee",
-    price: "£18",
-    description: "Soft cotton t-shirt with a stylized Uzbek flag design. Show your pride!",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    color: "bg-accent",
-    bestseller: false,
-  },
-  {
-    id: 3,
-    name: "Doppi Beanie",
-    price: "£15",
-    description: "Modern beanie inspired by traditional Uzbek doppi patterns. Keep warm in style!",
-    sizes: ["One Size"],
-    color: "bg-secondary",
-    bestseller: true,
-  },
-  {
-    id: 4,
-    name: "UzSoc Tote Bag",
-    price: "£12",
-    description: "Sturdy canvas tote with our logo. Perfect for books, groceries, or everything in between.",
-    sizes: ["One Size"],
-    color: "bg-coral",
-    bestseller: false,
-  },
-  {
-    id: 5,
-    name: "Silk Road Sticker Pack",
-    price: "£5",
-    description: "Set of 10 unique stickers featuring Uzbek patterns, landmarks, and society designs.",
-    sizes: ["Pack of 10"],
-    color: "bg-accent",
-    bestseller: false,
-  },
-  {
-    id: 6,
-    name: "UzSoc Crewneck",
-    price: "£30",
-    description: "Classic crewneck sweatshirt with embroidered logo. A timeless wardrobe staple.",
-    sizes: ["S", "M", "L", "XL"],
-    color: "bg-primary",
-    bestseller: false,
-  },
-];
+import { products } from "@/data/merchData";
 
 const Merch = () => {
   return (
@@ -108,7 +53,7 @@ const Merch = () => {
             {products.map((product) => (
               <div key={product.id} className="neo-card bg-card overflow-hidden group">
                 {/* Product Image Placeholder */}
-                <div className={`${product.color} aspect-square border-b-[3px] border-foreground relative flex items-center justify-center`}>
+                <Link to={`/merch/${product.slug}`} className={`${product.color} aspect-square border-b-[3px] border-foreground relative flex items-center justify-center block`}>
                   <ShoppingBag className="w-20 h-20 opacity-20" />
                   {product.bestseller && (
                     <div className="absolute top-4 right-4 neo-badge bg-coral text-coral-foreground flex items-center gap-1">
@@ -116,12 +61,12 @@ const Merch = () => {
                       Bestseller
                     </div>
                   )}
-                </div>
+                </Link>
 
                 {/* Product Info */}
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-display text-xl font-bold">{product.name}</h3>
+                    <Link to={`/merch/${product.slug}`} className="font-display text-xl font-bold hover:text-primary transition-colors">{product.name}</Link>
                     <span className="font-display text-xl font-bold text-primary">{product.price}</span>
                   </div>
                   <p className="font-body text-muted-foreground mb-4">{product.description}</p>
@@ -141,9 +86,11 @@ const Merch = () => {
                     </div>
                   </div>
 
-                  <Button className="w-full" variant="default">
-                    <ShoppingBag className="h-4 w-4" />
-                    Add to Cart
+                  <Button className="w-full" variant="default" asChild>
+                    <Link to={`/merch/${product.slug}`}>
+                      <ShoppingBag className="h-4 w-4" />
+                      View Product
+                    </Link>
                   </Button>
                 </div>
               </div>

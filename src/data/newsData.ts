@@ -1,3 +1,10 @@
+import awardCelebration from "@/assets/news/award-celebration.jpg";
+import navruzCelebration from "@/assets/news/navruz-celebration.jpg";
+import embassyPartnership from "@/assets/news/embassy-partnership.jpg";
+import volunteersTeam from "@/assets/news/volunteers-team.jpg";
+import plovRecipe from "@/assets/news/plov-recipe.jpg";
+import welcomeWeek from "@/assets/news/welcome-week.jpg";
+
 export interface NewsArticle {
   id: number;
   slug: string;
@@ -9,6 +16,7 @@ export interface NewsArticle {
   category: string;
   color: string;
   featured: boolean;
+  image: string;
 }
 
 export const newsArticles: NewsArticle[] = [
@@ -45,6 +53,7 @@ We couldn't have done this without each and every one of you. Here's to many mor
     category: "Announcement",
     color: "bg-secondary",
     featured: true,
+    image: awardCelebration,
   },
   {
     id: 2,
@@ -94,6 +103,7 @@ Thank you to everyone who made this night possible. Navruz Muborak! 🌸`,
     category: "Event Recap",
     color: "bg-accent",
     featured: false,
+    image: navruzCelebration,
   },
   {
     id: 3,
@@ -138,6 +148,7 @@ We're grateful to the Embassy for recognizing our work and look forward to this 
     category: "Partnership",
     color: "bg-primary",
     featured: false,
+    image: embassyPartnership,
   },
   {
     id: 4,
@@ -185,6 +196,7 @@ Reach out to us at volunteer@uzsoc.com or speak to any committee member at our n
     category: "Community",
     color: "bg-coral",
     featured: false,
+    image: volunteersTeam,
   },
   {
     id: 5,
@@ -247,12 +259,13 @@ Mix gently and serve on a large platter with the garlic in the center. Enjoy wit
 - **Don't stir the rice** once added – this keeps grains separate
 - **Use quality ingredients** – the simplicity of the dish means each element shines
 
-Omadli bo'lsin! (Good luck!) 🍚`,
+Osh bo'lsin! (Bon appétit!) 🍚`,
     author: "Cultural Team",
     date: "October 15, 2025",
     category: "Culture",
     color: "bg-secondary",
     featured: false,
+    image: plovRecipe,
   },
   {
     id: 6,
@@ -308,6 +321,7 @@ Thank you to everyone who stopped by and to all our new members – welcome to t
     category: "Event Recap",
     color: "bg-accent",
     featured: false,
+    image: welcomeWeek,
   },
 ];
 

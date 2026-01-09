@@ -1,69 +1,8 @@
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Clock, Users } from "lucide-react";
-
-const events = [
-  {
-    id: 1,
-    title: "Navruz Celebration 2026",
-    date: "March 21, 2026",
-    time: "6:00 PM - 11:00 PM",
-    location: "Great Hall, University of Birmingham",
-    description: "Our biggest event of the year! Celebrate the Persian New Year with traditional Uzbek food, live music, folk dancing, and cultural performances. Don't miss the sumalak preparation!",
-    capacity: "300 guests",
-    category: "Cultural Festival",
-    color: "bg-secondary",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Plov Night",
-    date: "February 15, 2026",
-    time: "7:00 PM - 10:00 PM",
-    location: "Student Hub Kitchen",
-    description: "Join us for a cozy evening cooking and enjoying authentic Uzbek plov together. Learn the secrets of this iconic dish from our expert cooks!",
-    capacity: "40 guests",
-    category: "Food & Social",
-    color: "bg-coral",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Cultural Movie Night",
-    date: "January 25, 2026",
-    time: "7:30 PM - 10:00 PM",
-    location: "Lecture Theatre A, Arts Building",
-    description: "Watch classic Uzbek cinema with English subtitles. This month: 'The Diary of Nasriddin' - a beloved comedy classic. Snacks provided!",
-    capacity: "100 guests",
-    category: "Entertainment",
-    color: "bg-accent",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Uzbek Language Workshop",
-    date: "January 18, 2026",
-    time: "3:00 PM - 5:00 PM",
-    location: "Seminar Room 3, Main Library",
-    description: "Beginner-friendly Uzbek language session. Learn useful phrases, practice pronunciation, and discover the beauty of the Uzbek language!",
-    capacity: "25 guests",
-    category: "Workshop",
-    color: "bg-primary",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Welcome Back Social",
-    date: "January 10, 2026",
-    time: "6:00 PM - 9:00 PM",
-    location: "Guild of Students",
-    description: "Start the new semester right! Meet new members, reconnect with friends, and enjoy traditional Uzbek tea and snacks.",
-    capacity: "80 guests",
-    category: "Social",
-    color: "bg-secondary",
-    featured: false,
-  },
-];
+import { events } from "@/data/eventsData";
 
 const Events = () => {
   return (
@@ -138,7 +77,9 @@ const Events = () => {
                 <div className="p-8 md:p-12 flex flex-col justify-center">
                   <p className="font-body text-lg text-muted-foreground mb-6">{event.description}</p>
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <Button size="lg">Register Now</Button>
+                    <Button size="lg" asChild>
+                      <Link to={`/events/${event.slug}`}>Register Now</Link>
+                    </Button>
                     <Button size="lg" variant="outline">Add to Calendar</Button>
                   </div>
                 </div>
@@ -176,8 +117,12 @@ const Events = () => {
                   </div>
                   <p className="font-body text-foreground/80 mb-4">{event.description}</p>
                   <div className="flex gap-2">
-                    <Button variant="default" size="sm" className="flex-1">Register</Button>
-                    <Button variant="outline" size="sm">Details</Button>
+                    <Button variant="default" size="sm" className="flex-1" asChild>
+                      <Link to={`/events/${event.slug}`}>Register</Link>
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to={`/events/${event.slug}`}>Details</Link>
+                    </Button>
                   </div>
                 </div>
               </div>
