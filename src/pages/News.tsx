@@ -1,69 +1,8 @@
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, User } from "lucide-react";
-
-const newsArticles = [
-  {
-    id: 1,
-    title: "UzSoc Wins Best Cultural Society Award 2025!",
-    excerpt: "We're thrilled to announce that the Uzbek Society has been recognized as the Best Cultural Society at the Guild Awards. Thank you to all our amazing members!",
-    author: "Committee",
-    date: "December 15, 2025",
-    category: "Announcement",
-    color: "bg-secondary",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Recap: Our Incredible Navruz 2025 Celebration",
-    excerpt: "Over 250 guests joined us for an unforgettable evening of traditional food, music, and dancing. Check out the highlights and photos from the night!",
-    author: "Events Team",
-    date: "March 25, 2025",
-    category: "Event Recap",
-    color: "bg-accent",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "New Partnership with Uzbek Embassy",
-    excerpt: "We're excited to announce our new partnership with the Embassy of Uzbekistan in London, opening doors for cultural exchanges and special events.",
-    author: "President",
-    date: "November 10, 2025",
-    category: "Partnership",
-    color: "bg-primary",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Volunteer Spotlight: Meet Our Amazing Team",
-    excerpt: "Behind every great event is a team of dedicated volunteers. This month, we're highlighting the incredible people who make UzSoc special.",
-    author: "Media Team",
-    date: "October 28, 2025",
-    category: "Community",
-    color: "bg-coral",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Plov Recipe: Make It at Home!",
-    excerpt: "By popular demand, we're sharing our secret plov recipe. Learn how to make this beloved Uzbek dish in your own kitchen with our step-by-step guide.",
-    author: "Cultural Team",
-    date: "October 15, 2025",
-    category: "Culture",
-    color: "bg-secondary",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Welcome Week 2025: A Huge Success",
-    excerpt: "We welcomed over 100 new members during Welcome Week! From our stall to our first social, here's how we kicked off the academic year.",
-    author: "Committee",
-    date: "September 30, 2025",
-    category: "Event Recap",
-    color: "bg-accent",
-    featured: false,
-  },
-];
+import { newsArticles } from "@/data/newsData";
 
 const News = () => {
   const featuredArticle = newsArticles.find(a => a.featured);
@@ -129,9 +68,11 @@ const News = () => {
                     </div>
                   </div>
                   <p className="font-body text-lg text-muted-foreground mb-6">{featuredArticle.excerpt}</p>
-                  <Button>
-                    Read Full Story
-                    <ArrowRight className="h-4 w-4" />
+                  <Button asChild>
+                    <Link to={`/news/${featuredArticle.slug}`}>
+                      Read Full Story
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -160,9 +101,12 @@ const News = () => {
                     <span>{article.date}</span>
                   </div>
                   <p className="font-body text-foreground/80 mb-4 line-clamp-3">{article.excerpt}</p>
-                  <Button variant="ghost" className="p-0 h-auto font-display text-primary hover:text-primary/80">
+                  <Link 
+                    to={`/news/${article.slug}`}
+                    className="font-display text-primary hover:text-primary/80 inline-flex items-center"
+                  >
                     Read More →
-                  </Button>
+                  </Link>
                 </div>
               </article>
             ))}
