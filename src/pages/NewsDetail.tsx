@@ -150,6 +150,19 @@ const NewsDetail = () => {
         </div>
       </section>
 
+      {/* Featured Image */}
+      <section className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <img 
+              src={article.image} 
+              alt={article.title}
+              className="w-full h-auto neo-card"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Article Content */}
       <section className="py-12">
         <div className="container mx-auto px-4">
