@@ -75,7 +75,7 @@ export function Hero() {
 
           {/* Subheading */}
           <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-xl md:max-w-2xl mx-auto mb-8 md:mb-10 px-2">
-            Your Uzbek home at the University of Birmingham 🇺🇿
+            Your Uzbek Home in Birmingham 🇺🇿
           </p>
 
           {/* CTA Buttons */}

@@ -6,19 +6,19 @@ const values = [
   {
     icon: Users,
     title: "Community",
-    description: "Building lasting friendships and connections",
+    description: "Built on shared roots",
     color: "bg-secondary",
   },
   {
     icon: Heart,
-    title: "Culture",
-    description: "Celebrating our rich Uzbek heritage",
+    title: "Sportsmanship",
+    description: "Win or lose, together",
     color: "bg-coral",
   },
   {
     icon: Globe,
-    title: "Inclusion",
-    description: "Welcome to everyone, from everywhere",
+    title: "Belonging",
+    description: "Feels like home, abroad",
     color: "bg-accent",
   },
 ];
@@ -35,14 +35,14 @@ export function AboutPreview() {
               More Than Just a Society
             </h2>
             <p className="font-body text-base md:text-lg text-muted-foreground mb-4 md:mb-6">
-              The Uzbek Society at UoB is a vibrant community of students who share a love for Uzbek culture, traditions, and hospitality. Whether you're from Uzbekistan or simply curious about our beautiful country, you're welcome here!
+              We're a close-knit community of students supporting each other far from home. Through Zakovat nights, plov gatherings, football matches, and badminton games, we celebrate our culture and build lasting friendships. 
             </p>
             <p className="font-body text-base md:text-lg text-muted-foreground mb-6 md:mb-8">
-              From Navruz celebrations to plov nights, language exchanges to cultural workshops – we bring the spirit of Uzbekistan to Birmingham.
+              We're still growing, still learning - but we always look out for one another.
             </p>
             <Link to="/about" className="w-full sm:w-auto inline-block">
               <Button size="default" className="w-full sm:w-auto">
-                Learn More About Us
+                Meet the Committee
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
