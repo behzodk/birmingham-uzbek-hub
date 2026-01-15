@@ -75,7 +75,7 @@ export function Hero() {
 
           {/* Subheading */}
           <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-xl md:max-w-2xl mx-auto mb-8 md:mb-10 px-2">
-            Bringing the warmth of Uzbek culture to Birmingham. Join us for events, food, and unforgettable memories! 🇺🇿
+            Your Uzbek home at the University of Birmingham 🇺🇿
           </p>
 
           {/* CTA Buttons */}
