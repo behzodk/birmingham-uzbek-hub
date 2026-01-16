@@ -30,7 +30,7 @@ const About = () => {
           </div>
           
           {/* Floating community icon */}
-          <div className="absolute bottom-16 md:bottom-24 right-[8%] md:right-[12%] animate-float">
+          <div className="absolute bottom-16 md:bottom-24 right-[8%] md:right-[20%] animate-float">
             <div className="w-10 h-10 md:w-14 md:h-14 bg-secondary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
               <span className="flex items-center justify-center h-full text-lg md:text-2xl">🤝</span>
             </div>
@@ -41,13 +41,13 @@ const About = () => {
           <div className="max-w-3xl">
             <span className="neo-badge bg-secondary text-secondary-foreground mb-4 inline-block text-sm">
               <Heart className="h-3 w-3 inline mr-1" />
-              Est. 2021
+              Est. 2025
             </span>
             <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold text-primary-foreground mb-4 md:mb-6">
               Our <span className="text-primary-foreground/60">Mehmonxona</span>
             </h1>
             <p className="font-body text-base md:text-xl text-primary-foreground/90 max-w-xl">
-              The heart of Uzbek culture at UoB. Like a guest house on the Silk Road — building bridges, creating memories, sharing traditions. 🏛️
+              The Silk Road once connected East and West; now Mehmonxona connects Uzbek hearts in Birmingham — sharing plov nights, playing sports together, exploring new places, and making memories as one family.
             </p>
           </div>
         </div>
@@ -58,21 +58,21 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 md:mb-6">Our Mission</h2>
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 md:mb-6">Our Mission : A Piece of Home on Campus</h2>
               <p className="font-body text-base md:text-lg text-muted-foreground mb-4">
-                The Uzbek Society (UzSoc) was founded in 2021 with a simple goal: to bring together students who share a connection to Uzbekistan and its rich cultural heritage.
+                Miss the food? Miss the jokes? Miss the language? UzbekSoc is here to bring a piece of Uzbekistan to Birmingham.
               </p>
               <p className="font-body text-base md:text-lg text-muted-foreground mb-4">
-                Whether you're from Tashkent, Samarkand, or simply curious about our beautiful country, you're welcome here. We believe in celebrating our traditions while embracing the diversity of our university community.
+                Our mission is to provide a break from the stress of exams and essays by bringing us together for the things that matter: good food, good conversation (gurung) and great company. We are here to keep our culture alive in our daily lives and to make sure you always have a place where you belong.
               </p>
               <p className="font-body text-base md:text-lg text-muted-foreground">
-                Through events, social gatherings, and cultural activities, we aim to create a home away from home for Uzbek students and friends of Uzbekistan.
+                One place where you don't have to explain your culture - you just live it.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 md:gap-4">
               <div className="neo-card bg-secondary p-4 md:p-6 text-center">
                 <Users className="w-8 h-8 md:w-10 md:h-10 mx-auto mb-2 md:mb-3" />
-                <div className="font-display text-2xl md:text-3xl font-bold">200+</div>
+                <div className="font-display text-2xl md:text-3xl font-bold">70+</div>
                 <div className="font-body text-xs md:text-sm">Active Members</div>
               </div>
               <div className="neo-card bg-accent p-4 md:p-6 text-center">
@@ -82,13 +82,13 @@ const About = () => {
               </div>
               <div className="neo-card bg-coral p-4 md:p-6 text-center">
                 <Heart className="w-8 h-8 md:w-10 md:h-10 mx-auto mb-2 md:mb-3" />
-                <div className="font-display text-2xl md:text-3xl font-bold">5</div>
+                <div className="font-display text-2xl md:text-3xl font-bold">1+</div>
                 <div className="font-body text-xs md:text-sm">Years of Community</div>
               </div>
               <div className="neo-card bg-primary p-4 md:p-6 text-center">
                 <MapPin className="w-8 h-8 md:w-10 md:h-10 mx-auto mb-2 md:mb-3 text-primary-foreground" />
                 <div className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">1</div>
-                <div className="font-body text-xs md:text-sm text-primary-foreground/80">Campus Home</div>
+                <div className="font-body text-xs md:text-sm text-primary-foreground/80">Big Family</div>
               </div>
             </div>
           </div>
