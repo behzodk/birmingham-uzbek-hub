@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Users, Heart, Globe, ArrowRight } from "lucide-react";
+import { Users, Heart, Handshake, ArrowRight } from "lucide-react";
 
 const values = [
   {
@@ -10,13 +10,13 @@ const values = [
     color: "bg-secondary",
   },
   {
-    icon: Heart,
+    icon: Handshake,
     title: "Sportsmanship",
     description: "Win or lose, together",
     color: "bg-coral",
   },
   {
-    icon: Globe,
+    icon: Heart,
     title: "Belonging",
     description: "Feels like home, abroad",
     color: "bg-accent",
