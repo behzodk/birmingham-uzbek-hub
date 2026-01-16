@@ -18,8 +18,13 @@ export function Footer() {
                 Uzbek Society
               </span>
             </div>
+
             <p className="font-body text-primary-foreground/80">
               Founded by students, run by students.
+            </p>
+
+            <p className="mt-2 font-body text-sm text-primary-foreground/60">
+              A home away from home in Birmingham.
             </p>
           </div>
 
@@ -29,10 +34,26 @@ export function Footer() {
               Quick Links
             </h3>
             <ul className="space-y-2 font-body">
-              <li><Link to="/events" className="hover:text-secondary transition-colors">Events</Link></li>
-              <li><Link to="/news" className="hover:text-secondary transition-colors">News</Link></li>
-              <li><Link to="/merch" className="hover:text-secondary transition-colors">Merch</Link></li>
-              <li><Link to="/about" className="hover:text-secondary transition-colors">About Us</Link></li>
+              <li>
+                <Link to="/events" className="hover:text-secondary transition-colors">
+                  Events
+                </Link>
+              </li>
+              <li>
+                <Link to="/news" className="hover:text-secondary transition-colors">
+                  News
+                </Link>
+              </li>
+              <li>
+                <Link to="/merch" className="hover:text-secondary transition-colors">
+                  Merch
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-secondary transition-colors">
+                  About Us
+                </Link>
+              </li>
             </ul>
           </div>
 
