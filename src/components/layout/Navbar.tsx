@@ -24,7 +24,7 @@ export function Navbar() {
             <div className="w-10 h-10 bg-primary border-[3px] border-foreground flex items-center justify-center shadow-[3px_3px_0px_0px_hsl(var(--foreground))] group-hover:shadow-[4px_4px_0px_0px_hsl(var(--foreground))] transition-all">
               <span className="text-primary-foreground font-display font-bold text-lg">U</span>
             </div>
-            <span className="font-display font-bold text-lg hidden sm:block">UzSoc UoB</span>
+            <span className="font-display font-bold text-lg hidden sm:block">UzbekSoc</span>
           </Link>
 
           {/* Desktop Navigation */}
