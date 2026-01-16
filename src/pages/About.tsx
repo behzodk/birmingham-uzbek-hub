@@ -104,27 +104,27 @@ const About = () => {
               <div className="w-12 h-12 md:w-16 md:h-16 bg-secondary border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] mb-4 md:mb-6 flex items-center justify-center">
                 <span className="text-2xl md:text-3xl">🎉</span>
               </div>
-              <h3 className="font-display text-lg md:text-xl font-bold mb-2 md:mb-3">Cultural Events</h3>
+              <h3 className="font-display text-lg md:text-xl font-bold mb-2 md:mb-3">Celebrate Culture</h3>
               <p className="font-body text-sm md:text-base text-muted-foreground">
-                From Navruz celebrations to Independence Day events, we bring the spirit of Uzbekistan to Birmingham with authentic food, music, and traditions.
+                Whether it's dancing at Navruz or reflecting on Independence Day, we celebrate Uzbek identity together - with food made by loving hands, music from our heritage and traditions we're proud to share.
               </p>
             </div>
             <div className="neo-card bg-card p-6 md:p-8">
               <div className="w-12 h-12 md:w-16 md:h-16 bg-accent border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] mb-4 md:mb-6 flex items-center justify-center">
                 <span className="text-2xl md:text-3xl">🍚</span>
               </div>
-              <h3 className="font-display text-lg md:text-xl font-bold mb-2 md:mb-3">Food & Socials</h3>
+              <h3 className="font-display text-lg md:text-xl font-bold mb-2 md:mb-3">Share Moments</h3>
               <p className="font-body text-sm md:text-base text-muted-foreground">
-                Plov nights, chai gatherings, and cultural dinners. We believe that the best conversations happen over delicious food!
+                Traveling the UK side by side, hosting parties that feel like family reunions - we're united through the memories we build together.
               </p>
             </div>
             <div className="neo-card bg-card p-6 md:p-8 sm:col-span-2 md:col-span-1">
               <div className="w-12 h-12 md:w-16 md:h-16 bg-coral border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] mb-4 md:mb-6 flex items-center justify-center">
                 <span className="text-2xl md:text-3xl">📚</span>
               </div>
-              <h3 className="font-display text-lg md:text-xl font-bold mb-2 md:mb-3">Learning & Exchange</h3>
+              <h3 className="font-display text-lg md:text-xl font-bold mb-2 md:mb-3">Play Together</h3>
               <p className="font-body text-sm md:text-base text-muted-foreground">
-                Language workshops, history talks, and cultural exchanges. Learn about Uzbekistan or share your culture with us!
+                Stay active with us through weekly sports gatherings - badminton, football, tennis, you name it. Need teammates? Count on us, we've got the players and the energy!
               </p>
             </div>
           </div>
@@ -136,7 +136,7 @@ const About = () => {
         <div className="container mx-auto px-4">
           <h2 className="font-display text-4xl font-bold mb-4 text-center">Meet the Committee</h2>
           <p className="font-body text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-            Our dedicated team of volunteers who work hard to make UzSoc amazing!
+            The passionate students making UzbekSoc a home away from home.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {committee.map((member) => (
