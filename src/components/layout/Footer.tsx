@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Instagram, Facebook, Mail } from "lucide-react";
+import { Instagram, Send, Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
@@ -10,18 +10,24 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-secondary border-[3px] border-foreground flex items-center justify-center shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
-                <span className="text-secondary-foreground font-display font-bold text-lg">U</span>
+                <span className="text-secondary-foreground font-display font-bold text-lg">
+                  U
+                </span>
               </div>
-              <span className="font-display font-bold text-xl">Uzbek Society</span>
+              <span className="font-display font-bold text-xl">
+                Uzbek Society
+              </span>
             </div>
             <p className="font-body text-primary-foreground/80">
-              University of Birmingham's vibrant Uzbek community. Celebrating culture, building connections.
+              Founded by students, run by students.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-display font-bold text-lg mb-4">Quick Links</h3>
+            <h3 className="font-display font-bold text-lg mb-4">
+              Quick Links
+            </h3>
             <ul className="space-y-2 font-body">
               <li><Link to="/events" className="hover:text-secondary transition-colors">Events</Link></li>
               <li><Link to="/news" className="hover:text-secondary transition-colors">News</Link></li>
@@ -32,31 +38,41 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="font-display font-bold text-lg mb-4">Connect With Us</h3>
+            <h3 className="font-display font-bold text-lg mb-4">
+              Stay Connected
+            </h3>
             <div className="flex gap-3">
+              {/* Telegram */}
               <a
-                href="https://instagram.com"
+                href="https://t.me/uobuzbeksoc"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-secondary border-[3px] border-foreground flex items-center justify-center shadow-[3px_3px_0px_0px_hsl(var(--foreground))] hover:shadow-[4px_4px_0px_0px_hsl(var(--foreground))] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all"
               >
-                <Instagram className="h-5 w-5 text-secondary-foreground" />
+                <Send className="h-5 w-5 text-secondary-foreground" />
               </a>
+
+              {/* Instagram */}
               <a
-                href="https://facebook.com"
+                href="https://www.instagram.com/uobuzbeksoc/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-accent border-[3px] border-foreground flex items-center justify-center shadow-[3px_3px_0px_0px_hsl(var(--foreground))] hover:shadow-[4px_4px_0px_0px_hsl(var(--foreground))] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all"
               >
-                <Facebook className="h-5 w-5 text-accent-foreground" />
+                <Instagram className="h-5 w-5 text-accent-foreground" />
               </a>
+
+              {/* LinkedIn */}
               <a
-                href="mailto:uzbeksociety@guild.bham.ac.uk"
+                href="https://www.linkedin.com/company/uobuzbeksoc/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-coral border-[3px] border-foreground flex items-center justify-center shadow-[3px_3px_0px_0px_hsl(var(--foreground))] hover:shadow-[4px_4px_0px_0px_hsl(var(--foreground))] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all"
               >
-                <Mail className="h-5 w-5 text-coral-foreground" />
+                <Linkedin className="h-5 w-5 text-coral-foreground" />
               </a>
             </div>
+
             <p className="mt-4 font-body text-sm text-primary-foreground/80">
               uzbeksociety@guild.bham.ac.uk
             </p>

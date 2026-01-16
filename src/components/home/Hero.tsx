@@ -96,7 +96,7 @@ export function Hero() {
           {/* Stats */}
           <div className="mt-10 md:mt-16 grid grid-cols-3 gap-2 md:gap-4 max-w-sm md:max-w-lg mx-auto">
             <div className="neo-card bg-card p-2 md:p-4">
-              <div className="font-display text-xl md:text-3xl font-bold text-primary">200+</div>
+              <div className="font-display text-xl md:text-3xl font-bold text-primary">70+</div>
               <div className="font-body text-xs md:text-sm text-muted-foreground">Members</div>
             </div>
             <div className="neo-card bg-secondary p-2 md:p-4">
@@ -104,7 +104,7 @@ export function Hero() {
               <div className="font-body text-xs md:text-sm text-secondary-foreground/70">Events/Year</div>
             </div>
             <div className="neo-card bg-accent p-2 md:p-4">
-              <div className="font-display text-xl md:text-3xl font-bold text-accent-foreground">5</div>
+              <div className="font-display text-xl md:text-3xl font-bold text-accent-foreground">1+</div>
               <div className="font-body text-xs md:text-sm text-accent-foreground/70">Years Active</div>
             </div>
           </div>
