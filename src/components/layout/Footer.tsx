@@ -45,11 +45,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/merch" className="hover:text-secondary transition-colors">
-                  Merch
-                </Link>
-              </li>
-              <li>
                 <Link to="/about" className="hover:text-secondary transition-colors">
                   About Us
                 </Link>

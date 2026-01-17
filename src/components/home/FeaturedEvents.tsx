@@ -1,35 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
-
-const upcomingEvents = [
-  {
-    id: 1,
-    title: "Navruz Celebration 2026",
-    date: "March 21, 2026",
-    location: "Great Hall, UoB",
-    description: "Celebrate the Persian New Year with traditional Uzbek food, music, and dancing!",
-    color: "bg-secondary",
-  },
-  {
-    id: 2,
-    title: "Plov Night",
-    date: "February 15, 2026",
-    location: "Student Hub",
-    description: "Join us for a cozy evening of delicious plov and great conversations.",
-    color: "bg-accent",
-  },
-  {
-    id: 3,
-    title: "Cultural Movie Night",
-    date: "January 25, 2026",
-    location: "Lecture Theatre A",
-    description: "Watch classic Uzbek cinema with English subtitles and snacks!",
-    color: "bg-coral",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { fetchEvents } from "@/services/eventService";
 
 export function FeaturedEvents() {
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+  });
+
+  // Take the first 3 upcoming events
+  const upcomingEvents = events.slice(0, 3);
+
+  if (isLoading) {
+    return (
+      <section className="py-12 md:py-20 bg-muted">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-12">
+            <div>
+              <span className="neo-badge bg-primary text-primary-foreground mb-3 md:mb-4 inline-block text-sm">What's Happening</span>
+              <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold">Upcoming Events</h2>
+            </div>
+          </div>
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-12 md:py-20 bg-muted">
       <div className="container mx-auto px-4">
@@ -65,9 +66,9 @@ export function FeaturedEvents() {
                   <MapPin className="h-4 w-4 shrink-0" />
                   <span className="font-body text-xs md:text-sm">{event.location}</span>
                 </div>
-                <p className="font-body text-sm md:text-base text-foreground/80 mb-3 md:mb-4">{event.description}</p>
-                <Button variant="outline" size="sm" className="w-full group-hover:bg-muted transition-colors">
-                  Learn More
+                <p className="font-body text-sm md:text-base text-foreground/80 mb-3 md:mb-4 line-clamp-3">{event.description}</p>
+                <Button variant="outline" size="sm" className="w-full group-hover:bg-muted transition-colors" asChild>
+                  <Link to={`/events/${event.slug}`}>Learn More</Link>
                 </Button>
               </div>
             </div>

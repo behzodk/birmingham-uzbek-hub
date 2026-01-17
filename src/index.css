@@ -158,6 +158,20 @@
   .hover-wobble:hover {
     animation: wobble 0.3s ease-in-out infinite;
   }
+
+  /* Neobrutalist List */
+  .neo-list {
+    @apply space-y-2 font-body text-foreground/90 my-4;
+  }
+
+  .neo-list-item {
+    @apply relative pl-6;
+  }
+
+  .neo-list-item::before {
+    content: '';
+    @apply absolute left-0 top-[0.6em] w-2 h-2 bg-foreground;
+  }
 }
 
 @layer utilities {

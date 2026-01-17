@@ -2,12 +2,33 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Clock, MapPin, Users, CheckCircle, ListChecks } from "lucide-react";
-import { getEventBySlug, events } from "@/data/eventsData";
+import { useQuery } from "@tanstack/react-query";
+import { fetchEventBySlug, fetchEvents } from "@/services/eventService";
 
 const EventDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const event = slug ? getEventBySlug(slug) : undefined;
+  
+  const { data: event, isLoading: isLoadingEvent } = useQuery({
+    queryKey: ['event', slug],
+    queryFn: () => fetchEventBySlug(slug!),
+    enabled: !!slug
+  });
+
+  const { data: allEvents = [] } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents
+  });
+
+  if (isLoadingEvent) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!event) {
     return (
@@ -25,12 +46,13 @@ const EventDetail = () => {
   }
 
   // Get other upcoming events
-  const otherEvents = events
+  const otherEvents = allEvents
     .filter(e => e.id !== event.id)
     .slice(0, 2);
 
   // Parse markdown-like content to JSX
   const renderContent = (content: string) => {
+    if (!content) return null;
     const lines = content.split('\n');
     const elements: JSX.Element[] = [];
     let listItems: string[] = [];
@@ -38,8 +60,8 @@ const EventDetail = () => {
     const flushList = () => {
       if (listItems.length > 0) {
         elements.push(
-          <ul key={`list-${elements.length}`} className="list-disc list-inside space-y-2 mb-6 font-body text-foreground/90">
-            {listItems.map((item, i) => <li key={i}>{item}</li>)}
+          <ul key={`list-${elements.length}`} className="neo-list">
+            {listItems.map((item, i) => <li key={i} className="neo-list-item">{item}</li>)}
           </ul>
         );
         listItems = [];
@@ -172,7 +194,7 @@ const EventDetail = () => {
               </div>
 
               {/* Highlights */}
-              {event.highlights && (
+              {event.highlights && event.highlights.length > 0 && (
                 <div className="neo-card bg-muted p-6">
                   <h3 className="font-display text-lg font-bold mb-4 flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-primary" />
@@ -190,7 +212,7 @@ const EventDetail = () => {
               )}
 
               {/* What to Bring */}
-              {event.whatToBring && (
+              {event.whatToBring && event.whatToBring.length > 0 && (
                 <div className="neo-card bg-muted p-6">
                   <h3 className="font-display text-lg font-bold mb-4 flex items-center gap-2">
                     <ListChecks className="h-5 w-5 text-primary" />
@@ -208,7 +230,7 @@ const EventDetail = () => {
               )}
 
               {/* Schedule */}
-              {event.schedule && (
+              {event.schedule && event.schedule.length > 0 && (
                 <div className="neo-card bg-card p-6">
                   <h3 className="font-display text-lg font-bold mb-4">Schedule</h3>
                   <div className="space-y-3">

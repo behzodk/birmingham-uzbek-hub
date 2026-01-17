@@ -2,9 +2,25 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Clock, Users } from "lucide-react";
-import { events } from "@/data/eventsData";
+import { useQuery } from "@tanstack/react-query";
+import { fetchEvents } from "@/services/eventService";
 
 const Events = () => {
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+  });
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       {/* Hero Section - Dastarkhan Theme */}
