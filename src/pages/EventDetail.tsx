@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Clock, MapPin, Users, CheckCircle, ListChecks } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchEventBySlug, fetchEvents } from "@/services/eventService";
+import { SEO } from "@/components/SEO";
 
 const EventDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -33,6 +34,7 @@ const EventDetail = () => {
   if (!event) {
     return (
       <Layout>
+        <SEO title="Event Not Found" />
         <div className="min-h-[60vh] flex flex-col items-center justify-center px-4">
           <h1 className="font-display text-4xl font-bold mb-4">Event Not Found</h1>
           <p className="font-body text-muted-foreground mb-8">The event you're looking for doesn't exist.</p>
@@ -110,6 +112,11 @@ const EventDetail = () => {
 
   return (
     <Layout>
+      <SEO 
+        title={event.title} 
+        description={event.description}
+        image={event.featuredImage}
+      />
       {/* Hero Section */}
       <section className={`relative ${event.color} overflow-hidden py-12 md:py-20`}>
         {/* Decorative spinning shapes */}

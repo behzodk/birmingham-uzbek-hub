@@ -14,6 +14,7 @@ export interface Event {
   category: string;
   color: string;
   featured: boolean;
+  featuredImage?: string;
   highlights?: string[];
   whatToBring?: string[];
   schedule?: { time: string; activity: string }[];
@@ -69,6 +70,7 @@ const mapDbEventToEvent = (dbEvent: DbEvent): Event => {
     category: dbEvent.event_type,
     color: getColorForCategory(dbEvent.event_type),
     featured: dbEvent.is_featured,
+    featuredImage: dbEvent.featured_image,
     highlights: dbEvent.highlights,
     whatToBring: dbEvent.what_to_bring,
     schedule: dbEvent.schedule?.map(s => ({
