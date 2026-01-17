@@ -9,13 +9,13 @@ interface SEOProps {
 }
 
 export function SEO({ 
-  title = "Uzbek Society | University of Birmingham", 
-  description = "The heart of Uzbek culture at UoB. Join us for Navruz celebrations, plov nights, and more!", 
+  title = "Uzbek Society at University of Birmingham | Cultural Hub", 
+  description = "Join the Uzbek Society at the University of Birmingham. Experience authentic culture, traditional food events, networking, and a vibrant student community.", 
   image = "/og-image.jpg", 
   url = window.location.href, 
   type = "website" 
 }: SEOProps) {
-  const siteTitle = title === "Uzbek Society | University of Birmingham" ? title : `${title} | UzbekSoc UoB`;
+  const siteTitle = title === "Uzbek Society at University of Birmingham | Cultural Hub" ? title : `${title} | UzbekSoc UoB`;
 
   return (
     <Helmet>

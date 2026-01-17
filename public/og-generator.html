@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OG Image Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #333;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .og-container {
+      width: 1200px;
+      height: 630px;
+      background-color: #fefbe8; /* var(--background) */
+      color: #1a1d21; /* var(--foreground) */
+      position: relative;
+      overflow: hidden;
+      border: 6px solid #1a1d21;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      /* Uzbek pattern overlay hint */
+      background-image: radial-gradient(#1a1d21 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .content {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 80px;
+      background: rgba(254, 251, 232, 0.9); /* slight overlay to make text readable over dots */
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
+      font-size: 100px;
+      line-height: 1.1;
+      margin: 0 0 20px 0;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+    }
+
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 40px;
+      margin: 0 0 40px 0;
+      color: #0a3c99; /* var(--primary) */
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .cta-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f5c62c; /* var(--secondary) */
+      border: 4px solid #1a1d21;
+      box-shadow: 8px 8px 0px 0px #1a1d21;
+      padding: 20px 40px;
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 32px;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    /* Decorative elements */
+    .shape-circle {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 4px solid #1a1d21;
+      background-color: #ee664a; /* var(--coral) */
+      top: -50px;
+      right: -50px;
+      z-index: 1;
+    }
+
+    .shape-square {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background-color: #20c9b0; /* var(--accent) */
+      border: 4px solid #1a1d21;
+      bottom: -40px;
+      right: 150px;
+      transform: rotate(15deg);
+      z-index: 2;
+    }
+
+    .logo-mark {
+      width: 120px;
+      height: 120px;
+      background-color: #0a3c99; /* var(--primary) */
+      border: 4px solid #1a1d21;
+      box-shadow: 6px 6px 0px 0px #1a1d21;
+      color: #fefbe8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
+      font-size: 80px;
+      font-weight: 900;
+      position: absolute;
+      top: 60px;
+      right: 60px;
+      z-index: 20;
+    }
+
+    .url-tag {
+      position: absolute;
+      bottom: 40px;
+      right: 60px;
+      font-size: 24px;
+      font-weight: 700;
+      background: #1a1d21;
+      color: #fefbe8;
+      padding: 10px 20px;
+      z-index: 20;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="og-container">
+    <div class="logo-mark">U</div>
+    
+    <div class="content">
+      <h2>University of Birmingham</h2>
+      <h1>Uzbek<br>Society</h1>
+      
+      <div class="cta-badge">
+        JOIN US TODAY!
+      </div>
+    </div>
+
+    <div class="shape-circle"></div>
+    <div class="shape-square"></div>
+    <div class="url-tag">uzbeksoc.co.uk</div>
+  </div>
+
+</body>
+</html>
