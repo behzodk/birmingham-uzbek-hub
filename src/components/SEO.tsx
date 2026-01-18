@@ -11,8 +11,8 @@ interface SEOProps {
 export function SEO({ 
   title = "Uzbek Society at University of Birmingham | Cultural Hub", 
   description = "Join the Uzbek Society at the University of Birmingham. Experience authentic culture, traditional food events, networking, and a vibrant student community.", 
-  image = "/og-image.jpg", 
-  url = window.location.href, 
+  image = "/og-image.jpg",
+  url = typeof window !== 'undefined' ? window.location.href : '', 
   type = "website" 
 }: SEOProps) {
   const siteTitle = title === "Uzbek Society at University of Birmingham | Cultural Hub" ? title : `${title} | UzbekSoc UoB`;
