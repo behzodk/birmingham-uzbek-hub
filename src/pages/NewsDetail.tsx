@@ -2,12 +2,32 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, User, Share2 } from "lucide-react";
-import { getArticleBySlug, newsArticles } from "@/data/newsData";
+import { useQuery } from "@tanstack/react-query";
+import { fetchNews, fetchNewsBySlug } from "@/services/newsService";
 
 const NewsDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const article = slug ? getArticleBySlug(slug) : undefined;
+  const { data: article, isLoading: isLoadingArticle } = useQuery({
+    queryKey: ["news", slug],
+    queryFn: () => fetchNewsBySlug(slug!),
+    enabled: !!slug,
+  });
+
+  const { data: allNews = [] } = useQuery({
+    queryKey: ["news"],
+    queryFn: fetchNews,
+  });
+
+  if (isLoadingArticle) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!article) {
     return (
@@ -15,9 +35,9 @@ const NewsDetail = () => {
         <div className="min-h-[60vh] flex flex-col items-center justify-center px-4">
           <h1 className="font-display text-4xl font-bold mb-4">Article Not Found</h1>
           <p className="font-body text-muted-foreground mb-8">The article you're looking for doesn't exist.</p>
-          <Button onClick={() => navigate("/news")}>
+          <Button onClick={() => navigate("/blog")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to News
+            Back to Blog
           </Button>
         </div>
       </Layout>
@@ -25,12 +45,12 @@ const NewsDetail = () => {
   }
 
   // Get related articles (same category, excluding current)
-  const relatedArticles = newsArticles
+  const relatedArticles = allNews
     .filter(a => a.category === article.category && a.id !== article.id)
     .slice(0, 2);
 
   // Parse markdown-like content to JSX
-  const renderContent = (content: string) => {
+  const renderMarkdownContent = (content: string) => {
     const lines = content.split('\n');
     const elements: JSX.Element[] = [];
     let listItems: string[] = [];
@@ -109,10 +129,42 @@ const NewsDetail = () => {
     return elements;
   };
 
+  const renderContent = () => {
+    if (article.contentHtml) {
+      return (
+        <div
+          className="prose prose-lg max-w-none"
+          dangerouslySetInnerHTML={{ __html: article.contentHtml }}
+        />
+      );
+    }
+
+    return (
+      <div className="prose prose-lg max-w-none">
+        {renderMarkdownContent(article.content)}
+      </div>
+    );
+  };
+
+  const headerTextClass = (() => {
+    switch (article.color) {
+      case "bg-primary":
+        return "text-primary-foreground";
+      case "bg-secondary":
+        return "text-secondary-foreground";
+      case "bg-accent":
+        return "text-accent-foreground";
+      case "bg-coral":
+        return "text-coral-foreground";
+      default:
+        return "text-foreground";
+    }
+  })();
+
   return (
     <Layout>
       {/* Hero Section */}
-      <section className={`relative ${article.color} overflow-hidden py-12 md:py-20`}>
+      <section className={`relative ${article.color} ${headerTextClass} overflow-hidden py-12 md:py-20`}>
         {/* Decorative spinning shapes */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-8 right-[10%] w-8 h-8 md:w-12 md:h-12 border-[2px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '15s' }} />
@@ -123,10 +175,10 @@ const NewsDetail = () => {
           <Button 
             variant="ghost" 
             className="mb-6 hover:bg-background/20"
-            onClick={() => navigate("/news")}
+            onClick={() => navigate("/blog")}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to News
+            Back to Blog
           </Button>
 
           <div className="max-w-3xl">
@@ -154,11 +206,13 @@ const NewsDetail = () => {
       <section className="py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
-            <img 
-              src={article.image} 
-              alt={article.title}
-              className="w-full h-auto neo-card"
-            />
+            {article.image && (
+              <img 
+                src={article.image} 
+                alt={article.title}
+                className="w-full h-auto neo-card"
+              />
+            )}
           </div>
         </div>
       </section>
@@ -167,9 +221,7 @@ const NewsDetail = () => {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
-            <div className="prose prose-lg max-w-none">
-              {renderContent(article.content)}
-            </div>
+            {renderContent()}
 
             {/* Share Section */}
             <div className="mt-12 pt-8 border-t-[3px] border-foreground">
@@ -198,7 +250,7 @@ const NewsDetail = () => {
               {relatedArticles.map((related) => (
                 <Link 
                   key={related.id} 
-                  to={`/news/${related.slug}`}
+                  to={`/blog/${related.slug}`}
                   className="neo-card bg-card overflow-hidden group hover:translate-y-[-2px] transition-transform"
                 >
                   <div className={`${related.color} p-4 border-b-[3px] border-foreground`}>
@@ -217,12 +269,12 @@ const NewsDetail = () => {
         </section>
       )}
 
-      {/* Back to News CTA */}
+      {/* Back to Blog CTA */}
       <section className="py-12">
         <div className="container mx-auto px-4 text-center">
-          <Button onClick={() => navigate("/news")} size="lg">
+          <Button onClick={() => navigate("/blog")} size="lg">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            View All News
+            View All Posts
           </Button>
         </div>
       </section>

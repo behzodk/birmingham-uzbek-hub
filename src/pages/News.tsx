@@ -2,11 +2,17 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, User } from "lucide-react";
-import { newsArticles } from "@/data/newsData";
+import { useQuery } from "@tanstack/react-query";
+import { fetchNews } from "@/services/newsService";
 
 const News = () => {
-  const featuredArticle = newsArticles.find(a => a.featured);
-  const regularArticles = newsArticles.filter(a => !a.featured);
+  const { data: newsArticles = [], isLoading } = useQuery({
+    queryKey: ["news"],
+    queryFn: fetchNews,
+  });
+
+  const featuredArticle = newsArticles.find((a) => a.featured);
+  const regularArticles = newsArticles;
 
   return (
     <Layout>
@@ -33,7 +39,7 @@ const News = () => {
           <div className="max-w-3xl">
             <span className="neo-badge bg-background text-foreground mb-4 inline-block text-sm">
               <User className="h-3 w-3 inline mr-1" />
-              Stay Updated
+              Latest Blog
             </span>
             <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6">
               Stories & <span className="text-stroke text-transparent">Voices</span>
@@ -46,16 +52,42 @@ const News = () => {
       </section>
 
       {/* Featured Article */}
-      {featuredArticle && (
+      {isLoading ? (
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <div className="neo-card bg-card p-8 md:p-12 flex items-center justify-center min-h-[220px]">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            </div>
+          </div>
+        </section>
+      ) : featuredArticle ? (
         <section className="py-12">
           <div className="container mx-auto px-4">
             <div className="neo-card bg-card overflow-hidden">
-              <div className="grid md:grid-cols-5">
-                <div className={`${featuredArticle.color} md:col-span-2 p-8 md:p-12 border-b-[3px] md:border-b-0 md:border-r-[3px] border-foreground flex flex-col justify-center`}>
-                  <span className="neo-badge bg-background text-foreground mb-4 inline-block w-fit">📰 Latest News</span>
-                  <span className="neo-badge bg-foreground text-background mb-2 inline-block w-fit">{featuredArticle.category}</span>
+              <div className="grid lg:grid-cols-[1.2fr_1.8fr]">
+                <div className="relative border-b-[3px] lg:border-b-0 lg:border-r-[3px] border-foreground">
+                  <div className={`${featuredArticle.color} absolute inset-0`} />
+                  {featuredArticle.image && (
+                    <div className="relative p-6 md:p-8 h-full">
+                      <div className="h-full w-full border-[3px] border-foreground bg-background shadow-[6px_6px_0px_0px_hsl(var(--foreground))] overflow-hidden">
+                        <img
+                          src={featuredArticle.image}
+                          alt={featuredArticle.title}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {!featuredArticle.image && (
+                    <div className="p-8 md:p-12 flex flex-col justify-center h-full">
+                      <span className="neo-badge bg-background text-foreground mb-4 inline-block w-fit">📰 Latest Blog</span>
+                      <span className="neo-badge bg-foreground text-background mb-2 inline-block w-fit">{featuredArticle.category}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="md:col-span-3 p-8 md:p-12">
+                <div className="p-8 md:p-12">
+                  <span className="neo-badge bg-background text-foreground mb-4 inline-block w-fit">📰 Latest Blog</span>
+                  <span className="neo-badge bg-foreground text-background mb-2 inline-block w-fit">{featuredArticle.category}</span>
                   <h2 className="font-display text-2xl md:text-3xl font-bold mb-4">{featuredArticle.title}</h2>
                   <div className="flex items-center gap-4 mb-4 font-body text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
@@ -69,7 +101,7 @@ const News = () => {
                   </div>
                   <p className="font-body text-lg text-muted-foreground mb-6">{featuredArticle.excerpt}</p>
                   <Button asChild>
-                    <Link to={`/news/${featuredArticle.slug}`}>
+                    <Link to={`/blog/${featuredArticle.slug}`}>
                       Read Full Story
                       <ArrowRight className="h-4 w-4" />
                     </Link>
@@ -79,42 +111,52 @@ const News = () => {
             </div>
           </div>
         </section>
-      )}
+      ) : null}
 
-      {/* All News */}
+      {/* All Blog Posts */}
       <section className="py-12 bg-muted">
         <div className="container mx-auto px-4">
           <h2 className="font-display text-3xl font-bold mb-8">All Stories</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {regularArticles.map((article) => (
-              <article key={article.id} className="neo-card bg-card overflow-hidden group">
-                <div className={`${article.color} p-4 border-b-[3px] border-foreground`}>
-                  <span className="neo-badge bg-background text-foreground text-xs">{article.category}</span>
-                </div>
-                <div className="p-6">
-                  <h3 className="font-display text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                    {article.title}
-                  </h3>
-                  <div className="flex items-center gap-3 mb-4 font-body text-xs text-muted-foreground">
-                    <span>{article.author}</span>
-                    <span>•</span>
-                    <span>{article.date}</span>
+          {isLoading ? (
+            <div className="neo-card bg-card p-8 flex items-center justify-center min-h-[200px]">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {regularArticles.map((article) => (
+                <article key={article.id} className="neo-card bg-card overflow-hidden group">
+                  <div className={`${article.color} p-4 border-b-[3px] border-foreground`}>
+                    <span className="neo-badge bg-background text-foreground text-xs">{article.category}</span>
                   </div>
-                  <p className="font-body text-foreground/80 mb-4 line-clamp-3">{article.excerpt}</p>
+                  <div className="p-6">
+                    <h3 className="font-display text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                      {article.title}
+                    </h3>
+                    <div className="flex items-center gap-3 mb-4 font-body text-xs text-muted-foreground">
+                      <span>{article.author}</span>
+                      <span>•</span>
+                      <span>{article.date}</span>
+                    </div>
+                    <p className="font-body text-foreground/80 mb-4 line-clamp-3">{article.excerpt}</p>
                   <Link 
-                    to={`/news/${article.slug}`}
+                    to={`/blog/${article.slug}`}
                     className="font-display text-primary hover:text-primary/80 inline-flex items-center"
                   >
                     Read More →
                   </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+          {!isLoading && regularArticles.length === 0 && (
+            <div className="neo-card bg-card p-6 mt-6">
+              <p className="font-body text-muted-foreground">No posts published yet.</p>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Newsletter CTA */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="neo-card bg-primary p-8 md:p-12 text-center">
@@ -122,7 +164,7 @@ const News = () => {
               Stay in the Loop!
             </h2>
             <p className="font-body text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto">
-              Subscribe to our newsletter for updates on events, news, and exclusive member content.
+              Subscribe to our blog for updates on events, stories, and exclusive member content.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input

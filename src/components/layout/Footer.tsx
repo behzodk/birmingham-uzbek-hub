@@ -40,8 +40,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/news" className="hover:text-secondary transition-colors">
-                  News
+                <Link to="/blog" className="hover:text-secondary transition-colors">
+                  Blog
                 </Link>
               </li>
               <li>

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import Events from "./pages/Events";
@@ -17,6 +17,11 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const BlogRedirect = () => {
+  const { slug } = useParams<{ slug?: string }>();
+  return <Navigate to={slug ? `/blog/${slug}` : "/blog"} replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
@@ -29,8 +34,10 @@ const App = () => (
             <Route path="/events" element={<Events />} />
             <Route path="/events/past" element={<PastEvents />} />
             <Route path="/events/:slug" element={<EventDetail />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/news/:slug" element={<NewsDetail />} />
+            <Route path="/blog" element={<News />} />
+            <Route path="/blog/:slug" element={<NewsDetail />} />
+            <Route path="/news" element={<BlogRedirect />} />
+            <Route path="/news/:slug" element={<BlogRedirect />} />
             {/* <Route path="/merch" element={<Merch />} />
             <Route path="/merch/:slug" element={<MerchDetail />} /> */}
             <Route path="/about" element={<About />} />
