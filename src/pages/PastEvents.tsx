@@ -149,12 +149,12 @@ const PastEvents = () => {
 
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-[2fr_1fr] gap-8 items-start">
-            <div className="neo-card bg-card p-6 md:p-8">
-              <div className="flex items-center justify-between mb-6">
+          <div className="space-y-8">
+            <div className="neo-card bg-card p-4 sm:p-6 md:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
                 <div className="flex items-center gap-2">
                   <CalendarDays className="h-5 w-5" />
-                  <h3 className="font-display text-2xl font-bold">Year at a glance</h3>
+                  <h3 className="font-display text-2xl font-bold">Archive at a glance</h3>
                 </div>
                 <span className="neo-badge bg-coral text-coral-foreground text-xs">
                   {filteredEvents.length} events
@@ -165,63 +165,63 @@ const PastEvents = () => {
                   <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
                 </div>
               ) : (
-              <Calendar
-                mode="single"
-                showOutsideDays={false}
-                numberOfMonths={3}
-                className="w-full"
-                modifiers={{ event: eventDates }}
-                modifiersClassNames={{
-                  event:
-                    "bg-foreground text-background hover:bg-foreground hover:text-background",
-                }}
-                classNames={{
-                  months: "flex flex-col lg:flex-row gap-6",
-                  month:
-                    "space-y-4 border-[3px] border-foreground p-4 shadow-[4px_4px_0px_0px_hsl(var(--foreground))]",
-                  caption_label: "text-base font-display font-bold uppercase",
-                  head_cell: "text-foreground font-bold text-sm w-11",
-                  row: "flex w-full mt-2 gap-1",
-                  cell: "h-11 w-11 text-center text-sm p-0 relative",
-                  day: "h-11 w-11 p-0 font-bold",
-                }}
-              />
+                <Calendar
+                  mode="single"
+                  showOutsideDays={false}
+                  numberOfMonths={3}
+                  className="w-full"
+                  modifiers={{ event: eventDates }}
+                  modifiersClassNames={{
+                    event:
+                      "bg-foreground text-background hover:bg-foreground hover:text-background",
+                  }}
+                  classNames={{
+                    months: "flex flex-col lg:flex-row gap-6",
+                    month:
+                      "space-y-4 border-[3px] border-foreground p-4 shadow-[4px_4px_0px_0px_hsl(var(--foreground))]",
+                    caption_label: "text-base font-display font-bold uppercase",
+                    head_cell: "text-foreground font-bold text-sm w-11",
+                    row: "flex w-full mt-2 gap-1",
+                    cell: "h-11 w-11 text-center text-sm p-0 relative",
+                    day: "h-11 w-11 p-0 font-bold",
+                  }}
+                />
               )}
             </div>
 
             <div className="space-y-6">
-              <div className="neo-card bg-card p-6">
+              <div className="neo-card bg-card p-4 sm:p-6">
                 <h3 className="font-display text-xl font-bold mb-2">Event list</h3>
                 <p className="font-body text-sm text-muted-foreground">
-                  Sorted chronologically for {selectedYear}.
+                  Sorted chronologically across all past events.
                 </p>
               </div>
 
               {filteredEvents.map((event) => (
                 <div key={event.id} className="neo-card bg-card overflow-hidden">
-                  <div className={`${event.color} px-5 py-3 border-b-[3px] border-foreground flex items-center justify-between`}>
-                    <span className="font-display font-bold">{event.title}</span>
+                  <div className={`${event.color} px-4 sm:px-5 py-3 border-b-[3px] border-foreground flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2`}>
+                    <span className="font-display font-bold text-base sm:text-lg leading-tight">{event.title}</span>
                     <span className="neo-badge bg-background text-foreground text-xs">
                       {event.category}
                     </span>
                   </div>
-                  <div className="p-5 space-y-3">
-                    <div className="flex items-center gap-2 text-sm font-body text-muted-foreground">
+                  <div className="p-4 sm:p-5 space-y-3">
+                    <div className="flex flex-wrap items-center gap-2 text-sm font-body text-muted-foreground">
                       <CalendarDays className="h-4 w-4" />
                       <span>{format(parseISO(event.startDateISO), "MMMM d, yyyy")}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm font-body text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-2 text-sm font-body text-muted-foreground">
                       <MapPin className="h-4 w-4" />
-                      <span>{event.location}</span>
+                      <span className="break-words">{event.location}</span>
                     </div>
-                    <p className="font-body text-foreground/80">{event.description}</p>
+                    <p className="font-body text-foreground/80 text-sm sm:text-base">{event.description}</p>
                   </div>
                 </div>
               ))}
               {filteredEvents.length === 0 && (
                 <div className="neo-card bg-card p-6">
                   <p className="font-body text-muted-foreground">
-                    {isLoading ? "Loading past events..." : "No events found for this academic year yet."}
+                    {isLoading ? "Loading past events..." : "No past events found yet."}
                   </p>
                 </div>
               )}
