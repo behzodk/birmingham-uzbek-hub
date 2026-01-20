@@ -62,6 +62,23 @@ const Events = () => {
         </div>
       </section>
 
+      <section className="py-8 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="neo-card bg-card p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <span className="neo-badge bg-coral text-coral-foreground mb-3 inline-block text-xs">Archive</span>
+              <h2 className="font-display text-2xl font-bold">Looking for past events?</h2>
+              <p className="font-body text-muted-foreground">
+                Browse our archive by academic year and relive the highlights.
+              </p>
+            </div>
+            <Button size="lg" asChild>
+              <Link to="/events/past">View Past Events</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Event */}
       {events.filter(e => e.featured).map(event => (
         <section key={event.id} className="py-12 bg-muted">
@@ -110,7 +127,7 @@ const Events = () => {
         <div className="container mx-auto px-4">
           <h2 className="font-display text-3xl font-bold mb-8">All Upcoming Events</h2>
           <div className="grid md:grid-cols-2 gap-6">
-            {events.filter(e => !e.featured).map((event) => (
+            {events.map((event) => (
               <div key={event.id} className="neo-card bg-card overflow-hidden">
                 <div className={`${event.color} px-6 py-3 border-b-[3px] border-foreground flex items-center justify-between`}>
                   <span className="font-display font-bold">{event.title}</span>

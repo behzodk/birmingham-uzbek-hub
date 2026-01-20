@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
+import PastEvents from "./pages/PastEvents";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 // import Merch from "./pages/Merch";
@@ -26,6 +27,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/events/past" element={<PastEvents />} />
             <Route path="/events/:slug" element={<EventDetail />} />
             <Route path="/news" element={<News />} />
             <Route path="/news/:slug" element={<NewsDetail />} />

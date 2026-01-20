@@ -7,6 +7,8 @@ export interface Event {
   title: string;
   date: string;
   time: string;
+  startDateISO: string;
+  endDateISO: string;
   location: string;
   description: string;
   fullDescription: string;
@@ -63,6 +65,8 @@ const mapDbEventToEvent = (dbEvent: DbEvent): Event => {
     title: dbEvent.title,
     date: dateStr,
     time: timeStr,
+    startDateISO: dbEvent.start_date,
+    endDateISO: dbEvent.end_date,
     location: dbEvent.location,
     description: dbEvent.description,
     fullDescription: dbEvent.content_html,
@@ -109,4 +113,21 @@ export const fetchEventBySlug = async (slug: string): Promise<Event | null> => {
   }
 
   return mapDbEventToEvent(data as DbEvent);
+};
+
+export const fetchPastEvents = async (): Promise<Event[]> => {
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .eq('status', 'published')
+    .lt('end_date', nowIso)
+    .order('start_date', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching past events:', error);
+    throw error;
+  }
+
+  return (data as DbEvent[]).map(mapDbEventToEvent);
 };
