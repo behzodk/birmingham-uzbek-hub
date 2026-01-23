@@ -1,11 +1,45 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
+import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { toast } from "@/components/ui/sonner";
 import { fetchFormBySlug, submitFormResponse, type FormSchemaField } from "@/services/formService";
+
+const RankedOptionItem = ({
+  id,
+  label,
+  rank,
+}: {
+  id: string;
+  label: string;
+  rank: number;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 ${
+        isDragging ? "opacity-70" : ""
+      }`}
+      {...attributes}
+      {...listeners}
+    >
+      <span className="neo-badge bg-background text-foreground text-xs">{rank}</span>
+      <span className="font-body text-sm md:text-base">{label}</span>
+    </div>
+  );
+};
 
 const FormDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -42,17 +76,10 @@ const FormDetail = () => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
   };
 
-  const moveRankedOption = (key: string, fromIndex: number, toIndex: number, fallbackOrder: string[]) => {
-    setAnswers((prev) => {
-      const current = Array.isArray(prev[key]) ? [...(prev[key] as string[])] : [...fallbackOrder];
-      if (fromIndex < 0 || toIndex < 0 || fromIndex >= current.length || toIndex >= current.length) {
-        return prev;
-      }
-      const [moved] = current.splice(fromIndex, 1);
-      current.splice(toIndex, 0, moved);
-      return { ...prev, [key]: current };
-    });
-  };
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
+  );
 
   const validateField = (field: FormSchemaField, value: unknown): string | null => {
     if (field.type === "multi_select") {
@@ -185,7 +212,6 @@ const FormDetail = () => {
                 const orderedOptions = currentOrder.filter((option) => options.includes(option));
                 const availableOptions = options.filter((option) => !orderedOptions.includes(option));
                 const finalOrder = [...orderedOptions, ...availableOptions];
-
                 return (
                   <div key={field.id} className="space-y-4">
                     <div>
@@ -195,30 +221,27 @@ const FormDetail = () => {
                         Drag to reorder. The top item is ranked highest.
                       </p>
                     </div>
-                    <div className="space-y-3">
-                      {finalOrder.map((option, index) => (
-                        <div
-                          key={option}
-                          className="neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 cursor-grab active:cursor-grabbing"
-                          draggable
-                          onDragStart={(e) => {
-                            e.dataTransfer.effectAllowed = "move";
-                            e.dataTransfer.setData("text/plain", option);
-                          }}
-                          onDragEnter={(e) => e.preventDefault()}
-                          onDragOver={(e) => e.preventDefault()}
-                          onDrop={(e) => {
-                            e.preventDefault();
-                            const draggedOption = e.dataTransfer.getData("text/plain");
-                            const fromIndex = finalOrder.indexOf(draggedOption);
-                            moveRankedOption(field.key, fromIndex, index, finalOrder);
-                          }}
-                        >
-                          <span className="neo-badge bg-background text-foreground text-xs">{index + 1}</span>
-                          <span className="font-body text-sm md:text-base">{option}</span>
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={(event) => {
+                        const { active, over } = event;
+                        if (!over || active.id === over.id) return;
+                        const oldIndex = finalOrder.indexOf(active.id as string);
+                        const newIndex = finalOrder.indexOf(over.id as string);
+                        if (oldIndex === -1 || newIndex === -1) return;
+                        const nextOrder = arrayMove(finalOrder, oldIndex, newIndex);
+                        updateAnswer(field.key, nextOrder);
+                      }}
+                    >
+                      <SortableContext items={finalOrder} strategy={verticalListSortingStrategy}>
+                        <div className="space-y-3">
+                          {finalOrder.map((option, index) => (
+                            <RankedOptionItem key={option} id={option} label={option} rank={index + 1} />
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </SortableContext>
+                    </DndContext>
                     {error && <p className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
