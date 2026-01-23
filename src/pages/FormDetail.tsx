@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -29,13 +30,16 @@ const RankedOptionItem = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 ${
-        isDragging ? "opacity-70" : ""
+      className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 transition-transform ${
+        isDragging ? "opacity-80 scale-[0.98] shadow-[6px_6px_0px_0px_hsl(var(--foreground))]" : "hover:-translate-y-[2px]"
       }`}
       {...attributes}
       {...listeners}
     >
       <span className="neo-badge bg-background text-foreground text-xs">{rank}</span>
+      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md border-[2px] border-foreground bg-background text-foreground/70">
+        <GripVertical className="h-4 w-4" />
+      </span>
       <span className="font-body text-sm md:text-base">{label}</span>
     </div>
   );
