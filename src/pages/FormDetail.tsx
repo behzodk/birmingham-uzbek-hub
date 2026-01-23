@@ -57,7 +57,7 @@ const FormDetail = () => {
     enabled: !!slug,
   });
 
-  const fields = form?.schema?.fields ?? [];
+  const fields = (form?.schema?.fields ?? []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
   useEffect(() => {
     if (!form) return;
@@ -228,6 +228,11 @@ const FormDetail = () => {
                     <DndContext
                       sensors={sensors}
                       collisionDetection={closestCenter}
+                      onDragStart={() => {
+                        if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+                          navigator.vibrate(10);
+                        }
+                      }}
                       onDragEnd={(event) => {
                         const { active, over } = event;
                         if (!over || active.id === over.id) return;

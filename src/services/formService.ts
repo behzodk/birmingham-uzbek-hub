@@ -5,6 +5,7 @@ export interface FormSchemaField {
   key: string;
   type: "text" | "email" | "multi_select" | "textarea";
   label: string;
+  order?: number;
   required?: boolean;
   max_count?: number;
   min_count?: number;
