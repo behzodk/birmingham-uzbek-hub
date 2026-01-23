@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Clock, MapPin, Users, CheckCircle, ListChecks } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchEventBySlug, fetchEvents } from "@/services/eventService";
+import { fetchActiveFormByEventId } from "@/services/formService";
 import { SEO } from "@/components/SEO";
 
 const EventDetail = () => {
@@ -20,6 +21,14 @@ const EventDetail = () => {
     queryKey: ['events'],
     queryFn: fetchEvents
   });
+
+  const { data: activeForm } = useQuery({
+    queryKey: ["event-form", event?.id],
+    queryFn: () => fetchActiveFormByEventId(event!.id),
+    enabled: !!event?.id
+  });
+
+
 
   if (isLoadingEvent) {
     return (
@@ -118,7 +127,18 @@ const EventDetail = () => {
         image={event.featuredImage}
       />
       {/* Hero Section */}
-      <section className={`relative ${event.color} ${event.color === "bg-primary" ? "text-white" : "text-foreground"} overflow-hidden py-12 md:py-20`}>
+      <section
+        className={`relative ${event.color} ${event.color === "bg-primary" ? "text-white" : "text-foreground"} overflow-hidden py-12 md:py-20`}
+        style={
+          event.coverImage
+            ? {
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url(${event.coverImage})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : undefined
+        }
+      >
         {/* Decorative spinning shapes */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-8 right-[10%] w-8 h-8 md:w-12 md:h-12 border-[2px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '15s' }} />
@@ -196,7 +216,15 @@ const EventDetail = () => {
                     <span>{event.location}</span>
                   </div>
                 </div>
-                <Button className="w-full" size="lg">Register Now</Button>
+                {activeForm ? (
+                  <Button className="w-full" size="lg" asChild>
+                    <Link to={`/forms/${activeForm.slug}`}>Register Now</Link>
+                  </Button>
+                ) : (
+                  <Button className="w-full" size="lg" disabled>
+                    Registration Closed
+                  </Button>
+                )}
                 <Button variant="outline" className="w-full mt-2">Add to Calendar</Button>
               </div>
 

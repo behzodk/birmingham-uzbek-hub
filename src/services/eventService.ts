@@ -17,6 +17,7 @@ export interface Event {
   color: string;
   featured: boolean;
   featuredImage?: string;
+  coverImage?: string;
   highlights?: string[];
   whatToBring?: string[];
   schedule?: { time: string; activity: string }[];
@@ -32,6 +33,7 @@ interface DbEvent {
   capacity: string;
   status: string;
   featured_image: string;
+  cover_image?: string;
   slug: string;
   content_html: string;
   highlights: string[];
@@ -75,6 +77,7 @@ const mapDbEventToEvent = (dbEvent: DbEvent): Event => {
     color: getColorForCategory(dbEvent.event_type),
     featured: dbEvent.is_featured,
     featuredImage: dbEvent.featured_image,
+    coverImage: dbEvent.cover_image ?? undefined,
     highlights: dbEvent.highlights,
     whatToBring: dbEvent.what_to_bring,
     schedule: dbEvent.schedule?.map(s => ({

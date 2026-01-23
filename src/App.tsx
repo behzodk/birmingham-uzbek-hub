@@ -10,6 +10,7 @@ import EventDetail from "./pages/EventDetail";
 import PastEvents from "./pages/PastEvents";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
+import FormDetail from "./pages/FormDetail";
 // import Merch from "./pages/Merch";
 // import MerchDetail from "./pages/MerchDetail";
 import About from "./pages/About";
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/events" element={<Events />} />
             <Route path="/events/past" element={<PastEvents />} />
             <Route path="/events/:slug" element={<EventDetail />} />
+            <Route path="/forms/:slug" element={<FormDetail />} />
             <Route path="/blog" element={<News />} />
             <Route path="/blog/:slug" element={<NewsDetail />} />
             <Route path="/news" element={<BlogRedirect />} />
