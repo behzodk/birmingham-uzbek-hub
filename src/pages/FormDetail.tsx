@@ -30,7 +30,7 @@ const RankedOptionItem = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 transition-transform ${
+      className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 transition-transform select-none ${
         isDragging ? "opacity-80 scale-[0.98] shadow-[6px_6px_0px_0px_hsl(var(--foreground))]" : "hover:-translate-y-[2px]"
       }`}
       {...attributes}
