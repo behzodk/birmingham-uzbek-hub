@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -47,6 +47,7 @@ const RankedOptionItem = ({
 
 const FormDetail = () => {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -149,11 +150,16 @@ const FormDetail = () => {
 
     try {
       setIsSubmitting(true);
-      await submitFormResponse(form.id, payload);
+      await submitFormResponse(form.id, payload, fields);
       toast.success("Thanks! Your response has been recorded.");
       setAnswers({});
+      navigate("/");
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      if (error instanceof Error && error.message === "DUPLICATE_EMAIL") {
+        toast.error("This email has already been registered for this event.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -309,6 +315,7 @@ const FormDetail = () => {
                       maxLength={field.max_count}
                       minLength={field.min_count}
                       required={field.required}
+                      placeholder={field.label}
                     />
                   ) : (
                     <input
@@ -319,6 +326,7 @@ const FormDetail = () => {
                       maxLength={field.max_count}
                       minLength={field.min_count}
                       required={field.required}
+                      placeholder={field.label}
                     />
                   )}
                   {error && <p className="text-sm text-destructive font-body">{error}</p>}

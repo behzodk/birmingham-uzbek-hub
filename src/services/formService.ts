@@ -82,9 +82,41 @@ export const fetchFormBySlug = async (slug: string): Promise<Form | null> => {
   return mapDbFormToForm(data as DbForm);
 };
 
-export const submitFormResponse = async (formId: number, answers: Record<string, unknown>) => {
+const extractEmail = (answers: Record<string, unknown>, fields: FormSchemaField[]) => {
+  const emailField = fields.find((field) => field.type === "email");
+  const key = emailField?.key ?? "email";
+  const raw = answers[key];
+  const value = typeof raw === "string" ? raw.trim().toLowerCase() : "";
+  return { key, value };
+};
+
+export const submitFormResponse = async (
+  formId: number,
+  answers: Record<string, unknown>,
+  fields: FormSchemaField[]
+) => {
+  const emailInfo = extractEmail(answers, fields);
+  if (emailInfo.value) {
+    const { data, error } = await supabase
+      .from("form_submissions")
+      .select("id")
+      .eq("form_id", formId)
+      .eq(`answers->>${emailInfo.key}`, emailInfo.value)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Error checking existing submission:", error);
+      throw error;
+    }
+
+    if (data) {
+      throw new Error("DUPLICATE_EMAIL");
+    }
+  }
+
   const { error } = await supabase
-    .from("form_submissions_table")
+    .from("form_submissions")
     .insert({
       form_id: formId,
       status: "submitted",
