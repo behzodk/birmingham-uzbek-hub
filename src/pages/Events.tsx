@@ -21,6 +21,9 @@ const Events = () => {
     );
   }
 
+  const featuredEvents = events.filter(e => e.featured);
+  const hasEvents = events.length > 0;
+
   return (
     <Layout>
       {/* Hero Section - Dastarkhan Theme */}
@@ -80,12 +83,12 @@ const Events = () => {
       </section>
 
       {/* Featured Event */}
-      {events.filter(e => e.featured).map(event => (
+      {featuredEvents.map(event => (
         <section key={event.id} className="py-12 bg-muted">
           <div className="container mx-auto px-4">
             <div className="neo-card bg-card overflow-hidden">
               <div className="grid md:grid-cols-2">
-                <div className={`${event.color} p-8 md:p-12 border-b-[3px] md:border-b-0 md:border-r-[3px] border-foreground`}>
+                <div className={`${event.color} ${event.color === "bg-primary" ? "text-white" : "text-foreground"} p-8 md:p-12 border-b-[3px] md:border-b-0 md:border-r-[3px] border-foreground`}>
                   <span className="neo-badge bg-background text-foreground mb-4 inline-block">⭐ Featured Event</span>
                   <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">{event.title}</h2>
                   <div className="space-y-3 font-body">
@@ -126,41 +129,56 @@ const Events = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="font-display text-3xl font-bold mb-8">All Upcoming Events</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {events.map((event) => (
-              <div key={event.id} className="neo-card bg-card overflow-hidden">
-                <div className={`${event.color} px-6 py-3 border-b-[3px] border-foreground flex items-center justify-between`}>
-                  <span className="font-display font-bold">{event.title}</span>
-                  <span className="neo-badge bg-background text-foreground text-xs">{event.category}</span>
-                </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-2 gap-4 mb-4 font-body text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span>{event.date}</span>
+          {hasEvents ? (
+            <div className="grid md:grid-cols-2 gap-6">
+              {events.map((event) => (
+                <div key={event.id} className="neo-card bg-card overflow-hidden">
+                  <div className={`${event.color} ${event.color === "bg-primary" ? "text-white" : "text-foreground"} px-6 py-3 border-b-[3px] border-foreground flex items-center justify-between`}>
+                    <span className="font-display font-bold">{event.title}</span>
+                    <span className="neo-badge bg-background text-foreground text-xs">{event.category}</span>
+                  </div>
+                  <div className="p-6">
+                    <div className="grid grid-cols-2 gap-4 mb-4 font-body text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span>{event.date}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        <span>{event.time}</span>
+                      </div>
+                      <div className="flex items-center gap-2 col-span-2">
+                        <MapPin className="h-4 w-4" />
+                        <span>{event.location}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      <span>{event.time}</span>
-                    </div>
-                    <div className="flex items-center gap-2 col-span-2">
-                      <MapPin className="h-4 w-4" />
-                      <span>{event.location}</span>
+                    <p className="font-body text-foreground/80 mb-4">{event.description}</p>
+                    <div className="flex gap-2">
+                      <Button variant="default" size="sm" className="flex-1" asChild>
+                        <Link to={`/events/${event.slug}`}>Register</Link>
+                      </Button>
+                      <Button variant="outline" size="sm" asChild>
+                        <Link to={`/events/${event.slug}`}>Details</Link>
+                      </Button>
                     </div>
                   </div>
-                  <p className="font-body text-foreground/80 mb-4">{event.description}</p>
-                  <div className="flex gap-2">
-                    <Button variant="default" size="sm" className="flex-1" asChild>
-                      <Link to={`/events/${event.slug}`}>Register</Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link to={`/events/${event.slug}`}>Details</Link>
-                    </Button>
-                  </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <div className="neo-card bg-card p-8 md:p-10 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
+                <Calendar className="h-6 w-6 text-foreground" />
               </div>
-            ))}
-          </div>
+              <h3 className="font-display text-2xl font-bold mb-2">No upcoming events right now</h3>
+              <p className="font-body text-muted-foreground mb-6">
+                We're planning the next celebration. Check back soon or browse our past events.
+              </p>
+              <Button asChild>
+                <Link to="/events/past">View Past Events</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </section>
     </Layout>

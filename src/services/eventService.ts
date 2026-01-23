@@ -85,10 +85,12 @@ const mapDbEventToEvent = (dbEvent: DbEvent): Event => {
 };
 
 export const fetchEvents = async (): Promise<Event[]> => {
+  const nowIso = new Date().toISOString();
   const { data, error } = await supabase
     .from('events')
     .select('*')
     .eq('status', 'published')
+    .gte('end_date', nowIso)
     .order('start_date', { ascending: true });
 
   if (error) {

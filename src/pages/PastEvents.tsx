@@ -199,7 +199,7 @@ const PastEvents = () => {
 
               {filteredEvents.map((event) => (
                 <div key={event.id} className="neo-card bg-card overflow-hidden">
-                  <div className={`${event.color} px-4 sm:px-5 py-3 border-b-[3px] border-foreground flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2`}>
+                  <div className={`${event.color} ${event.color === "bg-primary" ? "text-white" : "text-foreground"} px-4 sm:px-5 py-3 border-b-[3px] border-foreground flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2`}>
                     <span className="font-display font-bold text-base sm:text-lg leading-tight">{event.title}</span>
                     <span className="neo-badge bg-background text-foreground text-xs">
                       {event.category}

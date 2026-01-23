@@ -12,6 +12,7 @@ export function FeaturedEvents() {
 
   // Take the first 3 upcoming events
   const upcomingEvents = events.slice(0, 3);
+  const hasUpcomingEvents = upcomingEvents.length > 0;
 
   if (isLoading) {
     return (
@@ -47,33 +48,48 @@ export function FeaturedEvents() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {upcomingEvents.map((event, index) => (
-            <div
-              key={event.id}
-              className="neo-card bg-card overflow-hidden group"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className={`${event.color} p-3 md:p-4 border-b-[3px] border-foreground`}>
-                <span className="font-display font-bold text-base md:text-lg">{event.title}</span>
-              </div>
-              <div className="p-4 md:p-6">
-                <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                  <Calendar className="h-4 w-4 shrink-0" />
-                  <span className="font-body text-xs md:text-sm">{event.date}</span>
+        {hasUpcomingEvents ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {upcomingEvents.map((event, index) => (
+              <div
+                key={event.id}
+                className="neo-card bg-card overflow-hidden group"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className={`${event.color} ${event.color === "bg-primary" ? "text-white" : "text-foreground"} p-3 md:p-4 border-b-[3px] border-foreground`}>
+                  <span className="font-display font-bold text-base md:text-lg">{event.title}</span>
                 </div>
-                <div className="flex items-center gap-2 text-muted-foreground mb-3 md:mb-4">
-                  <MapPin className="h-4 w-4 shrink-0" />
-                  <span className="font-body text-xs md:text-sm">{event.location}</span>
+                <div className="p-4 md:p-6">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                    <Calendar className="h-4 w-4 shrink-0" />
+                    <span className="font-body text-xs md:text-sm">{event.date}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-muted-foreground mb-3 md:mb-4">
+                    <MapPin className="h-4 w-4 shrink-0" />
+                    <span className="font-body text-xs md:text-sm">{event.location}</span>
+                  </div>
+                  <p className="font-body text-sm md:text-base text-foreground/80 mb-3 md:mb-4 line-clamp-3">{event.description}</p>
+                  <Button variant="outline" size="sm" className="w-full group-hover:bg-muted transition-colors" asChild>
+                    <Link to={`/events/${event.slug}`}>Learn More</Link>
+                  </Button>
                 </div>
-                <p className="font-body text-sm md:text-base text-foreground/80 mb-3 md:mb-4 line-clamp-3">{event.description}</p>
-                <Button variant="outline" size="sm" className="w-full group-hover:bg-muted transition-colors" asChild>
-                  <Link to={`/events/${event.slug}`}>Learn More</Link>
-                </Button>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="neo-card bg-card p-8 md:p-10 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-background border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))]">
+              <Calendar className="h-6 w-6 text-foreground" />
             </div>
-          ))}
-        </div>
+            <h3 className="font-display text-2xl font-bold mb-2">No upcoming events yet</h3>
+            <p className="font-body text-muted-foreground mb-6">
+              We'll announce new dates soon. Meanwhile, explore our past events.
+            </p>
+            <Button variant="outline" asChild>
+              <Link to="/events/past">View Past Events</Link>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

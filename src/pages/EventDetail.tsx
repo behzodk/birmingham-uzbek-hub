@@ -118,7 +118,7 @@ const EventDetail = () => {
         image={event.featuredImage}
       />
       {/* Hero Section */}
-      <section className={`relative ${event.color} overflow-hidden py-12 md:py-20`}>
+      <section className={`relative ${event.color} ${event.color === "bg-primary" ? "text-white" : "text-foreground"} overflow-hidden py-12 md:py-20`}>
         {/* Decorative spinning shapes */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-8 right-[10%] w-8 h-8 md:w-12 md:h-12 border-[2px] border-foreground/20 animate-spin-slow" style={{ animationDuration: '15s' }} />
@@ -267,7 +267,7 @@ const EventDetail = () => {
                   to={`/events/${otherEvent.slug}`}
                   className="neo-card bg-card overflow-hidden group hover:translate-y-[-2px] transition-transform"
                 >
-                  <div className={`${otherEvent.color} p-4 border-b-[3px] border-foreground flex justify-between items-center`}>
+                  <div className={`${otherEvent.color} ${otherEvent.color === "bg-primary" ? "text-white" : "text-foreground"} p-4 border-b-[3px] border-foreground flex justify-between items-center`}>
                     <span className="font-display font-bold">{otherEvent.title}</span>
                     <span className="neo-badge bg-background text-foreground text-xs">{otherEvent.category}</span>
                   </div>
