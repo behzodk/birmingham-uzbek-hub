@@ -272,7 +272,7 @@ const About = () => {
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">
                     Food is a big part of our culture, but we also run sports,
-                    cultural nights, trips, and collaboration events.
+                    cultural nights, trips and collaboration events.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
