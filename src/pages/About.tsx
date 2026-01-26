@@ -1,6 +1,12 @@
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Instagram,
   Linkedin,
   MapPin,
@@ -207,6 +213,70 @@ const About = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 bg-muted">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="font-display text-4xl font-bold mb-4 text-center">
+              FAQs
+            </h2>
+            <p className="font-body text-lg text-muted-foreground text-center mb-10">
+              Quick answers to the questions we hear most often.
+            </p>
+
+            <div className="neo-card bg-card p-6 md:p-8">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="membership">
+                  <AccordionTrigger>
+                    Who can join UzbekSoc?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Any University of Birmingham student can join. We welcome
+                    everyone who is interested in Uzbek culture and community.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="events">
+                  <AccordionTrigger>
+                    Do I need to be a member to attend events?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Most events are open to everyone, but members get priority
+                    access and member pricing where applicable.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="sports">
+                  <AccordionTrigger>
+                    How do I get involved in sports and socials?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Follow our Instagram and Telegram for weekly updates. You can
+                    also message us and we will add you to the relevant group.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="volunteer">
+                  <AccordionTrigger>
+                    Can I help organize events?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Yes. We are always looking for volunteers. Reach out on
+                    Instagram or Telegram and we will get you involved.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="food">
+                  <AccordionTrigger>
+                    Are events only about food?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Food is a big part of our culture, but we also run sports,
+                    cultural nights, trips, and collaboration events.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </div>
         </div>
       </section>
