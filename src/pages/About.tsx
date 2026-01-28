@@ -17,12 +17,9 @@ import {
 } from "lucide-react";
 
 const committee = [
-  { role: "President", name: "Aziza K.", color: "bg-primary" },
-  { role: "Vice President", name: "Bobur T.", color: "bg-secondary" },
-  { role: "Treasurer", name: "Dilnoza M.", color: "bg-accent" },
-  { role: "Events Officer", name: "Jasur R.", color: "bg-coral" },
-  { role: "Social Media", name: "Kamila S.", color: "bg-secondary" },
-  { role: "Cultural Officer", name: "Rustam B.", color: "bg-primary" },
+  { role: "Chair", name: "Diyorbek Bulakov", color: "bg-primary" },
+  { role: "Treasurer", name: "Umida Tulkinova", color: "bg-accent" },
+  { role: "Secretary", name: "Dilnura Yuldasheva", color: "bg-secondary" },
 ];
 
 const About = () => {
@@ -199,9 +196,9 @@ const About = () => {
           <p className="font-body text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
             The passionate students making UzbekSoc a home away from home.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center max-w-4xl mx-auto">
             {committee.map((member) => (
-              <div key={member.role} className="neo-card bg-card overflow-hidden text-center">
+              <div key={member.role} className="neo-card bg-card overflow-hidden text-center w-full max-w-[220px]">
                 <div
                   className={`${member.color} aspect-square flex items-center justify-center border-b-[3px] border-foreground`}
                 >
