@@ -12,6 +12,7 @@ import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 import FormDetail from "./pages/FormDetail";
 import FormSuccess from "./pages/FormSuccess";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 // import Merch from "./pages/Merch";
 // import MerchDetail from "./pages/MerchDetail";
 import About from "./pages/About";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/events/:slug" element={<EventDetail />} />
             <Route path="/forms/:slug" element={<FormDetail />} />
             <Route path="/forms/:slug/success" element={<FormSuccess />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/blog" element={<News />} />
             <Route path="/blog/:slug" element={<NewsDetail />} />
             <Route path="/news" element={<BlogRedirect />} />

@@ -49,6 +49,16 @@ export function Footer() {
                   About Us
                 </Link>
               </li>
+              <li>
+                <Link to="/privacy" className="hover:text-secondary transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className="hover:text-secondary transition-colors">
+                  Data & Terms
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -431,13 +431,18 @@ const FormDetail = () => {
             </div>
             {errors[consentKey] && <p className="text-sm text-destructive font-body">{errors[consentKey]}</p>}
 
+            <p className="font-body text-sm text-muted-foreground">
+              By submitting, you agree to our{" "}
+              <Link to="/privacy" className="underline font-semibold hover:text-foreground">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <Button type="submit" size="lg" disabled={isSubmitting}>
                 {isSubmitting ? "Submitting..." : "Submit Registration"}
               </Button>
-              <span className="font-body text-sm text-muted-foreground">
-                Your information is stored securely and only used for event coordination.
-              </span>
             </div>
           </form>
         </div>
