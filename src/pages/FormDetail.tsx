@@ -179,8 +179,13 @@ const FormDetail = () => {
       setIsSubmitting(true);
       await submitFormResponse(form.id, payload, fields);
       toast.success("Thanks! Your response has been recorded.");
-      setAnswers({});
-      navigate("/");
+      navigate(`/forms/${slug}/success`, {
+        state: {
+          formTitle: form.title,
+          submittedAt: new Date().toISOString(),
+        },
+        replace: true,
+      });
     } catch (error) {
       if (error instanceof Error && error.message === "DUPLICATE_EMAIL") {
         toast.error("This email has already been registered for this event.");
