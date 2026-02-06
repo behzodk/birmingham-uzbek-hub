@@ -124,7 +124,9 @@ const EventDetail = () => {
       <SEO 
         title={event.title} 
         description={event.description}
-        image={event.featuredImage}
+        image={event.coverImage || event.featuredImage || "/og-image.jpg"}
+        url={typeof window !== "undefined" ? window.location.href : undefined}
+        type="article"
       />
       {/* Hero Section */}
       <section
