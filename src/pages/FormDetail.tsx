@@ -138,6 +138,12 @@ const FormDetail = () => {
     }
 
     const textValue = typeof value === "string" ? value.trim() : "";
+    if (field.type === "email") {
+      if (field.required && textValue.length === 0) return "Student email is required.";
+      if (textValue && !textValue.toLowerCase().endsWith("@student.bham.ac.uk")) {
+        return "Use your @student.bham.ac.uk email address.";
+      }
+    }
     if (field.required && textValue.length === 0) return "This field is required.";
     if (field.min_count !== undefined && textValue.length < field.min_count) {
       return `Minimum ${field.min_count} characters required.`;
@@ -386,7 +392,12 @@ const FormDetail = () => {
                       type={field.type === "email" ? "email" : "text"}
                       className={baseInputClass}
                       value={value}
-                      onChange={(e) => updateAnswer(field.key, e.target.value)}
+                      onChange={(e) =>
+                        updateAnswer(
+                          field.key,
+                          field.type === "email" ? e.target.value.toLowerCase().trim() : e.target.value
+                        )
+                      }
                       maxLength={field.max_count}
                       minLength={field.min_count}
                       required={field.required}
