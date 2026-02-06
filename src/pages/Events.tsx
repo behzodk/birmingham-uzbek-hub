@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Clock, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchEvents } from "@/services/eventService";
-import { buildOutlookCalendarUrl } from "@/lib/calendar";
 
 const Events = () => {
   const { data: events = [], isLoading } = useQuery({
@@ -116,21 +115,6 @@ const Events = () => {
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Button size="lg" asChild>
                       <Link to={`/events/${event.slug}`}>Register Now</Link>
-                    </Button>
-                    <Button size="lg" variant="outline" asChild>
-                      <a
-                        href={buildOutlookCalendarUrl({
-                          title: event.title,
-                          startIso: event.startDateISO,
-                          endIso: event.endDateISO,
-                          location: event.location,
-                          description: event.description,
-                        })}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Add to Calendar
-                      </a>
                     </Button>
                   </div>
                 </div>
