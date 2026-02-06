@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchEventBySlug, fetchEvents } from "@/services/eventService";
 import { fetchActiveFormByEventId } from "@/services/formService";
 import { SEO } from "@/components/SEO";
+import { buildOutlookCalendarUrl } from "@/lib/calendar";
 
 const EventDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -225,7 +226,21 @@ const EventDetail = () => {
                     Registration Closed
                   </Button>
                 )}
-                <Button variant="outline" className="w-full mt-2">Add to Calendar</Button>
+                <Button variant="outline" className="w-full mt-2" asChild>
+                  <a
+                    href={buildOutlookCalendarUrl({
+                      title: event.title,
+                      startIso: event.startDateISO,
+                      endIso: event.endDateISO,
+                      location: event.location,
+                      description: event.description,
+                    })}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Add to Calendar
+                  </a>
+                </Button>
               </div>
 
               {/* Highlights */}
