@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 export interface FormSchemaField {
   id: string;
   key: string;
-  type: "text" | "email" | "multi_select" | "textarea";
+  type: "text" | "email" | "multi_select" | "textarea" | "select";
   label: string;
   order?: number;
   required?: boolean;
@@ -11,6 +11,10 @@ export interface FormSchemaField {
   min_count?: number;
   options?: string[];
   is_ranked?: boolean;
+  conditional?: {
+    option: string;
+    field_key: string;
+  };
 }
 
 export interface FormSchema {

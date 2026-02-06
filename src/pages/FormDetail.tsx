@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
+import { GripVertical, ChevronDown } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -60,6 +60,15 @@ const FormDetail = () => {
 
   const fields = (form?.schema?.fields ?? []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
+  const isFieldVisible = (field: FormSchemaField) => {
+    if (!field.conditional) return true;
+    const targetValue = answers[field.conditional.field_key];
+    if (typeof targetValue === "string") {
+      return targetValue.trim() === field.conditional.option;
+    }
+    return targetValue === field.conditional.option;
+  };
+
   useEffect(() => {
     if (!form) return;
     setAnswers((prev) => {
@@ -69,6 +78,13 @@ const FormDetail = () => {
         if (field.type === "multi_select" && field.is_ranked) {
           if (!Array.isArray(prev[field.key])) {
             next[field.key] = field.options ?? [];
+            changed = true;
+          }
+        }
+        if (field.type === "select") {
+          const current = prev[field.key];
+          if (typeof current !== "string") {
+            next[field.key] = "";
             changed = true;
           }
         }
@@ -112,6 +128,15 @@ const FormDetail = () => {
       return null;
     }
 
+    if (field.type === "select") {
+      const selected = typeof value === "string" ? value.trim() : "";
+      if (field.required && selected.length === 0) return "Please select an option.";
+      if (selected && field.options && field.options.length > 0 && !field.options.includes(selected)) {
+        return "Please choose a valid option.";
+      }
+      return null;
+    }
+
     const textValue = typeof value === "string" ? value.trim() : "";
     if (field.required && textValue.length === 0) return "This field is required.";
     if (field.min_count !== undefined && textValue.length < field.min_count) {
@@ -131,6 +156,8 @@ const FormDetail = () => {
     const payload: Record<string, unknown> = {};
 
     fields.forEach((field) => {
+      if (!isFieldVisible(field)) return;
+
       const value = answers[field.key];
       const error = validateField(field, value);
       if (error) newErrors[field.key] = error;
@@ -206,10 +233,10 @@ const FormDetail = () => {
         </div>
       </section>
 
-      <section className="py-12">
+          <section className="py-12">
         <div className="container mx-auto px-4">
           <form onSubmit={handleSubmit} className="neo-card bg-card p-6 md:p-10 space-y-8">
-            {fields.map((field) => {
+            {fields.filter(isFieldVisible).map((field) => {
               const error = errors[field.key];
               const baseInputClass =
                 "w-full rounded-md border-[3px] border-foreground bg-background px-4 py-3 font-body text-base shadow-[4px_4px_0px_0px_hsl(var(--foreground))] focus:outline-none focus:ring-2 focus:ring-foreground";
@@ -257,6 +284,38 @@ const FormDetail = () => {
                         </div>
                       </SortableContext>
                     </DndContext>
+                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                  </div>
+                );
+              }
+
+              if (field.type === "select") {
+                const value = (answers[field.key] as string) ?? "";
+                const options = field.options ?? [];
+                return (
+                  <div key={field.id} className="space-y-3">
+                    <div>
+                      <label className="font-display text-lg font-bold">{field.label}</label>
+                      {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
+                    </div>
+                    <div className="relative">
+                      <select
+                        className={`${baseInputClass} min-h-[48px] pr-12 appearance-none cursor-pointer bg-background`}
+                        value={value}
+                        onChange={(e) => updateAnswer(field.key, e.target.value)}
+                        required={field.required}
+                      >
+                        <option value="" disabled>
+                          Select an option
+                        </option>
+                        {options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground/70" />
+                    </div>
                     {error && <p className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
