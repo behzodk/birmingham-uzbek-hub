@@ -13,6 +13,7 @@ import NewsDetail from "./pages/NewsDetail";
 import FormDetail from "./pages/FormDetail";
 import FormSuccess from "./pages/FormSuccess";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import { ScrollToTop } from "./components/ScrollToTop";
 // import Merch from "./pages/Merch";
 // import MerchDetail from "./pages/MerchDetail";
 import About from "./pages/About";
@@ -32,6 +33,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/events" element={<Events />} />
