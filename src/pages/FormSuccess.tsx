@@ -23,6 +23,7 @@ const FormSuccess = () => {
 
   useEffect(() => {
     let isMounted = true;
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetch("/Success.json")
       .then((res) => res.json())
       .then((data) => {
@@ -49,7 +50,7 @@ const FormSuccess = () => {
             <div className="neo-card bg-card border-[5px] border-foreground shadow-[14px_14px_0px_0px_hsl(var(--foreground))] px-6 py-10 md:px-12 md:py-14 text-foreground">
               <div className="flex flex-col items-center text-center space-y-6">
                 {animationData ? (
-                  <div className="w-full max-w-md mx-auto -mt-4">
+                  <div className="w-full max-w-md mx-auto">
                     <Lottie animationData={animationData} loop={false} />
                   </div>
                 ) : (

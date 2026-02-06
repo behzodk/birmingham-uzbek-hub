@@ -50,6 +50,8 @@ const FormDetail = () => {
   const navigate = useNavigate();
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [consentChecked, setConsentChecked] = useState(false);
+  const consentKey = "__acknowledge_validity";
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: form, isLoading } = useQuery({
@@ -174,6 +176,12 @@ const FormDetail = () => {
         payload[field.key] = value ?? (field.type === "multi_select" ? [] : "");
       }
     });
+
+    if (!consentChecked) {
+      newErrors[consentKey] = "Please confirm you understand invalid fields may result in rejections.";
+    } else {
+      payload[consentKey] = true;
+    }
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -408,6 +416,20 @@ const FormDetail = () => {
                 </div>
               );
             })}
+
+            <div className="neo-card bg-muted border-[3px] border-foreground px-4 py-4 flex items-start gap-3">
+              <input
+                id="consent-checkbox"
+                type="checkbox"
+                className="mt-1 h-5 w-5 accent-foreground"
+                checked={consentChecked}
+                onChange={(e) => setConsentChecked(e.target.checked)}
+              />
+              <label htmlFor="consent-checkbox" className="font-body text-sm md:text-base">
+                I understand that submitting invalid or incomplete information may result in my registration being rejected.
+              </label>
+            </div>
+            {errors[consentKey] && <p className="text-sm text-destructive font-body">{errors[consentKey]}</p>}
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <Button type="submit" size="lg" disabled={isSubmitting}>
