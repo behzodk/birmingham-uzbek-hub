@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Sparkles, CheckCircle2, ArrowRight, ArrowLeft, Clock, MapPin } from "lucide-react";
+import Lottie from "lottie-react";
 
 interface LocationState {
   formTitle?: string;
@@ -14,9 +16,25 @@ const FormSuccess = () => {
   const { slug } = useParams<{ slug: string }>();
   const { state } = useLocation();
   const { formTitle, submittedAt } = (state as LocationState) || {};
+  const [animationData, setAnimationData] = useState<Record<string, unknown> | null>(null);
 
   const displayTitle = formTitle || "Registration Received";
   const submittedDate = submittedAt ? new Date(submittedAt).toLocaleString() : null;
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch("/Success.json")
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted) setAnimationData(data);
+      })
+      .catch(() => {
+        if (isMounted) setAnimationData(null);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <Layout>
@@ -30,13 +48,19 @@ const FormSuccess = () => {
           <div className="mx-auto max-w-4xl">
             <div className="neo-card bg-card border-[5px] border-foreground shadow-[14px_14px_0px_0px_hsl(var(--foreground))] px-6 py-10 md:px-12 md:py-14 text-foreground">
               <div className="flex flex-col items-center text-center space-y-6">
+                {animationData ? (
+                  <div className="w-full max-w-md mx-auto -mt-4">
+                    <Lottie animationData={animationData} loop={false} />
+                  </div>
+                ) : (
+                  <div className="grid place-items-center h-20 w-20 rounded-2xl border-[6px] border-foreground bg-primary text-background shadow-[10px_10px_0px_0px_hsl(var(--foreground))]">
+                    <CheckCircle2 className="h-10 w-10" />
+                  </div>
+                )}
+
                 <div className="inline-flex items-center gap-2 rounded-full border-[4px] border-foreground bg-background px-4 py-2 text-xs md:text-sm font-semibold uppercase tracking-tight shadow-[6px_6px_0px_0px_hsl(var(--foreground))]">
                   <Sparkles className="h-4 w-4" />
                   Submission saved
-                </div>
-
-                <div className="grid place-items-center h-20 w-20 rounded-2xl border-[6px] border-foreground bg-primary text-background shadow-[10px_10px_0px_0px_hsl(var(--foreground))]">
-                  <CheckCircle2 className="h-10 w-10" />
                 </div>
 
                 <div className="space-y-2">
