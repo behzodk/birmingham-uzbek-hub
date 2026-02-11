@@ -354,6 +354,9 @@ const FormDetail = () => {
                 const step = field.allow_float ? 0.5 : 1;
                 const scaleType = field.scale_type?.toLowerCase() === "numeric" ? "numeric" : "stars";
                 const value = typeof answers[field.key] === "number" ? (answers[field.key] as number) : null;
+                const starCount = max - min + 1;
+                const starLayoutClass =
+                  starCount > 7 ? "grid grid-cols-5 sm:grid-cols-10 gap-2" : "flex flex-wrap items-center gap-2";
 
                 return (
                   <div key={field.id} className="space-y-4">
@@ -371,7 +374,7 @@ const FormDetail = () => {
 
                     {scaleType === "stars" ? (
                       <div className="flex items-center gap-3 flex-wrap">
-                        <div className="flex items-center gap-2">
+                        <div className={starLayoutClass}>
                           {Array.from({ length: max - min + 1 }, (_, idx) => {
                             const score = min + idx;
                             const isActive = value !== null && score <= value;
