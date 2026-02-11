@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ChevronDown } from "lucide-react";
+import { GripVertical, ChevronDown, Star } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -124,6 +124,22 @@ const FormDetail = () => {
       }
       if (field.max_count !== undefined && selected.length > field.max_count) {
         return `Please select no more than ${field.max_count} option(s).`;
+      }
+      return null;
+    }
+
+    if (field.type === "rating") {
+      const min = field.scale_min ?? 1;
+      const max = field.scale_max ?? 5;
+      const rating = typeof value === "number" ? value : null;
+      if (field.required && (rating === null || Number.isNaN(rating))) {
+        return "Please provide a rating.";
+      }
+      if (rating !== null && (rating < min || rating > max)) {
+        return `Please rate between ${min} and ${max}.`;
+      }
+      if (!field.allow_float && rating !== null && !Number.isInteger(rating)) {
+        return "Please select a whole-number rating.";
       }
       return null;
     }
@@ -327,6 +343,80 @@ const FormDetail = () => {
                       </select>
                       <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground/70" />
                     </div>
+                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                  </div>
+                );
+              }
+
+              if (field.type === "rating") {
+                const min = field.scale_min ?? 1;
+                const max = field.scale_max ?? 5;
+                const step = field.allow_float ? 0.5 : 1;
+                const scaleType = field.scale_type?.toLowerCase() === "numeric" ? "numeric" : "stars";
+                const value = typeof answers[field.key] === "number" ? (answers[field.key] as number) : null;
+
+                return (
+                  <div key={field.id} className="space-y-4">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div>
+                        <label className="font-display text-lg font-bold">{field.label}</label>
+                        {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
+                      </div>
+                      <div className="flex items-center gap-3 text-sm font-body text-muted-foreground">
+                        {field.min_label && <span>{field.min_label}</span>}
+                        {(field.min_label || field.max_label) && <span className="h-px w-8 bg-border" aria-hidden />}
+                        {field.max_label && <span>{field.max_label}</span>}
+                      </div>
+                    </div>
+
+                    {scaleType === "stars" ? (
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          {Array.from({ length: max - min + 1 }, (_, idx) => {
+                            const score = min + idx;
+                            const isActive = value !== null && score <= value;
+                            return (
+                              <button
+                                key={score}
+                                type="button"
+                                className={`p-2 rounded-md border-[2px] border-foreground bg-background shadow-[3px_3px_0_0_hsl(var(--foreground))] transition-transform hover:-translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-foreground ${
+                                  isActive ? "bg-secondary text-foreground" : "text-foreground/60"
+                                }`}
+                                onClick={() => updateAnswer(field.key, score)}
+                                aria-label={`Rate ${score} out of ${max}`}
+                              >
+                                <Star
+                                  className="h-6 w-6"
+                                  fill={isActive ? "currentColor" : "none"}
+                                />
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <div className="neo-card bg-muted border-[3px] border-foreground px-3 py-2 text-sm font-body">
+                          {value ? `Selected: ${value}/${max}` : "No rating yet"}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <input
+                          type="range"
+                          min={min}
+                          max={max}
+                          step={step}
+                          value={value ?? min}
+                          onChange={(e) => updateAnswer(field.key, Number(e.target.value))}
+                          className="w-full accent-foreground"
+                        />
+                        <div className="flex items-center justify-between text-sm font-body text-muted-foreground">
+                          <span>{min}</span>
+                          <span className="neo-badge bg-background text-foreground">
+                            {value ?? "Not rated"} / {max}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
                     {error && <p className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
