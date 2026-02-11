@@ -18,7 +18,7 @@ const FormSuccess = () => {
   const { formTitle, submittedAt } = (state as LocationState) || {};
   const [animationData, setAnimationData] = useState<Record<string, unknown> | null>(null);
 
-  const displayTitle = formTitle || "Registration Received";
+  const displayTitle = formTitle || "Submission Received";
   const submittedDate = submittedAt ? new Date(submittedAt).toLocaleString() : null;
 
   useEffect(() => {
@@ -69,7 +69,7 @@ const FormSuccess = () => {
                     {displayTitle}
                   </h1>
                   <p className="font-body text-base md:text-lg text-foreground/80 max-w-2xl mx-auto">
-                    We’ve locked in your spot. Expect a follow-up email with any prep details and next steps.
+                    Thanks for sending this in. We’ll review and follow up if we need anything else.
                   </p>
                 </div>
 
@@ -93,9 +93,9 @@ const FormSuccess = () => {
                 <div className="w-full rounded-2xl border-[4px] border-foreground bg-background px-6 py-5 shadow-[10px_10px_0px_0px_hsl(var(--foreground))] text-left space-y-3">
                   <h2 className="font-display text-lg md:text-xl font-bold">What happens next</h2>
                   <ol className="list-decimal pl-5 space-y-2 font-body text-base text-foreground/90">
-                    <li>Our organizers review registrations and confirm roles within 48 hours.</li>
-                    <li>You’ll get an email with timings, venue specifics, and prep material.</li>
-                    <li>Want to explore meanwhile? Check our events calendar or return to the form.</li>
+                    <li>Our team reviews submissions and routes them to the right people within 48 hours.</li>
+                    <li>If action is needed (e.g., event prep or feedback follow-up), we’ll email you with details.</li>
+                    <li>While you wait, you can browse events or jump back to the form if you need to edit.</li>
                   </ol>
                 </div>
 
