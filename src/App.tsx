@@ -14,8 +14,8 @@ import FormDetail from "./pages/FormDetail";
 import FormSuccess from "./pages/FormSuccess";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { ScrollToTop } from "./components/ScrollToTop";
-// import Merch from "./pages/Merch";
-// import MerchDetail from "./pages/MerchDetail";
+import MerchStore from "./pages/MerchStore";
+import MerchStoreDetail from "./pages/MerchStoreDetail";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
@@ -46,8 +46,8 @@ const App = () => (
             <Route path="/blog/:slug" element={<NewsDetail />} />
             <Route path="/news" element={<BlogRedirect />} />
             <Route path="/news/:slug" element={<BlogRedirect />} />
-            {/* <Route path="/merch" element={<Merch />} />
-            <Route path="/merch/:slug" element={<MerchDetail />} /> */}
+            <Route path="/merch" element={<MerchStore />} />
+            <Route path="/merch/:slug" element={<MerchStoreDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,10 +1,20 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Star } from "lucide-react";
 import { products } from "@/data/merchData";
 
-const Merch = () => {
+const MerchStore = () => {
+  const [activeCategory, setActiveCategory] = useState("All Items");
+
+  const filteredProducts = products.filter(product => {
+    if (activeCategory === "All Items") return true;
+    return product.category === activeCategory;
+  });
+
+  const categories = ["All Items", "Clothing", "Accessories", "Stickers"];
+
   return (
     <Layout>
       {/* Hero Section - Bazaar Theme */}
@@ -14,7 +24,7 @@ const Merch = () => {
           {/* Hanging fabric strips */}
           <div className="absolute top-0 left-[10%] w-6 md:w-8 h-20 md:h-32 bg-coral border-[2px] border-foreground animate-sway origin-top" />
           <div className="absolute top-0 right-[15%] w-8 md:w-10 h-24 md:h-36 bg-primary border-[2px] border-foreground animate-sway origin-top" style={{ animationDelay: '0.6s' }} />
-          
+
           {/* Floating shopping icon */}
           <div className="absolute bottom-16 md:bottom-24 right-[8%] md:right-[10%] animate-float">
             <div className="w-10 h-10 md:w-14 md:h-14 bg-coral border-[3px] border-foreground shadow-[3px_3px_0px_0px_hsl(var(--foreground))] rotate-6">
@@ -22,7 +32,7 @@ const Merch = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
             <span className="neo-badge bg-coral text-coral-foreground mb-4 inline-block text-sm">
@@ -43,14 +53,19 @@ const Merch = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap gap-4 mb-8">
-            <Button variant="default">All Items</Button>
-            <Button variant="outline">Clothing</Button>
-            <Button variant="outline">Accessories</Button>
-            <Button variant="outline">Stickers</Button>
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={activeCategory === category ? "default" : "outline"}
+                onClick={() => setActiveCategory(category)}
+              >
+                {category}
+              </Button>
+            ))}
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div key={product.id} className="neo-card bg-card overflow-hidden group">
                 {/* Product Image Placeholder */}
                 <Link to={`/merch/${product.slug}`} className={`${product.color} aspect-square border-b-[3px] border-foreground relative flex items-center justify-center block`}>
@@ -133,29 +148,8 @@ const Merch = () => {
           </div>
         </div>
       </section>
-
-      {/* Pre-order CTA */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="neo-card bg-primary p-8 md:p-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h2 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground mb-2">
-                  Navruz 2026 Limited Edition Coming Soon!
-                </h2>
-                <p className="font-body text-primary-foreground/80">
-                  Special collection dropping in February. Join the waitlist to get early access.
-                </p>
-              </div>
-              <Button variant="secondary" size="lg" className="shrink-0">
-                Join Waitlist
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
     </Layout>
   );
 };
 
-export default Merch;
+export default MerchStore;

@@ -30,9 +30,8 @@ const RankedOptionItem = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 transition-transform ${
-        isDragging ? "opacity-80 scale-[0.98] shadow-[6px_6px_0px_0px_hsl(var(--foreground))]" : "hover:-translate-y-[2px]"
-      }`}
+      className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 transition-transform ${isDragging ? "opacity-80 scale-[0.98] shadow-[6px_6px_0px_0px_hsl(var(--foreground))]" : "hover:-translate-y-[2px]"
+        }`}
       {...attributes}
       {...listeners}
     >
@@ -144,6 +143,12 @@ const FormDetail = () => {
       return null;
     }
 
+    if (field.type === "boolean") {
+      const isChecked = value === true;
+      if (field.required && !isChecked) return "This field is required.";
+      return null;
+    }
+
     if (field.type === "select") {
       const selected = typeof value === "string" ? value.trim() : "";
       if (field.required && selected.length === 0) return "Please select an option.";
@@ -155,7 +160,11 @@ const FormDetail = () => {
 
     const textValue = typeof value === "string" ? value.trim() : "";
     if (field.type === "email") {
-      if (field.required && textValue.length === 0) return "Student email is required.";
+      if (field.required && textValue.length === 0) return "Email is required.";
+      if (field.is_student_email) {
+        if (textValue.includes("@")) return "Please enter your username only.";
+        return null;
+      }
       if (textValue && !textValue.toLowerCase().endsWith("@student.bham.ac.uk")) {
         return "Use your @student.bham.ac.uk email address.";
       }
@@ -186,6 +195,8 @@ const FormDetail = () => {
 
       if (field.type === "multi_select" && field.is_ranked) {
         payload[field.key] = Array.isArray(value) ? value : [];
+      } else if (field.type === "email" && field.is_student_email) {
+        payload[field.key] = `${value}@student.bham.ac.uk`;
       } else {
         payload[field.key] = value ?? (field.type === "multi_select" ? [] : "");
       }
@@ -260,7 +271,7 @@ const FormDetail = () => {
         </div>
       </section>
 
-          <section className="py-12">
+      <section className="py-12">
         <div className="container mx-auto px-4">
           <form onSubmit={handleSubmit} className="neo-card bg-card p-6 md:p-10 space-y-8">
             {fields.filter(isFieldVisible).map((field) => {
@@ -382,9 +393,8 @@ const FormDetail = () => {
                               <button
                                 key={score}
                                 type="button"
-                                className={`p-2 rounded-md border-[2px] border-foreground bg-background shadow-[3px_3px_0_0_hsl(var(--foreground))] transition-transform hover:-translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-foreground ${
-                                  isActive ? "bg-secondary text-foreground" : "text-foreground/60"
-                                }`}
+                                className={`p-2 rounded-md border-[2px] border-foreground bg-background shadow-[3px_3px_0_0_hsl(var(--foreground))] transition-transform hover:-translate-y-[1px] focus:outline-none focus:ring-2 focus:ring-foreground ${isActive ? "bg-secondary text-foreground" : "text-foreground/60"
+                                  }`}
                                 onClick={() => updateAnswer(field.key, score)}
                                 aria-label={`Rate ${score} out of ${max}`}
                               >
@@ -438,9 +448,8 @@ const FormDetail = () => {
                       {options.map((option) => (
                         <label
                           key={option}
-                          className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 cursor-pointer ${
-                            selected.includes(option) ? "bg-secondary" : ""
-                          }`}
+                          className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 cursor-pointer ${selected.includes(option) ? "bg-secondary" : ""
+                            }`}
                         >
                           <input
                             type="checkbox"
@@ -462,7 +471,61 @@ const FormDetail = () => {
                 );
               }
 
+              if (field.type === "boolean") {
+                const value = (answers[field.key] as boolean) ?? false;
+                return (
+                  <div key={field.id} className="space-y-4">
+                    <label
+                      className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 cursor-pointer ${value ? "bg-secondary" : ""
+                        }`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="h-5 w-5 accent-foreground"
+                        checked={value}
+                        onChange={(e) => updateAnswer(field.key, e.target.checked)}
+                        required={field.required}
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-display text-lg font-bold">{field.label}</span>
+                        {field.required && <span className="text-xs text-destructive">* Required</span>}
+                      </div>
+                    </label>
+                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                  </div>
+                );
+              }
               const value = (answers[field.key] as string) ?? "";
+
+              if (field.type === "email" && field.is_student_email) {
+                return (
+                  <div key={field.id} className="space-y-3">
+                    <div>
+                      <label className="font-display text-lg font-bold">{field.label}</label>
+                      {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
+                    </div>
+                    <div className="flex items-center w-full rounded-md border-[3px] border-foreground bg-background shadow-[4px_4px_0px_0px_hsl(var(--foreground))] focus-within:ring-2 focus-within:ring-foreground overflow-hidden">
+                      <input
+                        type="text"
+                        className="flex-1 bg-background px-4 py-3 font-body text-base focus:outline-none placeholder:text-muted-foreground min-w-0"
+                        value={value}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/@/g, "");
+                          updateAnswer(field.key, val);
+                        }}
+                        maxLength={field.max_count}
+                        minLength={field.min_count}
+                        required={field.required}
+                        placeholder="username"
+                      />
+                      <div className="bg-muted px-3 md:px-4 py-3 border-l-[3px] border-foreground font-body text-sm md:text-base text-muted-foreground whitespace-nowrap h-full flex items-center">
+                        @student.bham.ac.uk
+                      </div>
+                    </div>
+                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                  </div>
+                );
+              }
               return (
                 <div key={field.id} className="space-y-3">
                   <div>

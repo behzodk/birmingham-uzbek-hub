@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ShoppingBag, Star, CheckCircle, Shirt } from "lucide-react";
 import { getProductBySlug, products } from "@/data/merchData";
 
-const MerchDetail = () => {
+const MerchStoreDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const product = slug ? getProductBySlug(slug) : undefined;
@@ -48,7 +48,7 @@ const MerchDetail = () => {
 
     lines.forEach((line, index) => {
       const trimmed = line.trim();
-      
+
       if (trimmed.startsWith('## ')) {
         flushList();
         elements.push(
@@ -71,8 +71,8 @@ const MerchDetail = () => {
         flushList();
         const formattedText = trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         elements.push(
-          <p 
-            key={index} 
+          <p
+            key={index}
             className="font-body text-lg text-foreground/90 mb-4 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: formattedText }}
           />
@@ -89,8 +89,8 @@ const MerchDetail = () => {
       {/* Hero Section */}
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="mb-6"
             onClick={() => navigate("/merch")}
           >
@@ -207,8 +207,8 @@ const MerchDetail = () => {
             <h2 className="font-display text-2xl font-bold mb-8">You Might Also Like</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {relatedProducts.map((related) => (
-                <Link 
-                  key={related.id} 
+                <Link
+                  key={related.id}
                   to={`/merch/${related.slug}`}
                   className="neo-card bg-card overflow-hidden group hover:translate-y-[-2px] transition-transform"
                 >
@@ -250,4 +250,4 @@ const MerchDetail = () => {
   );
 };
 
-export default MerchDetail;
+export default MerchStoreDetail;
