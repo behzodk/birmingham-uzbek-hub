@@ -35,6 +35,9 @@ export interface Form {
   is_active: boolean;
   schema: FormSchema;
   event_id: number | null;
+  max_response: number | null;
+  response_count: number;
+  is_full: boolean;
   created_at: string;
 }
 
@@ -45,18 +48,41 @@ interface DbForm {
   is_active: boolean;
   schema: FormSchema;
   event_id: number | null;
+  max_response: number | null;
   created_at: string;
 }
 
-const mapDbFormToForm = (dbForm: DbForm): Form => ({
+const fetchFormResponseCount = async (formId: number) => {
+  const { count, error } = await supabase
+    .from("form_submissions")
+    .select("id", { count: "exact", head: true })
+    .eq("form_id", formId);
+
+  if (error) {
+    console.error("Error fetching form response count:", error);
+    throw error;
+  }
+
+  return count ?? 0;
+};
+
+const mapDbFormToForm = (dbForm: DbForm, responseCount: number): Form => ({
   id: dbForm.id,
   title: dbForm.title,
   slug: dbForm.slug,
   is_active: dbForm.is_active,
   schema: dbForm.schema,
   event_id: dbForm.event_id,
+  max_response: dbForm.max_response,
+  response_count: responseCount,
+  is_full: dbForm.max_response !== null && responseCount >= dbForm.max_response,
   created_at: dbForm.created_at,
 });
+
+const buildFormWithCapacity = async (dbForm: DbForm) => {
+  const responseCount = await fetchFormResponseCount(dbForm.id);
+  return mapDbFormToForm(dbForm, responseCount);
+};
 
 export const fetchActiveFormByEventId = async (eventId: number): Promise<Form | null> => {
   const { data, error } = await supabase
@@ -74,7 +100,7 @@ export const fetchActiveFormByEventId = async (eventId: number): Promise<Form | 
   }
 
   if (!data) return null;
-  return mapDbFormToForm(data as DbForm);
+  return buildFormWithCapacity(data as DbForm);
 };
 
 export const fetchFormBySlug = async (slug: string): Promise<Form | null> => {
@@ -90,7 +116,28 @@ export const fetchFormBySlug = async (slug: string): Promise<Form | null> => {
   }
 
   if (!data) return null;
-  return mapDbFormToForm(data as DbForm);
+  return buildFormWithCapacity(data as DbForm);
+};
+
+const assertFormHasCapacity = async (formId: number) => {
+  const [{ data, error }, responseCount] = await Promise.all([
+    supabase
+      .from("forms")
+      .select("max_response")
+      .eq("id", formId)
+      .maybeSingle(),
+    fetchFormResponseCount(formId),
+  ]);
+
+  if (error) {
+    console.error("Error fetching form capacity:", error);
+    throw error;
+  }
+
+  const maxResponse = (data as { max_response: number | null } | null)?.max_response ?? null;
+  if (maxResponse !== null && responseCount >= maxResponse) {
+    throw new Error("FORM_FULL");
+  }
 };
 
 const extractEmail = (answers: Record<string, unknown>, fields: FormSchemaField[]) => {
@@ -106,6 +153,8 @@ export const submitFormResponse = async (
   answers: Record<string, unknown>,
   fields: FormSchemaField[]
 ) => {
+  await assertFormHasCapacity(formId);
+
   const emailInfo = extractEmail(answers, fields);
   if (emailInfo.value) {
     const { data, error } = await supabase

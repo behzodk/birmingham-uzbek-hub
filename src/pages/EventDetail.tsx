@@ -219,9 +219,15 @@ const EventDetail = () => {
                   </div>
                 </div>
                 {activeForm ? (
-                  <Button className="w-full" size="lg" asChild>
-                    <Link to={`/forms/${activeForm.slug}`}>Register Now</Link>
-                  </Button>
+                  activeForm.is_full ? (
+                    <Button className="w-full" size="lg" asChild>
+                      <Link to={`/forms/${activeForm.slug}/filled`}>Form Filled</Link>
+                    </Button>
+                  ) : (
+                    <Button className="w-full" size="lg" asChild>
+                      <Link to={`/forms/${activeForm.slug}`}>Register Now</Link>
+                    </Button>
+                  )
                 ) : (
                   <Button className="w-full" size="lg" disabled>
                     Registration Closed

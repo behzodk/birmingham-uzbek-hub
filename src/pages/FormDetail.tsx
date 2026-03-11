@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -51,10 +51,11 @@ const FormDetail = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data: form, isLoading } = useQuery({
+  const { data: form, isLoading, isFetching, isFetchedAfterMount } = useQuery({
     queryKey: ["form", slug],
     queryFn: () => fetchFormBySlug(slug!),
     enabled: !!slug,
+    refetchOnMount: "always",
   });
 
   const fields = (form?.schema?.fields ?? []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -220,8 +221,21 @@ const FormDetail = () => {
         replace: true,
       });
     } catch (error) {
-      if (error instanceof Error && error.message === "DUPLICATE_EMAIL") {
-        toast.error("This email has already been registered for this event.");
+      if (error instanceof Error) {
+        if (error.message === "DUPLICATE_EMAIL") {
+          toast.error("This email has already been registered for this event.");
+        } else if (error.message === "FORM_FULL") {
+          toast.error("This form is no longer accepting responses.");
+          navigate(`/forms/${slug}/filled`, {
+            state: {
+              formTitle: form.title,
+              maxResponse: form.max_response,
+            },
+            replace: true,
+          });
+        } else {
+          toast.error("Something went wrong. Please try again.");
+        }
       } else {
         toast.error("Something went wrong. Please try again.");
       }
@@ -230,7 +244,7 @@ const FormDetail = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || (isFetching && !isFetchedAfterMount)) {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[60vh]">
@@ -254,6 +268,19 @@ const FormDetail = () => {
           </Button>
         </div>
       </Layout>
+    );
+  }
+
+  if (form.is_full) {
+    return (
+      <Navigate
+        to={`/forms/${slug}/filled`}
+        replace
+        state={{
+          formTitle: form.title,
+          maxResponse: form.max_response,
+        }}
+      />
     );
   }
 
