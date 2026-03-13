@@ -119,11 +119,11 @@ export const fetchFormBySlug = async (slug: string): Promise<Form | null> => {
   return buildFormWithCapacity(data as DbForm);
 };
 
-const assertFormHasCapacity = async (formId: number) => {
+const assertFormAcceptingResponses = async (formId: number) => {
   const [{ data, error }, responseCount] = await Promise.all([
     supabase
       .from("forms")
-      .select("max_response")
+      .select("is_active, max_response")
       .eq("id", formId)
       .maybeSingle(),
     fetchFormResponseCount(formId),
@@ -134,7 +134,13 @@ const assertFormHasCapacity = async (formId: number) => {
     throw error;
   }
 
-  const maxResponse = (data as { max_response: number | null } | null)?.max_response ?? null;
+  const form = data as { is_active: boolean; max_response: number | null } | null;
+
+  if (form && !form.is_active) {
+    throw new Error("FORM_INACTIVE");
+  }
+
+  const maxResponse = form?.max_response ?? null;
   if (maxResponse !== null && responseCount >= maxResponse) {
     throw new Error("FORM_FULL");
   }
@@ -153,7 +159,7 @@ export const submitFormResponse = async (
   answers: Record<string, unknown>,
   fields: FormSchemaField[]
 ) => {
-  await assertFormHasCapacity(formId);
+  await assertFormAcceptingResponses(formId);
 
   const emailInfo = extractEmail(answers, fields);
   if (emailInfo.value) {

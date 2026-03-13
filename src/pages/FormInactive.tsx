@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, CircleOff, Users } from "lucide-react";
+import { ArrowLeft, CircleOff, Clock } from "lucide-react";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
@@ -8,17 +8,16 @@ import { fetchFormBySlug } from "@/services/formService";
 
 interface LocationState {
   formTitle?: string;
-  maxResponse?: number | null;
 }
 
-const FormFilled = () => {
+const FormInactive = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
   const { state } = useLocation();
-  const { formTitle, maxResponse: stateMaxResponse } = (state as LocationState) || {};
+  const { formTitle } = (state as LocationState) || {};
 
   const { data: form, isLoading } = useQuery({
-    queryKey: ["form-filled", slug],
+    queryKey: ["form-inactive", slug],
     queryFn: () => fetchFormBySlug(slug!),
     enabled: !!slug,
   });
@@ -48,21 +47,19 @@ const FormFilled = () => {
     );
   }
 
-  if (form && !form.is_active) {
-    return <Navigate to={`/forms/${slug}/inactive`} replace state={{ formTitle: form.title }} />;
-  }
+  if (form?.is_active) {
+    if (form.is_full) {
+      return <Navigate to={`/forms/${slug}/filled`} replace />;
+    }
 
-  if (form && !form.is_full) {
     return <Navigate to={`/forms/${slug}`} replace />;
   }
 
-  const displayTitle = formTitle || form?.title || "Form Filled";
-  const maxResponse = form?.max_response ?? stateMaxResponse ?? null;
-  const responseCount = form?.response_count ?? maxResponse ?? null;
+  const displayTitle = formTitle || form?.title || "Form Unavailable";
 
   return (
     <Layout>
-      <SEO title={`${displayTitle} — Form Filled`} />
+      <SEO title={`${displayTitle} — Registration Closed`} />
       <section className="relative overflow-hidden bg-secondary py-16 md:py-24">
         <div className="absolute inset-0 pointer-events-none uzbek-pattern opacity-15" />
         <div className="container relative z-10 mx-auto px-4">
@@ -72,22 +69,21 @@ const FormFilled = () => {
                 <CircleOff className="h-10 w-10" />
               </div>
 
-              <span className="neo-badge mb-4 inline-flex bg-background text-foreground">Responses Closed</span>
+              <span className="neo-badge mb-4 inline-flex bg-background text-foreground">Form Inactive</span>
 
               <h1 className="mb-4 font-display text-4xl font-black md:text-5xl">{displayTitle}</h1>
               <p className="mx-auto max-w-2xl font-body text-base text-foreground/80 md:text-lg">
-                This form has reached its response limit and is no longer accepting new submissions.
+                This form is currently inactive, so new submissions are turned off for now.
               </p>
 
               <div className="mt-8 grid gap-3 md:grid-cols-2">
                 <div className="flex items-center justify-center gap-2 rounded-xl border-[3px] border-foreground bg-muted px-4 py-3 shadow-[6px_6px_0px_0px_hsl(var(--foreground))]">
-                  <Users className="h-4 w-4" />
-                  <span className="font-body text-sm md:text-base">
-                    {maxResponse !== null ? `Limit reached: ${responseCount}/${maxResponse}` : "Responses are closed"}
-                  </span>
+                  <CircleOff className="h-4 w-4" />
+                  <span className="font-body text-sm md:text-base">Registration is not open right now</span>
                 </div>
-                <div className="rounded-xl border-[3px] border-foreground bg-muted px-4 py-3 shadow-[6px_6px_0px_0px_hsl(var(--foreground))]">
-                  <span className="font-body text-sm md:text-base">Check back later if the organizers reopen submissions.</span>
+                <div className="flex items-center justify-center gap-2 rounded-xl border-[3px] border-foreground bg-muted px-4 py-3 shadow-[6px_6px_0px_0px_hsl(var(--foreground))]">
+                  <Clock className="h-4 w-4" />
+                  <span className="font-body text-sm md:text-base">Check back later if the organizers reopen it</span>
                 </div>
               </div>
 
@@ -117,4 +113,4 @@ const FormFilled = () => {
   );
 };
 
-export default FormFilled;
+export default FormInactive;

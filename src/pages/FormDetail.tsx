@@ -224,6 +224,14 @@ const FormDetail = () => {
       if (error instanceof Error) {
         if (error.message === "DUPLICATE_EMAIL") {
           toast.error("This email has already been registered for this event.");
+        } else if (error.message === "FORM_INACTIVE") {
+          toast.error("This form is not accepting responses right now.");
+          navigate(`/forms/${slug}/inactive`, {
+            state: {
+              formTitle: form.title,
+            },
+            replace: true,
+          });
         } else if (error.message === "FORM_FULL") {
           toast.error("This form is no longer accepting responses.");
           navigate(`/forms/${slug}/filled`, {
@@ -268,6 +276,18 @@ const FormDetail = () => {
           </Button>
         </div>
       </Layout>
+    );
+  }
+
+  if (!form.is_active) {
+    return (
+      <Navigate
+        to={`/forms/${slug}/inactive`}
+        replace
+        state={{
+          formTitle: form.title,
+        }}
+      />
     );
   }
 
