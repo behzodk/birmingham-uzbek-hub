@@ -6,7 +6,12 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { buildCompetitionRatingUrl, getCompetitionEntryLabel, getCompetitionEntryTitle } from "@/lib/competition";
+import {
+  buildCompetitionRatingUrl,
+  getCompetitionCriteriaSummary,
+  getCompetitionEntryLabel,
+  getCompetitionEntryTitle,
+} from "@/lib/competition";
 import { fetchCompetitionEntryForRegistrationSuccess } from "@/services/competitionService";
 
 const CompetitionRegistrationSuccess = () => {
@@ -52,6 +57,7 @@ const CompetitionRegistrationSuccess = () => {
   const { competition, entry } = data;
   const ratingUrl = buildCompetitionRatingUrl(entry.ratingPublicId);
   const entryLabel = getCompetitionEntryLabel(competition);
+  const criteriaSummary = getCompetitionCriteriaSummary(competition.ratingCriteria);
 
   return (
     <Layout>
@@ -119,7 +125,13 @@ const CompetitionRegistrationSuccess = () => {
                 </div>
               </div>
 
-              <CompetitionQrAccessCard title={getCompetitionEntryTitle(entry)} url={ratingUrl} />
+              <CompetitionQrAccessCard
+                title={getCompetitionEntryTitle(entry)}
+                url={ratingUrl}
+                categoryLabel={entryLabel}
+                instructionText={`Scan to rate this ${entryLabel.toLowerCase()}`}
+                note={criteriaSummary}
+              />
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row">

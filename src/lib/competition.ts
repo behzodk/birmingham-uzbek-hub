@@ -214,6 +214,25 @@ export const getCompetitionEntryTitle = (entry: CompetitionEntry) => {
   return "Competition Item";
 };
 
+const formatReadableList = (values: string[]) => {
+  if (values.length === 0) return "";
+  if (values.length === 1) return values[0];
+  if (values.length === 2) return `${values[0]} and ${values[1]}`;
+  return `${values.slice(0, -1).join(", ")}, and ${values[values.length - 1]}`;
+};
+
+export const getCompetitionCriteriaSummary = (criteria: CompetitionRatingCriterion[]) => {
+  const labels = criteria
+    .map((criterion) => criterion.label.trim())
+    .filter((label) => label.length > 0)
+    .slice(0, 3)
+    .map((label) => label.toLowerCase());
+
+  if (labels.length === 0) return null;
+
+  return `Rate ${formatReadableList(labels)}.`;
+};
+
 const parseDate = (value: string | null) => {
   if (!value) return null;
   const parsed = parseISO(value);

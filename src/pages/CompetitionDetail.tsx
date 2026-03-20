@@ -13,6 +13,7 @@ import { CompetitionQrDialog } from "@/components/competition/CompetitionQrDialo
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
+  getCompetitionCriteriaSummary,
   getCompetitionEntryLabel,
   getCompetitionEntryTitle,
   getCompetitionVoteRules,
@@ -68,6 +69,7 @@ const CompetitionDetail = () => {
   }
 
   const entryLabel = getCompetitionEntryLabel(competition);
+  const criteriaSummary = getCompetitionCriteriaSummary(competition.ratingCriteria);
   const voteRules = getCompetitionVoteRules(competition);
   const registrationOpen = isCompetitionRegistrationOpen(competition);
 
@@ -261,7 +263,7 @@ const CompetitionDetail = () => {
                       {entry.entryDescription ?? "Open the public rating page to submit your vote."}
                     </p>
                     <div className="mt-auto">
-                      <CompetitionQrDialog entry={entry} itemLabel={entryLabel} />
+                      <CompetitionQrDialog entry={entry} itemLabel={entryLabel} note={criteriaSummary} />
                     </div>
                   </div>
                 </div>
