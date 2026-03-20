@@ -131,82 +131,9 @@ const CompetitionDetail = () => {
                 </div>
               )}
 
-              <Alert className="border-[3px] border-foreground bg-card">
-                <QrCode className="h-4 w-4" />
-                <AlertTitle>Public voting rules</AlertTitle>
-                <AlertDescription>
-                  <div className="space-y-2">
-                    {voteRules.map((rule) => (
-                      <p key={rule}>{rule}</p>
-                    ))}
-                  </div>
-                </AlertDescription>
-              </Alert>
             </div>
 
             <div className="space-y-6">
-              <div className="neo-card bg-card p-6">
-                <h2 className="mb-4 text-2xl font-bold">Competition Access</h2>
-                <div className="space-y-3 font-body text-sm text-foreground/85">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-primary" />
-                    <span>
-                      {entries.length} approved {entryLabel.toLowerCase()}
-                      {entries.length === 1 ? "" : "s"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Star className="h-4 w-4 text-primary" />
-                    <span>{competition.ratingCriteria.length} rating criteria</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <QrCode className="h-4 w-4 text-primary" />
-                    <span>Approved {entryLabel.toLowerCase()}s can be opened directly on their public vote pages.</span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  {registrationOpen ? (
-                    <Button asChild className="w-full">
-                      <Link to={`/competitions/${competition.slug}/register`}>Register Your {entryLabel}</Link>
-                    </Button>
-                  ) : (
-                    <Button className="w-full" disabled>
-                      Registration Closed
-                    </Button>
-                  )}
-                </div>
-                <p className="mt-3 font-body text-sm text-muted-foreground">
-                  {registrationOpen
-                    ? "Public registration is currently open."
-                    : "Public registration is not currently open for this competition."}
-                </p>
-              </div>
-
-              <div className="neo-card bg-card p-6">
-                <h2 className="mb-4 text-2xl font-bold">Scoring Criteria</h2>
-                {competition.ratingCriteria.length > 0 ? (
-                  <div className="space-y-4">
-                    {competition.ratingCriteria.map((criterion) => (
-                      <div key={criterion.id} className="border-b-[2px] border-foreground/10 pb-4 last:border-b-0 last:pb-0">
-                        <div className="mb-1 flex items-start justify-between gap-3">
-                          <h3 className="text-lg font-bold">{criterion.label}</h3>
-                        </div>
-                        {criterion.description ? (
-                          <p className="mb-2 font-body text-sm text-muted-foreground">{criterion.description}</p>
-                        ) : null}
-                        <p className="font-body text-sm text-foreground/80">
-                          {criterion.scaleType === "stars" ? "Star" : "Numeric"} scale from {criterion.scaleMin} to{" "}
-                          {criterion.scaleMax}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="font-body text-muted-foreground">
-                    Public rating is not available yet because the competition has no criteria configured.
-                  </p>
-                )}
-              </div>
             </div>
           </div>
         </div>
