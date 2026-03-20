@@ -252,9 +252,11 @@ export const CompetitionRatingForm = ({ competition, entry }: CompetitionRatingF
               </div>
 
               <div className="flex flex-wrap items-start gap-3">
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2.5 sm:gap-3">
                   {values.map((value) => {
                     const isSelected = selectedScore === value;
+                    const isFilled = isStarScale && typeof selectedScore === "number" && value <= selectedScore;
+                    const isActiveTile = isStarScale ? isFilled : isSelected;
 
                     return (
                       <button
@@ -262,8 +264,8 @@ export const CompetitionRatingForm = ({ competition, entry }: CompetitionRatingF
                         type="button"
                         onClick={() => updateScore(criterion.id, value)}
                         className={cn(
-                          "neo-card flex h-16 w-16 items-center justify-center bg-card p-0 transition-transform duration-150 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:h-[4.5rem] sm:w-[4.5rem]",
-                          isSelected && "bg-secondary text-secondary-foreground"
+                          "neo-card flex h-[3.35rem] w-[3.35rem] items-center justify-center bg-card p-0 transition-transform duration-150 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:h-16 sm:w-16 md:h-[4.25rem] md:w-[4.25rem]",
+                          isActiveTile && "bg-secondary text-secondary-foreground"
                         )}
                         aria-pressed={isSelected}
                         aria-label={`${criterion.label}: ${value}`}
@@ -271,8 +273,8 @@ export const CompetitionRatingForm = ({ competition, entry }: CompetitionRatingF
                         {isStarScale ? (
                           <Star
                             className={cn(
-                              "h-8 w-8 text-foreground/50 sm:h-9 sm:w-9",
-                              isSelected && "fill-current text-secondary-foreground"
+                              "h-6 w-6 text-foreground/45 sm:h-7 sm:w-7 md:h-8 md:w-8",
+                              isActiveTile && "fill-current text-foreground"
                             )}
                           />
                         ) : (
