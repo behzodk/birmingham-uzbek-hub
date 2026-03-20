@@ -9,11 +9,9 @@ import {
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
-import { CompetitionQrDialog } from "@/components/competition/CompetitionQrDialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
-  getCompetitionCriteriaSummary,
   getCompetitionEntryLabel,
   getCompetitionEntryTitle,
   getCompetitionVoteRules,
@@ -69,7 +67,6 @@ const CompetitionDetail = () => {
   }
 
   const entryLabel = getCompetitionEntryLabel(competition);
-  const criteriaSummary = getCompetitionCriteriaSummary(competition.ratingCriteria);
   const voteRules = getCompetitionVoteRules(competition);
   const registrationOpen = isCompetitionRegistrationOpen(competition);
 
@@ -164,7 +161,7 @@ const CompetitionDetail = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <QrCode className="h-4 w-4 text-primary" />
-                    <span>QR-based public rating access is available for approved {entryLabel.toLowerCase()}s.</span>
+                    <span>Approved {entryLabel.toLowerCase()}s can be opened directly on their public vote pages.</span>
                   </div>
                 </div>
                 <div className="mt-6">
@@ -259,7 +256,9 @@ const CompetitionDetail = () => {
                       {entry.entryDescription ?? "Open the public rating page to submit your vote."}
                     </p>
                     <div className="mt-auto">
-                      <CompetitionQrDialog entry={entry} itemLabel={entryLabel} note={criteriaSummary} />
+                      <Button asChild className="w-full">
+                        <Link to={`/competitions/rate/${entry.ratingPublicId}`}>Vote Now</Link>
+                      </Button>
                     </div>
                   </div>
                 </div>
