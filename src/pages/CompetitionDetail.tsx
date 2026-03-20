@@ -220,10 +220,6 @@ const CompetitionDetail = () => {
           <div className="mb-8 flex items-end justify-between gap-4">
             <div>
               <span className="neo-badge mb-3 inline-block bg-coral text-coral-foreground">Approved {entryLabel}s</span>
-              <h2 className="text-3xl font-bold">Public Rating Access</h2>
-              <p className="font-body text-muted-foreground">
-                Share access by QR code without surfacing the direct public rating page in this list.
-              </p>
             </div>
           </div>
 
