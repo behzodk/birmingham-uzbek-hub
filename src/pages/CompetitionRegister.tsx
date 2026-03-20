@@ -256,10 +256,7 @@ const CompetitionRegister = () => {
                                 <ImagePlus className="h-5 w-5" />
                               </div>
                               <div>
-                                <p className="font-display text-base font-bold">Optional local upload</p>
-                                <p className="font-body text-sm text-muted-foreground">
-                                  Uploaded to Supabase Storage and saved with the {entryLabel.toLowerCase()}.
-                                </p>
+                                <p className="font-display text-base font-bold">Upload photo</p>
                               </div>
                             </div>
                             <Input
