@@ -20,6 +20,12 @@ import MerchStore from "./pages/MerchStore";
 import MerchStoreDetail from "./pages/MerchStoreDetail";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import Competitions from "./pages/Competitions";
+import CompetitionDetail from "./pages/CompetitionDetail";
+import CompetitionLeaderboardPage from "./pages/CompetitionLeaderboard";
+import CompetitionRate from "./pages/CompetitionRate";
+import CompetitionRegister from "./pages/CompetitionRegister";
+import CompetitionRegistrationSuccess from "./pages/CompetitionRegistrationSuccess";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +47,12 @@ const App = () => (
             <Route path="/events" element={<Events />} />
             <Route path="/events/past" element={<PastEvents />} />
             <Route path="/events/:slug" element={<EventDetail />} />
+            <Route path="/competitions" element={<Competitions />} />
+            <Route path="/competitions/rate/:ratingPublicId" element={<CompetitionRate />} />
+            <Route path="/competitions/:slug/register" element={<CompetitionRegister />} />
+            <Route path="/competitions/:slug/registered/:ratingId" element={<CompetitionRegistrationSuccess />} />
+            <Route path="/competitions/:slug/leaderboard" element={<CompetitionLeaderboardPage />} />
+            <Route path="/competitions/:slug" element={<CompetitionDetail />} />
             <Route path="/forms/:slug" element={<FormDetail />} />
             <Route path="/forms/:slug/inactive" element={<FormInactive />} />
             <Route path="/forms/:slug/filled" element={<FormFilled />} />

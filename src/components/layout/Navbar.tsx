@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/events", label: "Events" },
+  { to: "/competitions", label: "Competitions" },
   { to: "/blog", label: "Blog" },
   // { to: "/merch", label: "Merch" },
   { to: "/about", label: "About" },
@@ -14,6 +15,10 @@ const navLinks = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const isLinkActive = (path: string) => {
+    if (path === "/") return location.pathname === path;
+    return location.pathname === path || location.pathname.startsWith(`${path}/`);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background border-b-[3px] border-foreground">
@@ -32,9 +37,9 @@ export function Navbar() {
             {navLinks.map((link) => (
               <Link key={link.to} to={link.to}>
                 <Button
-                  variant={location.pathname === link.to ? "secondary" : "ghost"}
+                  variant={isLinkActive(link.to) ? "secondary" : "ghost"}
                   size="sm"
-                  className={location.pathname === link.to ? "" : "border-0"}
+                  className={isLinkActive(link.to) ? "" : "border-0"}
                 >
                   {link.label}
                 </Button>
@@ -60,7 +65,7 @@ export function Navbar() {
               {navLinks.map((link) => (
                 <Link key={link.to} to={link.to} onClick={() => setIsOpen(false)}>
                   <Button
-                    variant={location.pathname === link.to ? "secondary" : "outline"}
+                    variant={isLinkActive(link.to) ? "secondary" : "outline"}
                     className="w-full justify-start"
                   >
                     {link.label}
