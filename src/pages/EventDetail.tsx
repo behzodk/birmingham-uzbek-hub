@@ -1,9 +1,9 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, Clock, MapPin, Users, CheckCircle, ListChecks } from "lucide-react";
+import { ArrowLeft, Calendar, Camera, Clock, MapPin, Users, CheckCircle, ListChecks } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchEventBySlug, fetchEvents } from "@/services/eventService";
+import { fetchEventBySlug, fetchEventPhotoAssetCount, fetchEvents } from "@/services/eventService";
 import { fetchActiveFormByEventId } from "@/services/formService";
 import { SEO } from "@/components/SEO";
 
@@ -26,6 +26,12 @@ const EventDetail = () => {
     queryKey: ["event-form", event?.id],
     queryFn: () => fetchActiveFormByEventId(event!.id),
     enabled: !!event?.id
+  });
+
+  const { data: photoCount = 0 } = useQuery({
+    queryKey: ["event-photo-count", event?.id],
+    queryFn: () => fetchEventPhotoAssetCount(event!.id),
+    enabled: !!event?.id,
   });
 
 
@@ -234,6 +240,22 @@ const EventDetail = () => {
                   </Button>
                 )}
               </div>
+
+              {/* Highlights */}
+              {photoCount > 0 && (
+                <div className="neo-card bg-card p-6">
+                  <h3 className="font-display text-xl font-bold mb-4">Photo Gallery</h3>
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-2 text-sm font-body">
+                      <Camera className="h-4 w-4 text-primary" />
+                      <span>{photoCount} public photo{photoCount === 1 ? "" : "s"}</span>
+                    </div>
+                  </div>
+                  <Button className="w-full" size="lg" asChild>
+                    <Link to={`/events/${event.slug}/photos`}>View Gallery</Link>
+                  </Button>
+                </div>
+              )}
 
               {/* Highlights */}
               {event.highlights && event.highlights.length > 0 && (
