@@ -5,12 +5,14 @@ import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSe
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, ChevronDown, Star } from "lucide-react";
+import { FormContentBlock } from "@/components/forms/FormContentBlock";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { toast } from "@/components/ui/sonner";
 import {
   fetchFormBySlug,
+  isAnswerableFormField,
   submitFormResponse,
   uploadFormImage,
   type FormSchemaField,
@@ -190,6 +192,10 @@ const FormDetail = () => {
   );
 
   const validateField = (field: FormSchemaField, value: unknown): string | null => {
+    if (field.type === "content") {
+      return null;
+    }
+
     if (field.type === "image") {
       const selectedImage = imageSelections[field.key];
       const hasUploadedValue =
@@ -288,9 +294,10 @@ const FormDetail = () => {
     if (!form) return;
 
     const visibleFields = fields.filter(isFieldVisible);
+    const answerableVisibleFields = visibleFields.filter(isAnswerableFormField);
     const newErrors: Record<string, string> = {};
 
-    visibleFields.forEach((field) => {
+    answerableVisibleFields.forEach((field) => {
       const value = answers[field.key];
       const error = validateField(field, value);
       if (error) newErrors[field.key] = error;
@@ -306,7 +313,7 @@ const FormDetail = () => {
       setIsSubmitting(true);
       const payload: Record<string, unknown> = {};
 
-      for (const field of visibleFields) {
+      for (const field of answerableVisibleFields) {
         const value = answers[field.key];
 
         if (field.type === "image") {
@@ -349,7 +356,7 @@ const FormDetail = () => {
         }
       }
 
-      await submitFormResponse(form.id, payload, fields);
+      await submitFormResponse(form.id, payload, answerableVisibleFields);
       toast.success("Thanks! Your response has been recorded.");
       navigate(`/forms/${slug}/success`, {
         state: {
@@ -464,6 +471,10 @@ const FormDetail = () => {
               const error = errors[field.key];
               const baseInputClass =
                 "w-full rounded-md border-[3px] border-foreground bg-background px-4 py-3 font-body text-base shadow-[4px_4px_0px_0px_hsl(var(--foreground))] focus:outline-none focus:ring-2 focus:ring-foreground";
+
+              if (field.type === "content") {
+                return <FormContentBlock key={field.id} field={field} />;
+              }
 
               if (field.type === "multi_select" && field.is_ranked) {
                 const options = field.options ?? [];

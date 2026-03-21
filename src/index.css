@@ -241,6 +241,94 @@
     @apply font-display;
   }
 
+  .form-rich-content {
+    @apply font-body text-base text-foreground;
+  }
+
+  .form-rich-content :is(h1, h2, h3, h4, h5, h6) {
+    @apply font-display font-bold text-foreground;
+    line-height: 1.1;
+  }
+
+  .form-rich-content h1 {
+    @apply mb-4 text-3xl;
+  }
+
+  .form-rich-content h2 {
+    @apply mb-3 text-2xl;
+  }
+
+  .form-rich-content h3 {
+    @apply mb-3 text-xl;
+  }
+
+  .form-rich-content p,
+  .form-rich-content li,
+  .form-rich-content blockquote,
+  .form-rich-content td,
+  .form-rich-content th {
+    @apply font-body text-foreground/90;
+  }
+
+  .form-rich-content p,
+  .form-rich-content ul,
+  .form-rich-content ol,
+  .form-rich-content blockquote,
+  .form-rich-content table,
+  .form-rich-content figure {
+    @apply my-4;
+  }
+
+  .form-rich-content a {
+    @apply font-semibold text-primary underline underline-offset-4;
+  }
+
+  .form-rich-content a:hover {
+    opacity: 0.8;
+  }
+
+  .form-rich-content ul,
+  .form-rich-content ol {
+    @apply pl-6;
+  }
+
+  .form-rich-content ul {
+    @apply list-disc;
+  }
+
+  .form-rich-content ol {
+    @apply list-decimal;
+  }
+
+  .form-rich-content li + li {
+    @apply mt-2;
+  }
+
+  .form-rich-content blockquote {
+    @apply border-l-[4px] border-foreground bg-background px-4 py-3;
+    box-shadow: 4px 4px 0px 0px hsl(var(--foreground));
+  }
+
+  .form-rich-content img {
+    @apply h-auto max-w-full border-[3px] border-foreground bg-card;
+    box-shadow: 4px 4px 0px 0px hsl(var(--foreground));
+  }
+
+  .form-rich-content table {
+    @apply w-full border-collapse overflow-hidden border-[3px] border-foreground bg-card;
+    display: block;
+    overflow-x: auto;
+    box-shadow: 4px 4px 0px 0px hsl(var(--foreground));
+  }
+
+  .form-rich-content thead {
+    @apply bg-secondary text-secondary-foreground;
+  }
+
+  .form-rich-content :is(th, td) {
+    @apply border-[2px] border-foreground px-3 py-2 text-left;
+  }
+
   .country-overview {
     @apply bg-card border-[3px] border-foreground p-6 md:p-10;
     box-shadow: 8px 8px 0px 0px hsl(var(--foreground));

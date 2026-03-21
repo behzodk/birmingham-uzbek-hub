@@ -5,13 +5,26 @@ export type UploadedImageAnswer = {
   path: string | null;
 };
 
+export type FormSchemaFieldType =
+  | "text"
+  | "email"
+  | "multi_select"
+  | "textarea"
+  | "select"
+  | "rating"
+  | "boolean"
+  | "image"
+  | "content";
+
 export interface FormSchemaField {
   id: string;
   key: string;
-  type: "text" | "email" | "multi_select" | "textarea" | "select" | "rating" | "boolean" | "image";
+  type: FormSchemaFieldType;
   label: string;
   order?: number;
   required?: boolean;
+  is_secure?: boolean;
+  content_html?: string;
   max_count?: number;
   min_count?: number;
   options?: string[];
@@ -56,6 +69,8 @@ interface DbForm {
   max_response: number | null;
   created_at: string;
 }
+
+export const isAnswerableFormField = (field: FormSchemaField) => field.type !== "content";
 
 const getFormImagesBucket = () => {
   const configuredBucket = import.meta.env.NEXT_PUBLIC_SUPABASE_FORM_IMAGES_BUCKET;
