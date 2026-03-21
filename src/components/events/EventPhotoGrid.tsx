@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Download } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ const EventPhotoCard = memo(
           </AspectRatio>
         </button>
 
-        <div className="flex items-center justify-between gap-3 border-t-[3px] border-foreground p-3">
+        <div className="flex flex-col gap-2 border-t-[3px] border-foreground p-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p className="truncate font-display text-sm font-bold">{photo.fileName}</p>
             <p className="font-body text-xs text-muted-foreground">Event photo</p>
@@ -59,6 +59,7 @@ const EventPhotoCard = memo(
             type="button"
             size="sm"
             variant="outline"
+            className="hidden h-8 self-start px-2 text-[10px] tracking-[0.12em] sm:inline-flex sm:h-9 sm:self-auto sm:px-4 sm:text-xs"
             onClick={() => onDownloadPhoto(photo)}
             disabled={isDownloading}
           >
@@ -82,6 +83,32 @@ export const EventPhotoGrid = ({
   onDownloadPhoto,
   onLoadMore,
 }: EventPhotoGridProps) => {
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const node = loadMoreRef.current;
+    if (!node || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting && !isLoadingMore) {
+          onLoadMore();
+        }
+      },
+      {
+        rootMargin: "320px 0px",
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, isLoadingMore, onLoadMore]);
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
@@ -98,10 +125,24 @@ export const EventPhotoGrid = ({
       </div>
 
       {hasMore ? (
-        <div className="flex justify-center">
-          <Button type="button" variant="outline" size="lg" onClick={onLoadMore} disabled={isLoadingMore}>
-            {isLoadingMore ? "Loading More..." : "Load More Photos"}
-          </Button>
+        <div ref={loadMoreRef} className="flex justify-center">
+          <div className="neo-card w-full max-w-xl bg-card px-4 py-4 sm:px-5">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-body text-sm font-semibold text-foreground/80">
+                {isLoadingMore ? "Loading more photos..." : "Scroll to keep loading photos"}
+              </p>
+              <span className="font-body text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                {photos.length} loaded
+              </span>
+            </div>
+            <div className="mt-3 h-3 overflow-hidden border-[3px] border-foreground bg-background">
+              <div
+                className={`h-full bg-primary transition-all duration-300 ${
+                  isLoadingMore ? "w-full animate-pulse" : "w-1/3"
+                }`}
+              />
+            </div>
+          </div>
         </div>
       ) : null}
     </div>
