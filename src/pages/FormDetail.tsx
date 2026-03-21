@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
@@ -9,7 +9,13 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { toast } from "@/components/ui/sonner";
-import { fetchFormBySlug, submitFormResponse, type FormSchemaField } from "@/services/formService";
+import {
+  fetchFormBySlug,
+  submitFormResponse,
+  uploadFormImage,
+  type FormSchemaField,
+  type UploadedImageAnswer,
+} from "@/services/formService";
 
 const RankedOptionItem = ({
   id,
@@ -44,12 +50,28 @@ const RankedOptionItem = ({
   );
 };
 
+type ImageFieldSelection = {
+  file: File;
+  fileName: string;
+  previewUrl: string;
+};
+
+const isUploadedImageAnswer = (value: unknown): value is UploadedImageAnswer => {
+  if (!value || typeof value !== "object") return false;
+
+  const candidate = value as UploadedImageAnswer;
+  return typeof candidate.url === "string";
+};
+
 const FormDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
+  const [imageSelections, setImageSelections] = useState<Record<string, ImageFieldSelection>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadingImageKeys, setUploadingImageKeys] = useState<string[]>([]);
+  const imageSelectionsRef = useRef(imageSelections);
 
   const { data: form, isLoading, isFetching, isFetchedAfterMount } = useQuery({
     queryKey: ["form", slug],
@@ -60,6 +82,10 @@ const FormDetail = () => {
 
   const fields = (form?.schema?.fields ?? []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
+  useEffect(() => {
+    imageSelectionsRef.current = imageSelections;
+  }, [imageSelections]);
+
   const isFieldVisible = (field: FormSchemaField) => {
     if (!field.conditional) return true;
     const targetValue = answers[field.conditional.field_key];
@@ -68,6 +94,14 @@ const FormDetail = () => {
     }
     return targetValue === field.conditional.option;
   };
+
+  useEffect(() => {
+    return () => {
+      Object.values(imageSelectionsRef.current).forEach((selection) => {
+        URL.revokeObjectURL(selection.previewUrl);
+      });
+    };
+  }, []);
 
   useEffect(() => {
     if (!form) return;
@@ -97,12 +131,81 @@ const FormDetail = () => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
   };
 
+  const clearFieldError = (key: string) => {
+    setErrors((prev) => {
+      if (!(key in prev)) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  };
+
+  const setImageSelection = (fieldKey: string, file: File | null) => {
+    setImageSelections((prev) => {
+      const current = prev[fieldKey];
+      if (current?.previewUrl) {
+        URL.revokeObjectURL(current.previewUrl);
+      }
+
+      if (!file) {
+        const next = { ...prev };
+        delete next[fieldKey];
+        return next;
+      }
+
+      return {
+        ...prev,
+        [fieldKey]: {
+          file,
+          fileName: file.name,
+          previewUrl: URL.createObjectURL(file),
+        },
+      };
+    });
+    clearFieldError(fieldKey);
+  };
+
+  const handleImageSelection = (field: FormSchemaField, file: File | null) => {
+    if (!file) {
+      setImageSelection(field.key, null);
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setImageSelection(field.key, null);
+      setErrors((prev) => ({
+        ...prev,
+        [field.key]: "Please choose an image file.",
+      }));
+      toast.error("Please choose an image file.");
+      return;
+    }
+
+    setImageSelection(field.key, file);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
   );
 
   const validateField = (field: FormSchemaField, value: unknown): string | null => {
+    if (field.type === "image") {
+      const selectedImage = imageSelections[field.key];
+      const hasUploadedValue =
+        isUploadedImageAnswer(value)
+          ? value.url.trim().length > 0
+          : typeof value === "string"
+            ? value.trim().length > 0
+            : false;
+
+      if (field.required && !selectedImage?.file && !hasUploadedValue) {
+        return "Please upload an image.";
+      }
+
+      return null;
+    }
+
     if (field.type === "multi_select") {
       if (field.is_ranked) {
         const ranked = Array.isArray(value) ? value : [];
@@ -184,23 +287,13 @@ const FormDetail = () => {
     event.preventDefault();
     if (!form) return;
 
+    const visibleFields = fields.filter(isFieldVisible);
     const newErrors: Record<string, string> = {};
-    const payload: Record<string, unknown> = {};
 
-    fields.forEach((field) => {
-      if (!isFieldVisible(field)) return;
-
+    visibleFields.forEach((field) => {
       const value = answers[field.key];
       const error = validateField(field, value);
       if (error) newErrors[field.key] = error;
-
-      if (field.type === "multi_select" && field.is_ranked) {
-        payload[field.key] = Array.isArray(value) ? value : [];
-      } else if (field.type === "email" && field.is_student_email) {
-        payload[field.key] = `${value}@student.bham.ac.uk`;
-      } else {
-        payload[field.key] = value ?? (field.type === "multi_select" ? [] : "");
-      }
     });
 
     setErrors(newErrors);
@@ -211,6 +304,51 @@ const FormDetail = () => {
 
     try {
       setIsSubmitting(true);
+      const payload: Record<string, unknown> = {};
+
+      for (const field of visibleFields) {
+        const value = answers[field.key];
+
+        if (field.type === "image") {
+          const selectedImage = imageSelections[field.key];
+
+          if (selectedImage?.file) {
+            setUploadingImageKeys((prev) => [...prev, field.key]);
+
+            try {
+              payload[field.key] = await uploadFormImage(form.id, field.key, selectedImage.file);
+            } catch (error) {
+              console.error("Error uploading form image:", error);
+              setErrors((prev) => ({
+                ...prev,
+                [field.key]: "We couldn't upload this image. Please try again.",
+              }));
+              toast.error(`We couldn't upload ${field.label}. Please try again.`);
+              return;
+            } finally {
+              setUploadingImageKeys((prev) => prev.filter((key) => key !== field.key));
+            }
+          } else if (isUploadedImageAnswer(value)) {
+            payload[field.key] = value;
+          } else if (typeof value === "string" && value.trim().length > 0) {
+            payload[field.key] = value.trim();
+          } else {
+            payload[field.key] = null;
+          }
+
+          continue;
+        }
+
+        if (field.type === "multi_select" && field.is_ranked) {
+          payload[field.key] = Array.isArray(value) ? value : [];
+        } else if (field.type === "email" && field.is_student_email) {
+          const username = typeof value === "string" ? value.trim() : "";
+          payload[field.key] = username ? `${username}@student.bham.ac.uk` : "";
+        } else {
+          payload[field.key] = value ?? (field.type === "multi_select" ? [] : "");
+        }
+      }
+
       await submitFormResponse(form.id, payload, fields);
       toast.success("Thanks! Your response has been recorded.");
       navigate(`/forms/${slug}/success`, {
@@ -248,6 +386,7 @@ const FormDetail = () => {
         toast.error("Something went wrong. Please try again.");
       }
     } finally {
+      setUploadingImageKeys([]);
       setIsSubmitting(false);
     }
   };
@@ -482,6 +621,66 @@ const FormDetail = () => {
                 );
               }
 
+              if (field.type === "image") {
+                const imageSelection = imageSelections[field.key];
+                const isUploadingImage = uploadingImageKeys.includes(field.key);
+
+                return (
+                  <div key={field.id} className="space-y-4">
+                    <div>
+                      <label htmlFor={`field-${field.id}`} className="font-display text-lg font-bold">
+                        {field.label}
+                      </label>
+                      {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
+                    </div>
+
+                    <div className="neo-card bg-muted p-4 md:p-5">
+                      <div className="space-y-4">
+                        <input
+                          id={`field-${field.id}`}
+                          type="file"
+                          accept="image/*"
+                          className={`${baseInputClass} cursor-pointer file:mr-4 file:border-0 file:bg-secondary file:px-4 file:py-3 file:font-display file:text-sm file:font-bold file:uppercase file:tracking-wide file:text-secondary-foreground`}
+                          onChange={(event) => {
+                            const file = event.target.files?.[0] ?? null;
+                            handleImageSelection(field, file);
+                            event.currentTarget.value = "";
+                          }}
+                        />
+
+                        <div className="space-y-2">
+                          <p className="font-body text-sm text-muted-foreground">
+                            {imageSelection?.fileName
+                              ? `Selected image: ${imageSelection.fileName}`
+                              : "Choose an image file from your device."}
+                          </p>
+                          {imageSelection?.fileName ? (
+                            <p className="font-body text-sm text-foreground/80">
+                              Choose another image any time before submitting to replace it.
+                            </p>
+                          ) : null}
+                          {isUploadingImage ? (
+                            <p className="font-body text-sm font-semibold text-foreground/80">Uploading image...</p>
+                          ) : null}
+                        </div>
+
+                        {imageSelection?.previewUrl ? (
+                          <div className="neo-card max-w-sm overflow-hidden bg-card">
+                            <img
+                              src={imageSelection.previewUrl}
+                              alt={`${field.label} preview`}
+                              className="h-auto w-full object-cover"
+                            />
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                  </div>
+                );
+              }
+
               if (field.type === "multi_select") {
                 const selected = (answers[field.key] as string[]) || [];
                 const options = field.options ?? [];
@@ -621,8 +820,12 @@ const FormDetail = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <Button type="submit" size="lg" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit Registration"}
+              <Button type="submit" size="lg" disabled={isSubmitting || uploadingImageKeys.length > 0}>
+                {uploadingImageKeys.length > 0
+                  ? "Uploading images..."
+                  : isSubmitting
+                    ? "Submitting..."
+                    : "Submit Registration"}
               </Button>
             </div>
           </form>

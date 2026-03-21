@@ -1,9 +1,14 @@
 import { supabase } from "@/lib/supabase";
 
+export type UploadedImageAnswer = {
+  url: string;
+  path: string | null;
+};
+
 export interface FormSchemaField {
   id: string;
   key: string;
-  type: "text" | "email" | "multi_select" | "textarea" | "select" | "rating" | "boolean";
+  type: "text" | "email" | "multi_select" | "textarea" | "select" | "rating" | "boolean" | "image";
   label: string;
   order?: number;
   required?: boolean;
@@ -51,6 +56,28 @@ interface DbForm {
   max_response: number | null;
   created_at: string;
 }
+
+const getFormImagesBucket = () => {
+  const configuredBucket = import.meta.env.NEXT_PUBLIC_SUPABASE_FORM_IMAGES_BUCKET;
+  return typeof configuredBucket === "string" && configuredBucket.trim().length > 0
+    ? configuredBucket.trim()
+    : "form-images";
+};
+
+const sanitizePathSegment = (value: string) =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60) || "image";
+
+const buildFormImagePath = (formId: number, fieldKey: string, fileName: string) => {
+  const extension = fileName.includes(".") ? fileName.split(".").pop()?.toLowerCase() ?? "jpg" : "jpg";
+  const safeFieldKey = sanitizePathSegment(fieldKey);
+  const uniqueId = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}`;
+  return `forms/${formId}/${safeFieldKey}/${uniqueId}.${extension}`;
+};
 
 const fetchFormResponseCount = async (formId: number) => {
   const { count, error } = await supabase
@@ -117,6 +144,36 @@ export const fetchFormBySlug = async (slug: string): Promise<Form | null> => {
 
   if (!data) return null;
   return buildFormWithCapacity(data as DbForm);
+};
+
+export const uploadFormImage = async (
+  formId: number,
+  fieldKey: string,
+  file: File
+): Promise<UploadedImageAnswer> => {
+  const bucket = getFormImagesBucket();
+  const objectPath = buildFormImagePath(formId, fieldKey, file.name);
+
+  const { error: uploadError } = await supabase.storage.from(bucket).upload(objectPath, file, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: file.type || undefined,
+  });
+
+  if (uploadError) {
+    console.error("Error uploading form image:", uploadError);
+    throw new Error("FORM_IMAGE_UPLOAD_FAILED");
+  }
+
+  const { data } = supabase.storage.from(bucket).getPublicUrl(objectPath);
+  if (!data.publicUrl) {
+    throw new Error("FORM_IMAGE_UPLOAD_FAILED");
+  }
+
+  return {
+    url: data.publicUrl,
+    path: objectPath,
+  };
 };
 
 const assertFormAcceptingResponses = async (formId: number) => {
