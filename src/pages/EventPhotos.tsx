@@ -1,42 +1,24 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Calendar, Download, ImageIcon, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, ImageIcon } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { EventPhotoBulkBar } from "@/components/events/EventPhotoBulkBar";
 import { EventPhotoGrid, EventPhotoGridSkeleton } from "@/components/events/EventPhotoGrid";
 import { EventPhotoLightbox } from "@/components/events/EventPhotoLightbox";
-import {
-  EventPhotoDownloadError,
-  downloadEventPhotoArchive,
-  downloadEventPhotoAsset,
-} from "@/lib/eventPhotoDownloads";
-import {
-  fetchAllEventPhotoAssets,
-  fetchEventBySlug,
-  fetchEventPhotoAssetsPage,
-} from "@/services/eventService";
+import { downloadEventPhotoAsset } from "@/lib/eventPhotoDownloads";
+import type { EventPhotoAsset } from "@/services/eventService";
+import { fetchEventBySlug, fetchEventPhotoAssetsPage } from "@/services/eventService";
 import { toast } from "@/components/ui/sonner";
 
 const PAGE_SIZE = 24;
 
-type BulkDownloadState = {
-  mode: "selected" | "all";
-  phase: "fetching" | "zipping";
-  completed: number;
-  total: number;
-  zipPercent?: number;
-};
-
 const EventPhotos = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [selectionMode, setSelectionMode] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [bulkDownloadState, setBulkDownloadState] = useState<BulkDownloadState | null>(null);
+  const [downloadingPhotoId, setDownloadingPhotoId] = useState<number | null>(null);
 
   const { data: event, isLoading: isLoadingEvent } = useQuery({
     queryKey: ["event", slug],
@@ -91,146 +73,19 @@ const EventPhotos = () => {
   const pages = photoPages?.pages ?? [];
   const photos = pages.flatMap((page) => page.items);
   const totalPhotos = pages[0]?.totalCount ?? 0;
-  const loadedPhotoIds = photos.map((photo) => photo.id);
-  const selectedCount = selectedIds.size;
-  const isBulkDownloading = bulkDownloadState !== null;
-  const bulkProgressLabel = bulkDownloadState
-    ? bulkDownloadState.phase === "fetching"
-      ? `Fetched ${bulkDownloadState.completed} of ${bulkDownloadState.total} photo${bulkDownloadState.total === 1 ? "" : "s"} for the zip`
-      : `Packaging zip... ${Math.round(bulkDownloadState.zipPercent ?? 0)}%`
-    : undefined;
 
-  const toggleSelected = (photoId: number) => {
-    setSelectionMode(true);
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(photoId)) {
-        next.delete(photoId);
-      } else {
-        next.add(photoId);
-      }
-      return next;
-    });
-  };
+  const handleDownloadPhoto = async (photo: EventPhotoAsset) => {
+    if (downloadingPhotoId !== null) return;
 
-  const clearSelection = () => {
-    setSelectedIds(new Set());
-    setSelectionMode(false);
-  };
-
-  const selectAllLoaded = () => {
-    setSelectionMode(true);
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      loadedPhotoIds.forEach((id) => next.add(id));
-      return next;
-    });
-  };
-
-  const handleDownloadSelected = async () => {
-    const selectedPhotos = photos.filter((photo) => selectedIds.has(photo.id));
-    if (selectedPhotos.length === 0 || isBulkDownloading) return;
+    setDownloadingPhotoId(photo.id);
 
     try {
-      setBulkDownloadState({
-        mode: "selected",
-        phase: "fetching",
-        completed: 0,
-        total: selectedPhotos.length,
-        zipPercent: 0,
-      });
-
-      await downloadEventPhotoArchive({
-        assets: selectedPhotos,
-        archiveName: `${event?.slug ?? "event"}-selected-photos`,
-        onFetchProgress: (completed, total) => {
-          setBulkDownloadState({
-            mode: "selected",
-            phase: "fetching",
-            completed,
-            total,
-            zipPercent: 0,
-          });
-        },
-        onZipProgress: (zipPercent) => {
-          setBulkDownloadState({
-            mode: "selected",
-            phase: "zipping",
-            completed: selectedPhotos.length,
-            total: selectedPhotos.length,
-            zipPercent,
-          });
-        },
-      });
-
-      toast.success(`Created a zip with ${selectedPhotos.length} selected photo${selectedPhotos.length === 1 ? "" : "s"}.`);
+      await downloadEventPhotoAsset(photo);
     } catch (error) {
-      console.error("Error downloading selected event photos:", error);
-      if (error instanceof EventPhotoDownloadError && error.code === "PHOTO_CORS_BLOCKED") {
-        toast.error("Zip download is blocked because the R2 asset domain does not allow CORS for this site yet.");
-      } else {
-        toast.error("We couldn't create the selected photo zip.");
-      }
+      console.error("Error downloading event photo:", error);
+      toast.error("We couldn't download this photo right now.");
     } finally {
-      setBulkDownloadState(null);
-    }
-  };
-
-  const handleDownloadAll = async () => {
-    if (!event || totalPhotos === 0 || isBulkDownloading) return;
-
-    try {
-      setBulkDownloadState({
-        mode: "all",
-        phase: "fetching",
-        completed: 0,
-        total: totalPhotos,
-        zipPercent: 0,
-      });
-
-      const allPhotos = photos.length >= totalPhotos ? photos : await fetchAllEventPhotoAssets(event.id);
-
-      setBulkDownloadState({
-        mode: "all",
-        phase: "fetching",
-        completed: 0,
-        total: allPhotos.length,
-        zipPercent: 0,
-      });
-
-      await downloadEventPhotoArchive({
-        assets: allPhotos,
-        archiveName: `${event.slug}-photo-gallery`,
-        onFetchProgress: (completed, total) => {
-          setBulkDownloadState({
-            mode: "all",
-            phase: "fetching",
-            completed,
-            total,
-            zipPercent: 0,
-          });
-        },
-        onZipProgress: (zipPercent) => {
-          setBulkDownloadState({
-            mode: "all",
-            phase: "zipping",
-            completed: allPhotos.length,
-            total: allPhotos.length,
-            zipPercent,
-          });
-        },
-      });
-
-      toast.success(`Created a zip with ${allPhotos.length} photo${allPhotos.length === 1 ? "" : "s"}.`);
-    } catch (error) {
-      console.error("Error downloading all event photos:", error);
-      if (error instanceof EventPhotoDownloadError && error.code === "PHOTO_CORS_BLOCKED") {
-        toast.error("Zip download is blocked because the R2 asset domain does not allow CORS for this site yet.");
-      } else {
-        toast.error("We couldn't create the full gallery zip right now.");
-      }
-    } finally {
-      setBulkDownloadState(null);
+      setDownloadingPhotoId(null);
     }
   };
 
@@ -297,40 +152,15 @@ const EventPhotos = () => {
       <section className="py-12">
         <div className="container mx-auto space-y-8 px-4">
           <div className="neo-card bg-card p-4 md:p-6">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-4">
               <div>
                 <h2 className="font-display text-2xl font-bold">Photo Gallery</h2>
                 <p className="font-body text-sm text-muted-foreground">
-                  Browse the latest event photos, select favorites, and download them in a controlled batch.
+                  Browse the latest event photos, open any image for a closer look, and download photos one at a time.
                 </p>
-                {isBulkDownloading ? (
-                  <p className="mt-2 font-body text-sm font-semibold text-foreground/80">{bulkProgressLabel}</p>
-                ) : totalPhotos > 80 ? (
-                  <p className="mt-2 font-body text-sm text-muted-foreground">
-                    Large downloads are packaged into a single zip before saving.
-                  </p>
-                ) : null}
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  type="button"
-                  variant={selectionMode ? "secondary" : "outline"}
-                  onClick={() => setSelectionMode((current) => !current)}
-                  disabled={isBulkDownloading || photos.length === 0}
-                >
-                  {selectionMode ? "Selection On" : "Select Photos"}
-                </Button>
-                <Button type="button" variant="outline" onClick={selectAllLoaded} disabled={isBulkDownloading || photos.length === 0}>
-                  Select All Loaded
-                </Button>
-                <Button type="button" variant="outline" onClick={clearSelection} disabled={selectedCount === 0 || isBulkDownloading}>
-                  Clear Selection
-                </Button>
-                <Button type="button" onClick={handleDownloadAll} disabled={isBulkDownloading || totalPhotos === 0}>
-                  {isBulkDownloading && bulkDownloadState?.mode === "all" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                  Download All
-                </Button>
+                <p className="mt-2 font-body text-sm text-muted-foreground">
+                  Bulk download and selection are disabled for now. Use the download button on each photo card or inside the preview.
+                </p>
               </div>
             </div>
           </div>
@@ -360,28 +190,18 @@ const EventPhotos = () => {
           ) : (
             <EventPhotoGrid
               photos={photos}
-              selectionMode={selectionMode}
-              selectedIds={selectedIds}
               hasMore={Boolean(hasNextPage)}
               isLoadingMore={isFetchingNextPage}
+              downloadingPhotoId={downloadingPhotoId}
               onOpenPhoto={openLightbox}
-              onToggleSelect={toggleSelected}
+              onDownloadPhoto={(photo) => {
+                void handleDownloadPhoto(photo);
+              }}
               onLoadMore={() => fetchNextPage()}
             />
           )}
         </div>
       </section>
-
-      {selectedCount > 0 ? (
-        <EventPhotoBulkBar
-          selectedCount={selectedCount}
-          isBusy={isBulkDownloading}
-          progressLabel={bulkDownloadState?.mode === "selected" ? bulkProgressLabel : undefined}
-          onSelectAllLoaded={selectAllLoaded}
-          onClearSelection={clearSelection}
-          onDownloadSelected={handleDownloadSelected}
-        />
-      ) : null}
 
       <EventPhotoLightbox
         open={lightboxIndex !== null}
@@ -390,8 +210,9 @@ const EventPhotos = () => {
         onOpenChange={closeLightbox}
         onPrevious={() => setLightboxIndex((current) => (current === null ? current : Math.max(current - 1, 0)))}
         onNext={() => setLightboxIndex((current) => (current === null ? current : Math.min(current + 1, photos.length - 1)))}
+        isDownloading={downloadingPhotoId === photos[lightboxIndex ?? 0]?.id}
         onDownload={(photo) => {
-          void downloadEventPhotoAsset(photo);
+          void handleDownloadPhoto(photo);
         }}
       />
     </Layout>

@@ -1,6 +1,8 @@
 import JSZip from "jszip";
 import type { EventPhotoAsset } from "@/services/eventService";
 
+export const DIRECT_DOWNLOAD_LIMIT = 4;
+
 export class EventPhotoDownloadError extends Error {
   code: "PHOTO_FETCH_FAILED" | "PHOTO_CORS_BLOCKED";
 
@@ -51,6 +53,11 @@ const openDirectDownload = (asset: EventPhotoAsset, index?: number) => {
   document.body.removeChild(anchor);
 };
 
+const wait = (delayMs: number) =>
+  new Promise<void>((resolve) => {
+    window.setTimeout(resolve, delayMs);
+  });
+
 export const downloadEventPhotoAsset = async (asset: EventPhotoAsset, index?: number) => {
   try {
     const response = await fetch(asset.publicUrl);
@@ -62,6 +69,29 @@ export const downloadEventPhotoAsset = async (asset: EventPhotoAsset, index?: nu
     saveBlobAsFile(blob, getEventPhotoDownloadName(asset, index));
   } catch {
     openDirectDownload(asset, index);
+  }
+};
+
+export const downloadEventPhotoAssetsDirect = async ({
+  assets,
+  onProgress,
+  delayMs = 180,
+}: {
+  assets: EventPhotoAsset[];
+  onProgress?: (completed: number, total: number) => void;
+  delayMs?: number;
+}) => {
+  if (assets.length === 0) {
+    throw new EventPhotoDownloadError("PHOTO_FETCH_FAILED");
+  }
+
+  for (let index = 0; index < assets.length; index += 1) {
+    openDirectDownload(assets[index], index);
+    onProgress?.(index + 1, assets.length);
+
+    if (index < assets.length - 1) {
+      await wait(delayMs);
+    }
   }
 };
 

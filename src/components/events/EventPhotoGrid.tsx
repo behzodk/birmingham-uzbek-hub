@@ -1,5 +1,5 @@
 import { memo, useState } from "react";
-import { Check, ImageIcon } from "lucide-react";
+import { Download } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -7,40 +7,31 @@ import type { EventPhotoAsset } from "@/services/eventService";
 
 interface EventPhotoGridProps {
   photos: EventPhotoAsset[];
-  selectionMode: boolean;
-  selectedIds: Set<number>;
   hasMore: boolean;
   isLoadingMore: boolean;
+  downloadingPhotoId: number | null;
   onOpenPhoto: (index: number) => void;
-  onToggleSelect: (photoId: number) => void;
+  onDownloadPhoto: (photo: EventPhotoAsset) => void;
   onLoadMore: () => void;
 }
 
 interface EventPhotoCardProps {
   photo: EventPhotoAsset;
   index: number;
-  selectionMode: boolean;
-  isSelected: boolean;
+  isDownloading: boolean;
   onOpenPhoto: (index: number) => void;
-  onToggleSelect: (photoId: number) => void;
+  onDownloadPhoto: (photo: EventPhotoAsset) => void;
 }
 
 const EventPhotoCard = memo(
-  ({ photo, index, selectionMode, isSelected, onOpenPhoto, onToggleSelect }: EventPhotoCardProps) => {
+  ({ photo, index, isDownloading, onOpenPhoto, onDownloadPhoto }: EventPhotoCardProps) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     return (
       <div className="neo-card group overflow-hidden bg-card">
         <button
           type="button"
-          onClick={() => {
-            if (selectionMode) {
-              onToggleSelect(photo.id);
-              return;
-            }
-
-            onOpenPhoto(index);
-          }}
+          onClick={() => onOpenPhoto(index)}
           className="block w-full text-left"
         >
           <AspectRatio ratio={4 / 3} className="relative overflow-hidden bg-muted">
@@ -55,15 +46,6 @@ const EventPhotoCard = memo(
               className={`h-full w-full object-cover transition duration-300 ${isLoaded ? "opacity-100" : "opacity-0"} group-hover:scale-[1.03]`}
             />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-70" />
-            {selectionMode ? (
-              <div className="absolute left-3 top-3">
-                <span
-                  className={`neo-badge ${isSelected ? "bg-secondary text-secondary-foreground" : "bg-background text-foreground"}`}
-                >
-                  {isSelected ? "Selected" : "Select"}
-                </span>
-              </div>
-            ) : null}
           </AspectRatio>
         </button>
 
@@ -73,16 +55,16 @@ const EventPhotoCard = memo(
             <p className="font-body text-xs text-muted-foreground">Event photo</p>
           </div>
 
-
-            <Button
-              type="button"
-              size="sm"
-              variant={isSelected ? "secondary" : "outline"}
-              onClick={() => onToggleSelect(photo.id)}
-            >
-              <Check className="h-4 w-4" />
-              {isSelected ? "Selected" : "Select"}
-            </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => onDownloadPhoto(photo)}
+            disabled={isDownloading}
+          >
+            <Download className="h-4 w-4" />
+            {isDownloading ? "Downloading..." : "Download"}
+          </Button>
         </div>
       </div>
     );
@@ -93,12 +75,11 @@ EventPhotoCard.displayName = "EventPhotoCard";
 
 export const EventPhotoGrid = ({
   photos,
-  selectionMode,
-  selectedIds,
   hasMore,
   isLoadingMore,
+  downloadingPhotoId,
   onOpenPhoto,
-  onToggleSelect,
+  onDownloadPhoto,
   onLoadMore,
 }: EventPhotoGridProps) => {
   return (
@@ -109,10 +90,9 @@ export const EventPhotoGrid = ({
             key={photo.id}
             photo={photo}
             index={index}
-            selectionMode={selectionMode}
-            isSelected={selectedIds.has(photo.id)}
+            isDownloading={downloadingPhotoId === photo.id}
             onOpenPhoto={onOpenPhoto}
-            onToggleSelect={onToggleSelect}
+            onDownloadPhoto={onDownloadPhoto}
           />
         ))}
       </div>

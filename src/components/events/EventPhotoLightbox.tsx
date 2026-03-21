@@ -14,6 +14,7 @@ interface EventPhotoLightboxProps {
   open: boolean;
   photos: EventPhotoAsset[];
   currentIndex: number;
+  isDownloading?: boolean;
   onOpenChange: (open: boolean) => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -24,6 +25,7 @@ export const EventPhotoLightbox = ({
   open,
   photos,
   currentIndex,
+  isDownloading = false,
   onOpenChange,
   onPrevious,
   onNext,
@@ -109,9 +111,9 @@ export const EventPhotoLightbox = ({
                   <ArrowRight className="h-4 w-4" />
                   Next
                 </Button>
-                <Button type="button" onClick={() => onDownload(activePhoto)}>
+                <Button type="button" onClick={() => onDownload(activePhoto)} disabled={isDownloading}>
                   <Download className="h-4 w-4" />
-                  Download
+                  {isDownloading ? "Downloading..." : "Download"}
                 </Button>
               </div>
             </div>
