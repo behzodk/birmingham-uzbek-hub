@@ -36,6 +36,7 @@ export interface FormSchemaField {
   min_label?: string;
   max_label?: string;
   is_student_email?: boolean;
+  use_radio_buttons?: boolean;
   conditional?: {
     option: string;
     field_key: string;

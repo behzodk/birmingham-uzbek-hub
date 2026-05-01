@@ -9,6 +9,7 @@ import { FormEventContext } from "@/components/forms/FormEventContext";
 import { FormPartners } from "@/components/forms/FormPartners";
 import { FormContentBlock } from "@/components/forms/FormContentBlock";
 import { Layout } from "@/components/layout/Layout";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { toast } from "@/components/ui/sonner";
@@ -537,6 +538,43 @@ const FormDetail = () => {
               if (field.type === "select") {
                 const value = (answers[field.key] as string) ?? "";
                 const options = field.options ?? [];
+                if (field.use_radio_buttons) {
+                  return (
+                    <div key={field.id} className="space-y-4">
+                      <div>
+                        <label className="font-display text-lg font-bold">{field.label}</label>
+                        {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
+                      </div>
+
+                      <RadioGroup
+                        value={value}
+                        onValueChange={(nextValue) => updateAnswer(field.key, nextValue)}
+                        className="grid gap-3"
+                      >
+                        {options.map((option) => {
+                          const isSelected = value === option;
+                          return (
+                            <label
+                              key={option}
+                              className={`neo-card flex cursor-pointer items-start gap-3 border-[3px] border-foreground px-4 py-3 transition-transform hover:-translate-y-[2px] ${
+                                isSelected ? "bg-secondary" : "bg-muted"
+                              }`}
+                            >
+                              <RadioGroupItem
+                                value={option}
+                                className="mt-1 h-5 w-5 border-[2px] border-foreground text-foreground"
+                              />
+                              <span className="font-body text-sm md:text-base">{option}</span>
+                            </label>
+                          );
+                        })}
+                      </RadioGroup>
+
+                      {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                    </div>
+                  );
+                }
+
                 return (
                   <div key={field.id} className="space-y-3">
                     <div>
