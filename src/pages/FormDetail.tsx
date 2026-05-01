@@ -458,7 +458,7 @@ const FormDetail = () => {
       <section className="relative bg-secondary overflow-hidden py-14 md:py-20">
         <div className="absolute inset-0 pointer-events-none uzbek-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,26rem)] lg:items-center lg:gap-10">
             <div className="max-w-3xl">
               <span className="neo-badge bg-background text-foreground mb-4 inline-block">Registration</span>
               <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">{form.title}</h1>
@@ -467,7 +467,7 @@ const FormDetail = () => {
               </p>
             </div>
 
-            <FormPartners partners={form.partners} className="lg:max-w-[220px] lg:justify-end" />
+            <FormPartners partners={form.partners} className="lg:justify-self-end" />
           </div>
         </div>
       </section>
