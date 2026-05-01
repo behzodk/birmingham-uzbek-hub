@@ -162,6 +162,27 @@ export const fetchEventBySlug = async (slug: string): Promise<Event | null> => {
   return mapDbEventToEvent(data as DbEvent);
 };
 
+export const fetchEventById = async (eventId: number): Promise<Event | null> => {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("id", eventId)
+    .eq("status", "published")
+    .eq("visibility", "public")
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching event by id:", error);
+    return null;
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  return mapDbEventToEvent(data as DbEvent);
+};
+
 export const fetchPastEvents = async (): Promise<Event[]> => {
   const nowIso = new Date().toISOString();
   const { data, error } = await supabase

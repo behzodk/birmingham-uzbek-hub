@@ -5,6 +5,8 @@ import { DndContext, PointerSensor, TouchSensor, closestCenter, useSensor, useSe
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, ChevronDown, Star } from "lucide-react";
+import { FormEventContext } from "@/components/forms/FormEventContext";
+import { FormPartners } from "@/components/forms/FormPartners";
 import { FormContentBlock } from "@/components/forms/FormContentBlock";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -456,16 +458,24 @@ const FormDetail = () => {
       <section className="relative bg-secondary overflow-hidden py-14 md:py-20">
         <div className="absolute inset-0 pointer-events-none uzbek-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
-          <span className="neo-badge bg-background text-foreground mb-4 inline-block">Registration</span>
-          <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">{form.title}</h1>
-          <p className="font-body text-secondary-foreground/80 max-w-2xl">
-            Please complete the form below to secure your spot. We will follow up by email if needed.
-          </p>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-3xl">
+              <span className="neo-badge bg-background text-foreground mb-4 inline-block">Registration</span>
+              <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">{form.title}</h1>
+              <p className="font-body text-secondary-foreground/80 max-w-2xl">
+                Please complete the form below to secure your spot. We will follow up by email if needed.
+              </p>
+            </div>
+
+            <FormPartners partners={form.partners} className="lg:max-w-[220px] lg:justify-end" />
+          </div>
         </div>
       </section>
 
       <section className="py-12">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto space-y-8 px-4">
+          <FormEventContext eventId={form.event_id} />
+
           <form onSubmit={handleSubmit} className="neo-card bg-card p-6 md:p-10 space-y-8">
             {fields.filter(isFieldVisible).map((field) => {
               const error = errors[field.key];

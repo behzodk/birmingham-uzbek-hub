@@ -46,12 +46,21 @@ export interface FormSchema {
   fields: FormSchemaField[];
 }
 
+export interface FormPartner {
+  id: string;
+  name: string;
+  logo_url: string;
+  logo_path: string | null;
+  url: string;
+}
+
 export interface Form {
-  id: number;
+  id: number | string;
   title: string;
   slug: string;
   is_active: boolean;
   schema: FormSchema;
+  partners: FormPartner[];
   event_id: number | null;
   max_response: number | null;
   response_count: number;
@@ -60,17 +69,47 @@ export interface Form {
 }
 
 interface DbForm {
-  id: number;
+  id: number | string;
   title: string;
   slug: string;
   is_active: boolean;
   schema: FormSchema;
+  partners?: unknown;
   event_id: number | null;
   max_response: number | null;
   created_at: string;
 }
 
 export const isAnswerableFormField = (field: FormSchemaField) => field.type !== "content";
+
+const readPartnerString = (value: unknown) => (typeof value === "string" ? value.trim() : "");
+
+const normalizeFormPartners = (value: unknown): FormPartner[] => {
+  let rawPartners: unknown[] = [];
+
+  if (Array.isArray(value)) {
+    rawPartners = value;
+  } else if (typeof value === "string" && value.trim().length > 0) {
+    try {
+      const parsed = JSON.parse(value);
+      rawPartners = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      rawPartners = [];
+    }
+  }
+
+  return rawPartners
+    .filter((partner): partner is Record<string, unknown> => !!partner && typeof partner === "object")
+    .map((partner, index) => ({
+      id: readPartnerString(partner.id) || `partner-${index + 1}`,
+      name: readPartnerString(partner.name),
+      logo_url: readPartnerString(partner.logo_url),
+      logo_path: readPartnerString(partner.logo_path) || null,
+      url: readPartnerString(partner.url),
+    }))
+    .filter((partner) => partner.name.length > 0 && partner.url.length > 0)
+    .slice(0, 2);
+};
 
 const getFormImagesBucket = () => {
   const configuredBucket = import.meta.env.NEXT_PUBLIC_SUPABASE_FORM_IMAGES_BUCKET;
@@ -94,7 +133,7 @@ const buildFormImagePath = (formId: number, fieldKey: string, fileName: string) 
   return `forms/${formId}/${safeFieldKey}/${uniqueId}.${extension}`;
 };
 
-const fetchFormResponseCount = async (formId: number) => {
+const fetchFormResponseCount = async (formId: number | string) => {
   const { count, error } = await supabase
     .from("form_submissions")
     .select("id", { count: "exact", head: true })
@@ -114,6 +153,7 @@ const mapDbFormToForm = (dbForm: DbForm, responseCount: number): Form => ({
   slug: dbForm.slug,
   is_active: dbForm.is_active,
   schema: dbForm.schema,
+  partners: normalizeFormPartners(dbForm.partners),
   event_id: dbForm.event_id,
   max_response: dbForm.max_response,
   response_count: responseCount,
@@ -162,7 +202,7 @@ export const fetchFormBySlug = async (slug: string): Promise<Form | null> => {
 };
 
 export const uploadFormImage = async (
-  formId: number,
+  formId: number | string,
   fieldKey: string,
   file: File
 ): Promise<UploadedImageAnswer> => {
@@ -191,7 +231,7 @@ export const uploadFormImage = async (
   };
 };
 
-const assertFormAcceptingResponses = async (formId: number) => {
+const assertFormAcceptingResponses = async (formId: number | string) => {
   const [{ data, error }, responseCount] = await Promise.all([
     supabase
       .from("forms")
@@ -227,7 +267,7 @@ const extractEmail = (answers: Record<string, unknown>, fields: FormSchemaField[
 };
 
 export const submitFormResponse = async (
-  formId: number,
+  formId: number | string,
   answers: Record<string, unknown>,
   fields: FormSchemaField[]
 ) => {
