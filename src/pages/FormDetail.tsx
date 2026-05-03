@@ -68,6 +68,8 @@ const isUploadedImageAnswer = (value: unknown): value is UploadedImageAnswer => 
   return typeof candidate.url === "string";
 };
 
+const isValidEmailAddress = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
 const FormDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -278,8 +280,8 @@ const FormDetail = () => {
         if (textValue.includes("@")) return "Please enter your username only.";
         return null;
       }
-      if (textValue && !textValue.toLowerCase().endsWith("@student.bham.ac.uk")) {
-        return "Use your @student.bham.ac.uk email address.";
+      if (textValue && !isValidEmailAddress(textValue)) {
+        return "Please enter a valid email address.";
       }
     }
     if (field.required && textValue.length === 0) return "This field is required.";
