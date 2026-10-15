@@ -457,7 +457,7 @@ const FormDetail = () => {
 
   return (
     <Layout>
-      <SEO title={form.title} />
+      <SEO title={form.title} description={form.description?.trim() || undefined} />
       <section className="relative bg-secondary overflow-hidden py-14 md:py-20">
         <div className="absolute inset-0 pointer-events-none uzbek-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
@@ -465,8 +465,8 @@ const FormDetail = () => {
             <div className="max-w-3xl">
               <span className="neo-badge bg-background text-foreground mb-4 inline-block">Registration</span>
               <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">{form.title}</h1>
-              <p className="font-body text-secondary-foreground/80 max-w-2xl">
-                Please complete the form below to secure your spot. We will follow up by email if needed.
+              <p className="font-body text-secondary-foreground/80 max-w-2xl whitespace-pre-wrap break-words">
+                {form.description?.trim() || "Please complete the form below to secure your spot. We will follow up by email if needed."}
               </p>
             </div>
 

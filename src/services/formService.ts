@@ -56,6 +56,7 @@ export interface FormPartner {
 }
 
 export interface Form {
+  description?: string | null;
   id: number | string;
   title: string;
   slug: string;
@@ -70,6 +71,7 @@ export interface Form {
 }
 
 interface DbForm {
+  description?: string | null;
   id: number | string;
   title: string;
   slug: string;
@@ -151,6 +153,7 @@ const fetchFormResponseCount = async (formId: number | string) => {
 const mapDbFormToForm = (dbForm: DbForm, responseCount: number): Form => ({
   id: dbForm.id,
   title: dbForm.title,
+  description: dbForm.description ?? null,
   slug: dbForm.slug,
   is_active: dbForm.is_active,
   schema: dbForm.schema,
