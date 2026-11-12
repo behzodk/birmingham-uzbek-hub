@@ -23,6 +23,9 @@ export interface FormSchemaField {
   label: string;
   order?: number;
   required?: boolean;
+  blocked_words?: string[]
+  blocked_words_message?: string
+  allow_non_latin?: boolean
   is_secure?: boolean;
   content_html?: string;
   max_count?: number | null;

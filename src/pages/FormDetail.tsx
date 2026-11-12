@@ -1,3 +1,4 @@
+import { validateTextInput } from "@/lib/text-input-validation";
 import { isIllustratedFormTheme } from "@/components/forms/themed-form-parts";
 import { ThemedFormHeader, ThemedStatusCard } from "@/components/forms/themed-form-parts";
 import { FormThemeFrame } from "@/components/forms/form-theme";
@@ -133,7 +134,9 @@ const FormDetail = () => {
 
   const updateAnswer = (key: string, value: unknown) => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
-    clearFieldError(key);
+    const field = fields.find((candidate) => candidate.key === key);
+    const error = field ? validateTextInput(field, value) : null;
+    setErrors((prev) => { const next = { ...prev }; if (error) next[key] = error; else delete next[key]; return next; });
   };
 
   const clearFieldError = (key: string) => {
@@ -271,6 +274,8 @@ const FormDetail = () => {
       return null;
     }
 
+    const textError = validateTextInput(field, value);
+    if (textError) return textError;
     const textValue = typeof value === "string" ? value.trim() : "";
     if (field.type === "email") {
       if (field.required && textValue.length === 0) return "Email is required.";
