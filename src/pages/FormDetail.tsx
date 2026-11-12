@@ -453,7 +453,7 @@ const FormDetail = () => {
     <Layout>
       <FormThemeFrame theme={form.schema.theme}>
       <SEO title={form.title} description={form.description?.trim() || undefined} />
-      <section className="relative bg-secondary overflow-hidden py-14 md:py-20">
+      <section className="form-heading relative bg-secondary overflow-hidden py-14 md:py-20">
         <div className="absolute inset-0 pointer-events-none uzbek-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,26rem)] lg:items-center lg:gap-10">
@@ -470,9 +470,12 @@ const FormDetail = () => {
         </div>
       </section>
 
-      <section className="py-12">
+      <section className="form-body py-12">
         <div className="container mx-auto space-y-8 px-4">
-          <FormEventContext eventId={form.event_id} />
+          {form.event_id && <details className="rounded-lg border border-border bg-card p-4">
+            <summary className="cursor-pointer text-sm font-medium">Event details</summary>
+            <div className="mt-4"><FormEventContext eventId={form.event_id} /></div>
+          </details>}
 
           <form onSubmit={handleSubmit} className="neo-card bg-card p-6 md:p-10 space-y-8">
             {visibleFields.map((field) => {
