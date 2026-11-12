@@ -458,7 +458,7 @@ const FormDetail = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,26rem)] lg:items-center lg:gap-10">
             <div className="max-w-3xl">
-              <span className="neo-badge bg-background text-foreground mb-4 inline-block">Registration</span>
+              <span className="neo-badge bg-background text-foreground mb-4 inline-block">{form.schema.theme === "game" ? "GAME NIGHT / SIGN-UP SHEET" : "Registration"}</span>
               <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">{form.title}</h1>
               <p className="font-body text-secondary-foreground/80 max-w-2xl whitespace-pre-wrap break-words">
                 {form.description?.trim() || "Please complete the form below to secure your spot. We will follow up by email if needed."}
@@ -496,7 +496,7 @@ const FormDetail = () => {
                 const availableOptions = options.filter((option) => !orderedOptions.includes(option));
                 const finalOrder = [...orderedOptions, ...availableOptions];
                 return (
-                  <div key={field.id} className="space-y-4">
+                  <div key={field.id} className="game-question space-y-4">
                     <div>
                       <label className="font-display text-lg font-bold">{field.label}</label>
                       {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
@@ -540,7 +540,7 @@ const FormDetail = () => {
                 const options = field.options ?? [];
                 if (field.use_radio_buttons) {
                   return (
-                    <div key={field.id} className="space-y-4">
+                    <div key={field.id} className="game-question space-y-4">
                       <div>
                         <label className="font-display text-lg font-bold">{field.label}</label>
                         {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
@@ -576,7 +576,7 @@ const FormDetail = () => {
                 }
 
                 return (
-                  <div key={field.id} className="space-y-3">
+                  <div key={field.id} className="game-question space-y-3">
                     <div>
                       <label className="font-display text-lg font-bold">{field.label}</label>
                       {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
@@ -615,7 +615,7 @@ const FormDetail = () => {
                   starCount > 7 ? "grid grid-cols-5 sm:grid-cols-10 gap-2" : "flex flex-wrap items-center gap-2";
 
                 return (
-                  <div key={field.id} className="space-y-4">
+                  <div key={field.id} className="game-question space-y-4">
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <div>
                         <label className="font-display text-lg font-bold">{field.label}</label>
@@ -685,7 +685,7 @@ const FormDetail = () => {
                 const isUploadingImage = uploadingImageKeys.includes(field.key);
 
                 return (
-                  <div key={field.id} className="space-y-4">
+                  <div key={field.id} className="game-question space-y-4">
                     <div>
                       <label htmlFor={`field-${field.id}`} className="font-display text-lg font-bold">
                         {field.label}
@@ -744,7 +744,7 @@ const FormDetail = () => {
                 const selected = (answers[field.key] as string[]) || [];
                 const options = field.options ?? [];
                 return (
-                  <div key={field.id} className="space-y-4">
+                  <div key={field.id} className="game-question space-y-4">
                     <div>
                       <label className="font-display text-lg font-bold">{field.label}</label>
                       {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
@@ -779,7 +779,7 @@ const FormDetail = () => {
               if (field.type === "boolean") {
                 const value = (answers[field.key] as boolean) ?? false;
                 return (
-                  <div key={field.id} className="space-y-4">
+                  <div key={field.id} className="game-question space-y-4">
                     <label
                       className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 cursor-pointer ${value ? "bg-secondary" : ""
                         }`}
@@ -804,7 +804,7 @@ const FormDetail = () => {
 
               if (field.type === "email" && field.is_student_email) {
                 return (
-                  <div key={field.id} className="space-y-3">
+                  <div key={field.id} className="game-question space-y-3">
                     <div>
                       <label className="font-display text-lg font-bold">{field.label}</label>
                       {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
@@ -832,7 +832,7 @@ const FormDetail = () => {
                 );
               }
               return (
-                <div key={field.id} className="space-y-3">
+                <div key={field.id} className="game-question space-y-3">
                   <div>
                     <label className="font-display text-lg font-bold">{field.label}</label>
                     {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
