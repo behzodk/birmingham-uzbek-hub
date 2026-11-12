@@ -1,3 +1,8 @@
+import { isIllustratedFormTheme } from "@/components/forms/themed-form-parts";
+import { useQuery } from "@tanstack/react-query";
+import { fetchFormBySlug } from "@/services/formService";
+import { FormThemeFrame } from "@/components/forms/form-theme";
+import { ThemedStatusCard } from "@/components/forms/themed-form-parts";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
@@ -8,6 +13,7 @@ import Lottie from "lottie-react";
 
 interface LocationState {
   formTitle?: string;
+  formTheme?: string;
   submittedAt?: string;
 }
 
@@ -15,15 +21,18 @@ const FormSuccess = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
   const { state } = useLocation();
-  const { formTitle, submittedAt } = (state as LocationState) || {};
+  const { formTitle, submittedAt, formTheme } = (state as LocationState) || {};
   const [animationData, setAnimationData] = useState<Record<string, unknown> | null>(null);
 
+  const { data: savedForm, isLoading: loadingForm } = useQuery({ queryKey: ["form", slug], queryFn: () => fetchFormBySlug(slug!), enabled: !!slug });
+  const theme = savedForm?.schema.theme || formTheme;
   const displayTitle = formTitle || "Submission Received";
   const submittedDate = submittedAt ? new Date(submittedAt).toLocaleString() : null;
 
   useEffect(() => {
     let isMounted = true;
     window.scrollTo({ top: 0, behavior: "smooth" });
+    if (isIllustratedFormTheme(theme)) return;
     fetch("/Success.json")
       .then((res) => res.json())
       .then((data) => {
@@ -35,7 +44,11 @@ const FormSuccess = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [theme]);
+
+  if (loadingForm && !formTheme) return <Layout><div role="status" className="mx-auto max-w-2xl p-8">Loading your confirmation…</div></Layout>;
+
+  if (isIllustratedFormTheme(theme)) return <Layout><SEO title="Registration received" /><FormThemeFrame theme={theme}><ThemedStatusCard theme={theme} status="success" title={savedForm?.title || displayTitle}><Button className="game-primary-action" onClick={() => navigate("/events")}>Browse events</Button></ThemedStatusCard></FormThemeFrame></Layout>;
 
   return (
     <Layout>

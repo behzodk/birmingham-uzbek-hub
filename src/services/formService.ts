@@ -44,7 +44,7 @@ export interface FormSchemaField {
 }
 
 export interface FormSchema {
-  theme?: "standard" | "game" | "new-year";
+  theme?: "standard" | "game" | "new-year" | "movie";
   fields: FormSchemaField[];
 }
 

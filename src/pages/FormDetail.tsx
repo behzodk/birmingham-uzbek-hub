@@ -1,3 +1,5 @@
+import { isIllustratedFormTheme } from "@/components/forms/themed-form-parts";
+import { ThemedFormHeader, ThemedStatusCard } from "@/components/forms/themed-form-parts";
 import { FormThemeFrame } from "@/components/forms/form-theme";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
@@ -131,6 +133,7 @@ const FormDetail = () => {
 
   const updateAnswer = (key: string, value: unknown) => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
+    clearFieldError(key);
   };
 
   const clearFieldError = (key: string) => {
@@ -356,10 +359,12 @@ const FormDetail = () => {
       }
 
       await submitFormResponse(form.id, payload, answerableVisibleFields);
+      toast.dismiss();
       toast.success("Thanks! Your response has been recorded.");
       navigate(`/forms/${slug}/success`, {
         state: {
           formTitle: form.title,
+          formTheme: form.schema.theme,
           submittedAt: new Date().toISOString(),
         },
         replace: true,
@@ -373,6 +378,7 @@ const FormDetail = () => {
           navigate(`/forms/${slug}/inactive`, {
             state: {
               formTitle: form.title,
+          formTheme: form.schema.theme,
             },
             replace: true,
           });
@@ -381,6 +387,7 @@ const FormDetail = () => {
           navigate(`/forms/${slug}/filled`, {
             state: {
               formTitle: form.title,
+          formTheme: form.schema.theme,
               maxResponse: form.max_response,
             },
             replace: true,
@@ -396,6 +403,10 @@ const FormDetail = () => {
       setIsSubmitting(false);
     }
   };
+
+  if ((isLoading || (isFetching && !isFetchedAfterMount)) && isIllustratedFormTheme(form?.schema.theme)) {
+    return <Layout><FormThemeFrame theme={form?.schema.theme}><ThemedStatusCard theme={form?.schema.theme} status="loading" title={form.title} /></FormThemeFrame></Layout>;
+  }
 
   if (isLoading || (isFetching && !isFetchedAfterMount)) {
     return (
@@ -431,6 +442,7 @@ const FormDetail = () => {
         replace
         state={{
           formTitle: form.title,
+          formTheme: form.schema.theme,
         }}
       />
     );
@@ -443,6 +455,7 @@ const FormDetail = () => {
         replace
         state={{
           formTitle: form.title,
+          formTheme: form.schema.theme,
           maxResponse: form.max_response,
         }}
       />
@@ -453,12 +466,12 @@ const FormDetail = () => {
     <Layout>
       <FormThemeFrame theme={form.schema.theme}>
       <SEO title={form.title} description={form.description?.trim() || undefined} />
-      <section className="form-heading relative bg-secondary overflow-hidden py-14 md:py-20">
+      {isIllustratedFormTheme(form.schema.theme) ? <ThemedFormHeader theme={form.schema.theme} title={form.title} description={form.description?.trim() || "Fill in your details below to register."}><FormPartners partners={form.partners} compact /></ThemedFormHeader> : <section className="form-heading relative bg-secondary overflow-hidden py-14 md:py-20">
         <div className="absolute inset-0 pointer-events-none uzbek-pattern opacity-20" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,26rem)] lg:items-center lg:gap-10">
             <div className="max-w-3xl">
-              <span className="neo-badge bg-background text-foreground mb-4 inline-block">{form.schema.theme === "game" ? "GAME NIGHT / SIGN-UP SHEET" : "Registration"}</span>
+              <span className="neo-badge bg-background text-foreground mb-4 inline-block">{isIllustratedFormTheme(form.schema.theme) ? "GAME NIGHT / SIGN-UP SHEET" : "Registration"}</span>
               <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">{form.title}</h1>
               <p className="font-body text-secondary-foreground/80 max-w-2xl whitespace-pre-wrap break-words">
                 {form.description?.trim() || "Please complete the form below to secure your spot. We will follow up by email if needed."}
@@ -468,7 +481,7 @@ const FormDetail = () => {
             <FormPartners partners={form.partners} className="lg:justify-self-end" />
           </div>
         </div>
-      </section>
+      </section>}
 
       <section className="form-body py-12">
         <div className="container mx-auto space-y-8 px-4">
@@ -496,9 +509,9 @@ const FormDetail = () => {
                 const availableOptions = options.filter((option) => !orderedOptions.includes(option));
                 const finalOrder = [...orderedOptions, ...availableOptions];
                 return (
-                  <div key={field.id} className="game-question space-y-4">
+                  <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-4">
                     <div>
-                      <label className="font-display text-lg font-bold">{field.label}</label>
+                      <label id={`form-label-${field.id}`} htmlFor={`form-field-${field.id}`} className="font-display text-lg font-bold">{field.label}</label>
                       {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
                       <p className="font-body text-sm text-muted-foreground mt-1">
                         Drag to reorder. The top item is ranked highest.
@@ -530,7 +543,7 @@ const FormDetail = () => {
                         </div>
                       </SortableContext>
                     </DndContext>
-                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                    {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
               }
@@ -540,16 +553,17 @@ const FormDetail = () => {
                 const options = field.options ?? [];
                 if (field.use_radio_buttons) {
                   return (
-                    <div key={field.id} className="game-question space-y-4">
+                    <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-4">
                       <div>
-                        <label className="font-display text-lg font-bold">{field.label}</label>
+                        <label id={`form-label-${field.id}`} htmlFor={`form-field-${field.id}`} className="font-display text-lg font-bold">{field.label}</label>
                         {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
                       </div>
 
                       <RadioGroup
                         value={value}
                         onValueChange={(nextValue) => updateAnswer(field.key, nextValue)}
-                        className="grid gap-3"
+                        id={`form-field-${field.id}`} aria-labelledby={`form-label-${field.id}`} aria-invalid={Boolean(error)}
+                        className="game-choice-grid grid gap-3"
                       >
                         {options.map((option) => {
                           const isSelected = value === option;
@@ -570,19 +584,20 @@ const FormDetail = () => {
                         })}
                       </RadioGroup>
 
-                      {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                      {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                     </div>
                   );
                 }
 
                 return (
-                  <div key={field.id} className="game-question space-y-3">
+                  <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-3">
                     <div>
-                      <label className="font-display text-lg font-bold">{field.label}</label>
+                      <label id={`form-label-${field.id}`} htmlFor={`form-field-${field.id}`} className="font-display text-lg font-bold">{field.label}</label>
                       {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
                     </div>
                     <div className="relative">
                       <select
+                        id={`form-field-${field.id}`} aria-invalid={Boolean(error)} aria-describedby={error ? `form-error-${field.id}` : undefined}
                         className={`${baseInputClass} min-h-[48px] pr-12 appearance-none cursor-pointer bg-background`}
                         value={value}
                         onChange={(e) => updateAnswer(field.key, e.target.value)}
@@ -599,7 +614,7 @@ const FormDetail = () => {
                       </select>
                       <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground/70" />
                     </div>
-                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                    {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
               }
@@ -615,10 +630,10 @@ const FormDetail = () => {
                   starCount > 7 ? "grid grid-cols-5 sm:grid-cols-10 gap-2" : "flex flex-wrap items-center gap-2";
 
                 return (
-                  <div key={field.id} className="game-question space-y-4">
+                  <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-4">
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <div>
-                        <label className="font-display text-lg font-bold">{field.label}</label>
+                        <label id={`form-label-${field.id}`} htmlFor={`form-field-${field.id}`} className="font-display text-lg font-bold">{field.label}</label>
                         {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
                       </div>
                       <div className="flex items-center gap-3 text-sm font-body text-muted-foreground">
@@ -675,7 +690,7 @@ const FormDetail = () => {
                       </div>
                     )}
 
-                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                    {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
               }
@@ -685,7 +700,7 @@ const FormDetail = () => {
                 const isUploadingImage = uploadingImageKeys.includes(field.key);
 
                 return (
-                  <div key={field.id} className="game-question space-y-4">
+                  <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-4">
                     <div>
                       <label htmlFor={`field-${field.id}`} className="font-display text-lg font-bold">
                         {field.label}
@@ -735,7 +750,7 @@ const FormDetail = () => {
                       </div>
                     </div>
 
-                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                    {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
               }
@@ -744,9 +759,9 @@ const FormDetail = () => {
                 const selected = (answers[field.key] as string[]) || [];
                 const options = field.options ?? [];
                 return (
-                  <div key={field.id} className="game-question space-y-4">
+                  <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-4">
                     <div>
-                      <label className="font-display text-lg font-bold">{field.label}</label>
+                      <label id={`form-label-${field.id}`} htmlFor={`form-field-${field.id}`} className="font-display text-lg font-bold">{field.label}</label>
                       {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
@@ -771,7 +786,7 @@ const FormDetail = () => {
                         </label>
                       ))}
                     </div>
-                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                    {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
               }
@@ -779,7 +794,7 @@ const FormDetail = () => {
               if (field.type === "boolean") {
                 const value = (answers[field.key] as boolean) ?? false;
                 return (
-                  <div key={field.id} className="game-question space-y-4">
+                  <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-4">
                     <label
                       className={`neo-card bg-muted px-4 py-3 border-[3px] border-foreground flex items-center gap-3 cursor-pointer ${value ? "bg-secondary" : ""
                         }`}
@@ -796,7 +811,7 @@ const FormDetail = () => {
                         {field.required && <span className="text-xs text-destructive">* Required</span>}
                       </div>
                     </label>
-                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                    {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
               }
@@ -804,14 +819,15 @@ const FormDetail = () => {
 
               if (field.type === "email" && field.is_student_email) {
                 return (
-                  <div key={field.id} className="game-question space-y-3">
+                  <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-3">
                     <div>
-                      <label className="font-display text-lg font-bold">{field.label}</label>
+                      <label id={`form-label-${field.id}`} htmlFor={`form-field-${field.id}`} className="font-display text-lg font-bold">{field.label}</label>
                       {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
                     </div>
-                    <div className="flex items-center w-full rounded-md border-[3px] border-foreground bg-background shadow-[4px_4px_0px_0px_hsl(var(--foreground))] focus-within:ring-2 focus-within:ring-foreground overflow-hidden">
+                    <div className="game-student-email flex items-center w-full rounded-md border-[3px] border-foreground bg-background shadow-[4px_4px_0px_0px_hsl(var(--foreground))] focus-within:ring-2 focus-within:ring-foreground overflow-hidden">
                       <input
                         type="text"
+                        id={`form-field-${field.id}`} aria-invalid={Boolean(error)} aria-describedby={error ? `form-error-${field.id}` : undefined}
                         className="flex-1 bg-background px-4 py-3 font-body text-base focus:outline-none placeholder:text-muted-foreground min-w-0"
                         value={value}
                         onChange={(e) => {
@@ -827,19 +843,19 @@ const FormDetail = () => {
                         @student.bham.ac.uk
                       </div>
                     </div>
-                    {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                    {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                   </div>
                 );
               }
               return (
-                <div key={field.id} className="game-question space-y-3">
+                <div key={field.id} data-invalid={Boolean(error)} className="game-question space-y-3">
                   <div>
-                    <label className="font-display text-lg font-bold">{field.label}</label>
+                    <label id={`form-label-${field.id}`} htmlFor={`form-field-${field.id}`} className="font-display text-lg font-bold">{field.label}</label>
                     {field.required && <span className="ml-2 text-sm text-destructive">*</span>}
                   </div>
                   {field.type === "textarea" ? (
                     <textarea
-                      className={baseInputClass}
+                      id={`form-field-${field.id}`} aria-invalid={Boolean(error)} aria-describedby={error ? `form-error-${field.id}` : undefined} className={baseInputClass}
                       rows={4}
                       value={value}
                       onChange={(e) => updateAnswer(field.key, e.target.value)}
@@ -851,7 +867,7 @@ const FormDetail = () => {
                   ) : (
                     <input
                       type={field.type === "email" ? "email" : "text"}
-                      className={baseInputClass}
+                      id={`form-field-${field.id}`} aria-invalid={Boolean(error)} aria-describedby={error ? `form-error-${field.id}` : undefined} className={baseInputClass}
                       value={value}
                       onChange={(e) =>
                         updateAnswer(
@@ -865,7 +881,7 @@ const FormDetail = () => {
                       placeholder={field.label}
                     />
                   )}
-                  {error && <p className="text-sm text-destructive font-body">{error}</p>}
+                  {error && <p id={`form-error-${field.id}`} role="alert" className="text-sm text-destructive font-body">{error}</p>}
                 </div>
               );
             })}
@@ -878,7 +894,7 @@ const FormDetail = () => {
               .
             </p>
 
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="game-submit-row flex flex-col sm:flex-row sm:items-center gap-4">
               <Button type="submit" size="lg" disabled={isSubmitting || uploadingImageKeys.length > 0}>
                 {uploadingImageKeys.length > 0
                   ? "Uploading images..."

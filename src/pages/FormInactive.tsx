@@ -1,3 +1,6 @@
+import { isIllustratedFormTheme } from "@/components/forms/themed-form-parts";
+import { FormThemeFrame } from "@/components/forms/form-theme";
+import { ThemedStatusCard } from "@/components/forms/themed-form-parts";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CircleOff, Clock } from "lucide-react";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -8,19 +11,22 @@ import { fetchFormBySlug } from "@/services/formService";
 
 interface LocationState {
   formTitle?: string;
+  formTheme?: string;
 }
 
 const FormInactive = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
   const { state } = useLocation();
-  const { formTitle } = (state as LocationState) || {};
+  const { formTitle, formTheme } = (state as LocationState) || {};
 
   const { data: form, isLoading } = useQuery({
     queryKey: ["form-inactive", slug],
     queryFn: () => fetchFormBySlug(slug!),
     enabled: !!slug,
   });
+
+  if (isLoading && isIllustratedFormTheme(formTheme)) return <Layout><FormThemeFrame theme={form?.schema.theme || formTheme}><ThemedStatusCard theme={form?.schema.theme || formTheme} status="loading" title={formTitle || "Registration"} /></FormThemeFrame></Layout>;
 
   if (isLoading) {
     return (
@@ -56,6 +62,8 @@ const FormInactive = () => {
   }
 
   const displayTitle = formTitle || form?.title || "Form Unavailable";
+
+  if (isIllustratedFormTheme(form?.schema.theme || formTheme)) return <Layout><SEO title={`${displayTitle} — Registration closed`} /><FormThemeFrame theme={form?.schema.theme || formTheme}><ThemedStatusCard theme={form?.schema.theme || formTheme} status="closed" title={displayTitle}><Button className="game-primary-action" onClick={() => navigate("/events")}>Browse events</Button></ThemedStatusCard></FormThemeFrame></Layout>;
 
   return (
     <Layout>

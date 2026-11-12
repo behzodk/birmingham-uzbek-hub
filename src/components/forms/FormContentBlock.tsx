@@ -145,7 +145,7 @@ export const FormContentBlock = ({ field }: FormContentBlockProps) => {
   }
 
   return (
-    <div className="neo-card bg-muted p-4 md:p-6">
+    <div className="game-content-block neo-card bg-muted p-4 md:p-6">
       {label ? <h2 className="mb-4 text-2xl font-bold">{label}</h2> : null}
       {contentHtml.trim() ? (
         <div

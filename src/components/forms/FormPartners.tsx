@@ -6,13 +6,17 @@ import type { FormPartner } from "@/services/formService";
 export const FormPartners = ({
   partners,
   className,
+  compact = false,
 }: {
   partners: FormPartner[];
   className?: string;
+  compact?: boolean;
 }) => {
   if (partners.length === 0) {
     return null;
   }
+
+  if (compact) return <div className="game-partners"><span>With</span>{partners.map(partner => <a key={partner.id} href={partner.url} target="_blank" rel="noreferrer">{partner.logo_url && <img src={partner.logo_url} alt="" />}<span>{partner.name}</span></a>)}</div>;
 
   return (
     <div className={cn("w-full max-w-[26rem] space-y-3", className)}>
