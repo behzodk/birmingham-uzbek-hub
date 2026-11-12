@@ -25,8 +25,8 @@ export interface FormSchemaField {
   required?: boolean;
   is_secure?: boolean;
   content_html?: string;
-  max_count?: number;
-  min_count?: number;
+  max_count?: number | null;
+  min_count?: number | null;
   options?: string[];
   is_ranked?: boolean;
   scale_min?: number;
@@ -44,6 +44,7 @@ export interface FormSchemaField {
 }
 
 export interface FormSchema {
+  theme?: "standard" | "game" | "new-year";
   fields: FormSchemaField[];
 }
 

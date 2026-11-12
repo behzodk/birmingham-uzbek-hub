@@ -1,3 +1,4 @@
+import { FormThemeFrame } from "@/components/forms/form-theme";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +13,7 @@ import { Layout } from "@/components/layout/Layout";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
+import { getVisibleFormFields } from "@/lib/formVisibility";
 import { toast } from "@/components/ui/sonner";
 import {
   fetchFormBySlug,
@@ -93,14 +95,7 @@ const FormDetail = () => {
     imageSelectionsRef.current = imageSelections;
   }, [imageSelections]);
 
-  const isFieldVisible = (field: FormSchemaField) => {
-    if (!field.conditional) return true;
-    const targetValue = answers[field.conditional.field_key];
-    if (typeof targetValue === "string") {
-      return targetValue.trim() === field.conditional.option;
-    }
-    return targetValue === field.conditional.option;
-  };
+  const visibleFields = getVisibleFormFields(fields, answers);
 
   useEffect(() => {
     return () => {
@@ -222,10 +217,10 @@ const FormDetail = () => {
         const ranked = Array.isArray(value) ? value : [];
         const count = ranked.length;
         if (field.required && count === 0) return "Please rank at least one option.";
-        if (field.min_count !== undefined && count < field.min_count) {
+        if (field.min_count != null && count < field.min_count) {
           return `Please rank at least ${field.min_count} option(s).`;
         }
-        if (field.max_count !== undefined && count > field.max_count) {
+        if (field.max_count != null && count > field.max_count) {
           return `Please rank no more than ${field.max_count} option(s).`;
         }
         return null;
@@ -233,10 +228,10 @@ const FormDetail = () => {
 
       const selected = Array.isArray(value) ? value : [];
       if (field.required && selected.length === 0) return "Please select at least one option.";
-      if (field.min_count !== undefined && selected.length < field.min_count) {
+      if (field.min_count != null && selected.length < field.min_count) {
         return `Please select at least ${field.min_count} option(s).`;
       }
-      if (field.max_count !== undefined && selected.length > field.max_count) {
+      if (field.max_count != null && selected.length > field.max_count) {
         return `Please select no more than ${field.max_count} option(s).`;
       }
       return null;
@@ -285,10 +280,10 @@ const FormDetail = () => {
       }
     }
     if (field.required && textValue.length === 0) return "This field is required.";
-    if (field.min_count !== undefined && textValue.length < field.min_count) {
+    if (field.min_count != null && textValue.length < field.min_count) {
       return `Minimum ${field.min_count} characters required.`;
     }
-    if (field.max_count !== undefined && textValue.length > field.max_count) {
+    if (field.max_count != null && textValue.length > field.max_count) {
       return `Maximum ${field.max_count} characters allowed.`;
     }
     return null;
@@ -298,7 +293,6 @@ const FormDetail = () => {
     event.preventDefault();
     if (!form) return;
 
-    const visibleFields = fields.filter(isFieldVisible);
     const answerableVisibleFields = visibleFields.filter(isAnswerableFormField);
     const newErrors: Record<string, string> = {};
 
@@ -457,6 +451,7 @@ const FormDetail = () => {
 
   return (
     <Layout>
+      <FormThemeFrame theme={form.schema.theme}>
       <SEO title={form.title} description={form.description?.trim() || undefined} />
       <section className="relative bg-secondary overflow-hidden py-14 md:py-20">
         <div className="absolute inset-0 pointer-events-none uzbek-pattern opacity-20" />
@@ -480,7 +475,7 @@ const FormDetail = () => {
           <FormEventContext eventId={form.event_id} />
 
           <form onSubmit={handleSubmit} className="neo-card bg-card p-6 md:p-10 space-y-8">
-            {fields.filter(isFieldVisible).map((field) => {
+            {visibleFields.map((field) => {
               const error = errors[field.key];
               const baseInputClass =
                 "w-full rounded-md border-[3px] border-foreground bg-background px-4 py-3 font-body text-base shadow-[4px_4px_0px_0px_hsl(var(--foreground))] focus:outline-none focus:ring-2 focus:ring-foreground";
@@ -820,8 +815,8 @@ const FormDetail = () => {
                           const val = e.target.value.replace(/@/g, "");
                           updateAnswer(field.key, val);
                         }}
-                        maxLength={field.max_count}
-                        minLength={field.min_count}
+                        maxLength={field.max_count ?? undefined}
+                        minLength={field.min_count ?? undefined}
                         required={field.required}
                         placeholder="username"
                       />
@@ -845,8 +840,8 @@ const FormDetail = () => {
                       rows={4}
                       value={value}
                       onChange={(e) => updateAnswer(field.key, e.target.value)}
-                      maxLength={field.max_count}
-                      minLength={field.min_count}
+                      maxLength={field.max_count ?? undefined}
+                      minLength={field.min_count ?? undefined}
                       required={field.required}
                       placeholder={field.label}
                     />
@@ -861,8 +856,8 @@ const FormDetail = () => {
                           field.type === "email" ? e.target.value.toLowerCase().trim() : e.target.value
                         )
                       }
-                      maxLength={field.max_count}
-                      minLength={field.min_count}
+                      maxLength={field.max_count ?? undefined}
+                      minLength={field.min_count ?? undefined}
                       required={field.required}
                       placeholder={field.label}
                     />
@@ -892,6 +887,7 @@ const FormDetail = () => {
           </form>
         </div>
       </section>
+      </FormThemeFrame>
     </Layout>
   );
 };
