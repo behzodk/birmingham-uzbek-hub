@@ -73,6 +73,8 @@ const EventDetail = () => {
     const lines = content.split('\n');
     const elements: JSX.Element[] = [];
     let listItems: string[] = [];
+    let inMovieChoices = false;
+    let movieChoiceCards: JSX.Element[] = [];
 
     const flushList = () => {
       if (listItems.length > 0) {
@@ -85,11 +87,37 @@ const EventDetail = () => {
       }
     };
 
-    lines.forEach((line, index) => {
+    const flushMovieChoices = () => {
+      if (movieChoiceCards.length > 0) {
+        elements.push(
+          <div key={`movie-choices-${elements.length}`} className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
+            {movieChoiceCards}
+          </div>
+        );
+        movieChoiceCards = [];
+      }
+    };
+
+    for (let index = 0; index < lines.length; index += 1) {
+      const line = lines[index];
       const trimmed = line.trim();
-      
+
+      if (trimmed === "## Movie choices") {
+        flushList();
+        flushMovieChoices();
+        inMovieChoices = true;
+        elements.push(
+          <h2 key={index} className="font-display text-2xl font-bold mt-8 mb-4">
+            Movie choices
+          </h2>
+        );
+        continue;
+      }
+
       if (trimmed.startsWith('## ')) {
         flushList();
+        flushMovieChoices();
+        inMovieChoices = false;
         elements.push(
           <h2 key={index} className="font-display text-2xl font-bold mt-8 mb-4">
             {trimmed.replace('## ', '')}
@@ -97,6 +125,26 @@ const EventDetail = () => {
         );
       } else if (trimmed.startsWith('### ')) {
         flushList();
+        if (inMovieChoices) {
+          const year = lines[index + 1]?.trim();
+          if (/^\d{4}$/.test(year ?? '')) {
+            movieChoiceCards.push(
+              <div
+                key={index}
+                className="neo-card bg-card p-4 flex items-center justify-between gap-4"
+              >
+                <span className="font-display font-bold text-lg leading-snug">
+                  {trimmed.replace('### ', '')}
+                </span>
+                <span className="shrink-0 rounded-full border-2 border-foreground bg-muted px-3 py-1 text-sm font-bold tabular-nums">
+                  {year}
+                </span>
+              </div>
+            );
+            index += 1;
+            continue;
+          }
+        }
         elements.push(
           <h3 key={index} className="font-display text-xl font-bold mt-6 mb-3">
             {trimmed.replace('### ', '')}
@@ -119,9 +167,10 @@ const EventDetail = () => {
           />
         );
       }
-    });
+    }
 
     flushList();
+    flushMovieChoices();
     return elements;
   };
 
@@ -200,6 +249,15 @@ const EventDetail = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2">
+              {event.featuredImage && (
+                <figure className="neo-card overflow-hidden mb-8 bg-card">
+                  <img
+                    src={event.featuredImage}
+                    alt="Empty cinema seats with popcorn ready for Movie Night"
+                    className="block w-full aspect-[16/9] object-cover"
+                  />
+                </figure>
+              )}
               <div className="prose prose-lg max-w-none">
                 {renderContent(event.fullDescription)}
               </div>

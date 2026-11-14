@@ -134,15 +134,18 @@ const sanitizeRichHtml = (html: string) => {
 
 interface FormContentBlockProps {
   field: FormSchemaField;
+  collapsible?: boolean;
 }
 
-export const FormContentBlock = ({ field }: FormContentBlockProps) => {
+export const FormContentBlock = ({ field, collapsible }: FormContentBlockProps) => {
   const contentHtml = sanitizeRichHtml(field.content_html ?? "");
   const label = field.label?.trim();
 
   if (!label && !contentHtml.trim()) {
     return null;
   }
+
+  if (collapsible) return <details open className="game-content-block winter-details"><summary>{label || "Read full event details"}</summary><div className="form-rich-content" dangerouslySetInnerHTML={{ __html: contentHtml }} /></details>;
 
   return (
     <div className="game-content-block neo-card bg-muted p-4 md:p-6">

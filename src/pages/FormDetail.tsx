@@ -502,7 +502,7 @@ const FormDetail = () => {
                 "w-full rounded-md border-[3px] border-foreground bg-background px-4 py-3 font-body text-base shadow-[4px_4px_0px_0px_hsl(var(--foreground))] focus:outline-none focus:ring-2 focus:ring-foreground";
 
               if (field.type === "content") {
-                return <FormContentBlock key={field.id} field={field} />;
+                return <FormContentBlock key={field.id} field={field} collapsible={form.schema.theme === "new-year"} />;
               }
 
               if (field.type === "multi_select" && field.is_ranked) {
