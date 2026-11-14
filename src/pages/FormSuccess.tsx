@@ -1,3 +1,4 @@
+import { fetchEventById } from "@/services/eventService";
 import { isIllustratedFormTheme } from "@/components/forms/themed-form-parts";
 import { useQuery } from "@tanstack/react-query";
 import { fetchFormBySlug } from "@/services/formService";
@@ -26,13 +27,18 @@ const FormSuccess = () => {
 
   const { data: savedForm, isLoading: loadingForm } = useQuery({ queryKey: ["form", slug], queryFn: () => fetchFormBySlug(slug!), enabled: !!slug });
   const theme = savedForm?.schema.theme || formTheme;
-  const displayTitle = formTitle || "Submission Received";
+  const displayTitle = savedForm?.title || formTitle || "Submission Received";
+  const { data: linkedEvent } = useQuery({
+    queryKey: ["event-by-id", savedForm?.event_id],
+    queryFn: () => fetchEventById(savedForm!.event_id!),
+    enabled: theme === "new-year" && Boolean(savedForm?.event_id),
+  });
   const submittedDate = submittedAt ? new Date(submittedAt).toLocaleString() : null;
 
   useEffect(() => {
     let isMounted = true;
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (isIllustratedFormTheme(theme)) return;
+    if (!theme || theme === "new-year" || isIllustratedFormTheme(theme)) return;
     fetch("/Success.json")
       .then((res) => res.json())
       .then((data) => {
@@ -47,6 +53,33 @@ const FormSuccess = () => {
   }, [theme]);
 
   if (loadingForm && !formTheme) return <Layout><div role="status" className="mx-auto max-w-2xl p-8">Loading your confirmation…</div></Layout>;
+
+  if (theme === "new-year") return (
+    <Layout>
+      <SEO title={`${displayTitle} — Registration received`} />
+      <FormThemeFrame theme="new-year">
+        <section className="winter-confirmation" aria-labelledby="winter-confirmation-title">
+          <div className="winter-confirmation-mark" aria-hidden="true"><CheckCircle2 /><Sparkles /></div>
+          <p className="winter-confirmation-eyebrow">SUBMISSION RECEIVED</p>
+          <h1 id="winter-confirmation-title">Your registration has been received</h1>
+          <p className="winter-confirmation-event">{displayTitle}</p>
+          <p>Thank you for registering with UzbekSoc. Your response has been saved.</p>
+          {submittedDate && <p className="winter-confirmation-time"><Clock size={14} aria-hidden="true" /> Submitted {submittedDate}</p>}
+          {linkedEvent && <div className="winter-confirmation-details">
+            <h2>{linkedEvent.title}</h2>
+            <p>{linkedEvent.date} · {linkedEvent.time}</p>
+            <p><MapPin size={16} aria-hidden="true" />{linkedEvent.location}</p>
+          </div>}
+          <div className="winter-confirmation-actions">
+            <Button onClick={() => navigate(linkedEvent ? `/events/${linkedEvent.slug}` : "/events")}>
+              {linkedEvent ? "View event details" : "Browse events"}<ArrowRight size={16} aria-hidden="true" />
+            </Button>
+            {slug && <a href={`/forms/${slug}`}>Back to form</a>}
+          </div>
+        </section>
+      </FormThemeFrame>
+    </Layout>
+  );
 
   if (isIllustratedFormTheme(theme)) return <Layout><SEO title="Registration received" /><FormThemeFrame theme={theme}><ThemedStatusCard theme={theme} status="success" title={savedForm?.title || displayTitle}><Button className="game-primary-action" onClick={() => navigate("/events")}>Browse events</Button></ThemedStatusCard></FormThemeFrame></Layout>;
 
