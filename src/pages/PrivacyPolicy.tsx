@@ -1,164 +1,23 @@
-import { Layout } from "@/components/layout/Layout";
-import { SEO } from "@/components/SEO";
-import { Button } from "@/components/ui/button";
-import { ShieldCheck, Lock, Mail, FileText, Globe2, Clock3, Database, Camera } from "lucide-react";
+import { LegalPage, PrivacyContact, type LegalSection } from "@/components/legal/LegalPage";
 
-const privacyPoints = [
-  {
-    icon: <ShieldCheck className="h-5 w-5" />,
-    title: "Who we are",
-    body: "Uzbek Society of the University of Birmingham (student-run society, UK). Contact: uzbeksociety@guild.bham.ac.uk. Data controller for the personal data we collect via this site and our events forms.",
-  },
-  {
-    icon: <FileText className="h-5 w-5" />,
-    title: "What we collect",
-    body: "Name, student email (@student.bham.ac.uk), student ID, role preferences, form answers, event registrations, correspondence, and optional feedback. Photos/video at events may capture attendees.",
-  },
-  {
-    icon: <Lock className="h-5 w-5" />,
-    title: "Why we collect",
-    body: "Run registrations, allocate roles, send event logistics, maintain attendance records, improve programming, and meet guild/university safeguarding requirements.",
-  },
-  {
-    icon: <Globe2 className="h-5 w-5" />,
-    title: "Legal bases (UK GDPR)",
-    body: "Consent (sign-ups, marketing opt-ins), contract/legitimate interest (managing events you register for), and legal obligation (safety/incident records if required).",
-  },
-  {
-    icon: <Database className="h-5 w-5" />,
-    title: "Sharing",
-    body: "We use trusted processors: Supabase (hosting/forms/database), email tools, analytics, and UoB Guild/University officials when needed for safety, venue access, or compliance. We do not sell data.",
-  },
-  {
-    icon: <Clock3 className="h-5 w-5" />,
-    title: "Retention",
-    body: "Event sign-up data: kept for the academic year plus one additional year for reporting; incident/safety records may be kept longer if legally required. Photos may be reused for society promotion until you object.",
-  },
-  {
-    icon: <Mail className="h-5 w-5" />,
-    title: "Your choices",
-    body: "You can access, correct, delete, or object to processing of your data. Withdraw consent or unsubscribe at any time by emailing uzbeksociety@guild.bham.ac.uk. We respond within one month.",
-  },
-  {
-    icon: <Camera className="h-5 w-5" />,
-    title: "Photos & media",
-    body: "We take photos/videos at events for community updates. Tell an organizer or email us to opt out or request removal when feasible.",
-  },
+const sections: LegalSection[] = [
+  { id: "responsibility", title: "Who handles your information", content: <><p>This notice covers the Uzbek Society at the University of Birmingham website, its registration forms and related event administration. The committee can be contacted at <PrivacyContact />.</p><p>UzbekSoc is a Guild student group. The Guild’s <a className="underline" href="https://www.guildofstudents.com/privacy-policy/studentgroupsprivacynotice/">Student Groups Privacy Statement</a> covers group activities and provides a Guild data-protection contact. This website uses Supabase for its forms and uploads, separately from the Guild’s membership and purchasing systems. For questions about information collected here, contact UzbekSoc using the address above; for Guild-held records, the Guild’s notices provide the relevant contact. The Guild also publishes its own <a className="underline" href="https://www.guildofstudents.com/privacy-policy/studentprivacypolicynotice/">Student Privacy Notice</a> covering its services.</p></> },
+  { id: "collection", title: "Information collected", content: <><p>Depending on the form, information can include your name, contact details, student ID, membership or attendance information, choices, competition entries, uploaded images and messages. The questions on each form show what is requested. Hosting and database services also process technical information needed to deliver requests and maintain security.</p><p>Required fields are marked. Without information needed to identify or contact you, we may be unable to complete your registration. Optional answers may be left blank. Please do not include unnecessary confidential information in free-text answers or uploads.</p><p>Give another person the privacy information before providing their details, and only supply details they have authorised you to share. Where possible, each attendee should complete their own registration.</p></> },
+  { id: "purposes", title: "Purposes and lawful bases", content: <><p>We use personal information for the activities below. The applicable basis depends on the purpose and circumstances of the activity.</p><div className="overflow-x-auto"><table className="w-full min-w-[480px] text-left text-sm"><caption className="mb-3 text-left font-semibold">How we use your information</caption><thead><tr>{["Activity", "Information and purpose", "Lawful basis"].map(t=><th key={t} className="border-b p-3">{t}</th>)}</tr></thead><tbody>{[
+["Registration and logistics", "Identity, contact details and choices to manage attendance and communicate event changes.", "Legitimate interests in organising society activities; contract where objectively necessary for a booking."],
+["Feedback and enquiries", "Answers and correspondence to respond and improve activities.", "Legitimate interests in responding and improving services."],
+["Site security", "Technical records to prevent abuse and investigate faults.", "Legitimate interests in keeping the service reliable and secure."],
+["Optional promotion", "Contact information for separately requested promotional messages.", "Consent where relied upon; separate from registration."],
+["Legal records", "Records necessary to meet a specific applicable legal duty.", "Legal obligation only where that duty has been identified."],
+].map(row=><tr key={row[0]}>{row.map(cell=><td key={cell} className="border-b p-3 align-top">{cell}</td>)}</tr>)}</tbody></table></div><p>Consent can be withdrawn for the relevant optional activity without affecting earlier lawful processing. Registration is not blanket consent to unrelated uses.</p></> },
+  { id: "sensitive", title: "Accessibility and sensitive information", content: <p>Accessibility, allergy or dietary answers may reveal health or religious information. Such information needs both a lawful basis and an additional special-category condition. The relevant form notice explains the purpose and any explicit consent requested. Access is limited to those authorised to arrange the relevant support. Ask <PrivacyContact /> about arrangements without including a detailed medical history in a general form.</p> },
+  { id: "access", title: "Access, sharing and results", content: <><p>Registration information is intended for authorised organisers who need it for the relevant activity. Supabase supplies database and upload services. Website hosting, communications providers, and the Guild or University may also receive information where needed for their stated role. Contact us for information about the providers involved in handling your particular registration or enquiry. Information is not sold.</p><p>Identifiable form results and Excel downloads are restricted to current, lawfully elected committee members who are specifically authorised for the relevant information and purpose. Access is role-based: being a committee member does not give access to every record. These records may only be used for the relevant society administration and event-management duties. Competition results, leaderboards and intentionally published entries are distinct from private registration records. Check the relevant activity’s publication notice for what will be displayed.</p><p>Uploaded competition entries or event media intended for publication may be accessible through public links. Do not include confidential information in material submitted for publication. Contact us if you have concerns about an uploaded file.</p></> },
+  { id: "transfers", title: "International processing", content: <p>Our website and database providers may process information outside the UK, including through hosting and support services. Contact us to request the destinations and transfer arrangements applicable to your information, including details of any adequacy arrangements or safeguards relied upon.</p> },
+  { id: "retention", title: "How long information is kept", content: <><p>We retain information you provide through event registrations, voting and forms until the end of the academic year in which it was collected. This supports transparent event administration, voting and form management during that year.</p><p>At the end of each academic year, the outgoing committee is responsible for deleting form results and other private information it used, including uploaded files and downloaded copies. This responsibility applies even when committee members are re-elected for the following academic year.</p><p>Event details remain permanently in our event archive as a record of society activities. The archive does not retain private form responses, identifiable voting records or other private registration information.</p><p>Records that must be retained to meet a specific legal obligation are handled separately and kept only for the required period. Provider backups expire according to the relevant provider’s backup cycle. Contact <PrivacyContact /> to ask about a particular record or exercise your data-protection rights.</p></> },
+  { id: "media", title: "Photos and published content", content: <><p>The Guild’s Student Groups Privacy Statement describes consent-based use of images for group promotion. The relevant event notice explains the intended publication channels and how to raise concerns. Attending an event is not blanket consent to every use of your image.</p><p>Tell an organiser if you do not wish to be photographed. Contact <PrivacyContact /> with the relevant page or image to request review or removal. Third-party social platforms operate under their own privacy notices; removing our copy cannot recall copies already shared by others.</p></> },
+  { id: "storage", title: "Cookies and browser storage", content: <><p>Authentication and interface features may use cookies or browser storage to maintain sessions and remember preferences. Hosting services process request information for delivery, reliability and security.</p><p>You can manage stored website data through your browser settings; blocking storage may affect sign-in or saved preferences. Optional technologies requiring consent will be explained when offered, with the applicable choices. External links take you to services with their own policies. Contact us for details about storage used by a particular feature.</p></> },
+  { id: "rights", title: "Your rights and requests", content: <><p>You can ask to access or correct your personal information and, where the legal conditions apply, request deletion, restriction, portability or object to processing. You can object to direct marketing and withdraw consent where processing relies on it. Rights depend on the processing and lawful basis.</p><p>Send requests to <PrivacyContact />. We may need proportionate information to verify identity. We handle rights requests without undue delay and normally within one month. We explain any lawful extension or exception. You do not have to use a special form or legal wording.</p><p>Forms may use automatic validation and duplicate checks, and competitions may calculate totals or rankings. Contact us if you believe a check or result is incorrect and would like it reviewed.</p></> },
+  { id: "complaints", title: "Privacy complaints", content: <><p>To raise a data-protection complaint, email <PrivacyContact /> with what happened and the outcome you seek. Include enough information to locate the issue, but do not email passwords or unnecessary identity documents.</p><p>The complaint process is to acknowledge receipt within 30 days, investigate appropriately, keep you informed and communicate the outcome without undue delay. A complaint and a request for your data follow separate processes and deadlines.</p><p>For Guild student-group data matters, its published statement also provides <a className="underline" href="mailto:dataprotectionofficer@guild.bham.ac.uk">dataprotectionofficer@guild.bham.ac.uk</a>. You can also complain to the <a className="underline" href="https://ico.org.uk/make-a-complaint/">Information Commissioner’s Office</a>, the UK data-protection regulator, or call 0303 123 1113.</p></> },
+  { id: "updates", title: "Changes to this notice", content: <p>This notice was approved by the committee on 17 November 2026. We will notify affected users about material changes to how their information is used before the new use starts. The date and version above identify this notice.</p> },
 ];
-
-const PrivacyPolicy = () => {
-  return (
-    <Layout>
-      <SEO title="Privacy Policy | Uzbek Society" description="How Uzbek Society at the University of Birmingham handles your data." />
-      <section className="relative overflow-hidden bg-secondary py-14 md:py-20">
-        <div className="absolute inset-0 pointer-events-none uzbek-pattern opacity-20" />
-        <div className="container mx-auto px-4 relative z-10 space-y-4">
-          <span className="neo-badge bg-background text-foreground">Privacy & Data Protection</span>
-          <h1 className="font-display text-4xl md:text-5xl font-black">Privacy Policy</h1>
-          <p className="font-body text-secondary-foreground/80 max-w-3xl">
-            How we collect, use, and protect your information as members and guests of the Uzbek Society at the University of Birmingham.
-          </p>
-        </div>
-      </section>
-
-      <section className="py-12">
-        <div className="container mx-auto px-4 space-y-10">
-          <div className="neo-card bg-card border-[4px] border-foreground shadow-[10px_10px_0px_0px_hsl(var(--foreground))] p-6 md:p-8">
-            <div className="grid gap-6 md:grid-cols-2">
-              {privacyPoints.map((item) => (
-                <div key={item.title} className="flex gap-3">
-                  <div className="mt-1 h-10 w-10 rounded-xl border-[3px] border-foreground bg-muted grid place-items-center">
-                    {item.icon}
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="font-display text-lg font-bold">{item.title}</h3>
-                    <p className="font-body text-foreground/80 text-sm md:text-base">{item.body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="neo-card bg-muted border-[4px] border-foreground p-6 md:p-8 space-y-3">
-              <h2 className="font-display text-2xl font-bold">Details we collect</h2>
-              <ul className="list-disc pl-5 space-y-2 font-body text-foreground/80">
-                <li>Identity & contact: full name, student email (@student.bham.ac.uk), optional phone, student ID.</li>
-                <li>Event/form data: role preference (debater/observer), topic selections, accessibility needs, attendance confirmations.</li>
-                <li>Technical: basic logs from our website host for reliability and abuse prevention (IP, device/browser). No invasive tracking or advertising cookies.</li>
-                <li>Media: photos/videos at events where you are present.</li>
-              </ul>
-            </div>
-
-            <div className="neo-card bg-muted border-[4px] border-foreground p-6 md:p-8 space-y-3">
-              <h2 className="font-display text-2xl font-bold">How we use your data</h2>
-              <ul className="list-disc pl-5 space-y-2 font-body text-foreground/80">
-                <li>Register you for society events and confirm attendance.</li>
-                <li>Communicate logistics, changes, or emergencies related to the events you join.</li>
-                <li>Plan capacity, roles, and materials based on registrations and preferences.</li>
-                <li>Share summaries with the Guild/University when required for safeguarding or venue access.</li>
-                <li>Feature anonymised stats or event highlights to improve programming.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="neo-card bg-card border-[4px] border-foreground p-6 md:p-8 space-y-4">
-            <h2 className="font-display text-2xl font-bold">Legal bases & international transfers</h2>
-            <p className="font-body text-foreground/80">
-              We operate under UK GDPR. Primary bases: consent (sign-ups, optional marketing), legitimate interest (running events you register for), and legal obligation (safety/incident records if requested by the University or authorities). Our main systems are UK/EU-hosted where possible; Supabase may process data in the EU/US using Standard Contractual Clauses. We do not sell data.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="neo-card bg-muted border-[4px] border-foreground p-6 md:p-8 space-y-3">
-              <h2 className="font-display text-2xl font-bold">Your rights (UK GDPR)</h2>
-              <ul className="list-disc pl-5 space-y-2 font-body text-foreground/80">
-                <li>Access and portability of your data.</li>
-                <li>Correction of inaccurate details.</li>
-                <li>Deletion (“right to be forgotten”) where applicable.</li>
-                <li>Restriction or objection to processing, including marketing opt-outs.</li>
-                <li>Withdraw consent at any time without affecting prior lawful use.</li>
-                <li>Complain to the UK ICO if unresolved: ico.org.uk.</li>
-              </ul>
-            </div>
-
-            <div className="neo-card bg-muted border-[4px] border-foreground p-6 md:p-8 space-y-3">
-              <h2 className="font-display text-2xl font-bold">Security & retention</h2>
-              <ul className="list-disc pl-5 space-y-2 font-body text-foreground/80">
-                <li>Access limited to committee members who need it.</li>
-                <li>Supabase authentication, role-based access, and encrypted transit/storage.</li>
-                <li>Data minimised and reviewed annually; routine event data deleted after academic year + 1 year.</li>
-                <li>Incident or safeguarding records may be retained longer if required by law or University policy.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="neo-card bg-card border-[4px] border-foreground p-6 md:p-8 space-y-3">
-            <h2 className="font-display text-2xl font-bold">Cookies & analytics</h2>
-            <p className="font-body text-foreground/80">
-              We currently use only essential cookies/technical logs for performance and security. If we add analytics or marketing cookies in the future, we will update this policy and provide a consent banner.
-            </p>
-          </div>
-
-          <div className="neo-card bg-card border-[4px] border-foreground p-6 md:p-8 space-y-3">
-            <h2 className="font-display text-2xl font-bold">Contact</h2>
-            <p className="font-body text-foreground/80">
-              Email uzbeksociety@guild.bham.ac.uk for any privacy questions, data requests, or to withdraw consent. We aim to reply within one month.
-            </p>
-            <div className="flex gap-3 flex-wrap">
-              <Button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="shadow-[6px_6px_0px_0px_hsl(var(--foreground))]">
-                Back to top
-              </Button>
-              <Button variant="outline" className="border-[3px] border-foreground" asChild>
-                <a href="mailto:uzbeksociety@guild.bham.ac.uk">Email the committee</a>
-              </Button>
-            </div>
-            <p className="font-body text-xs text-muted-foreground">Last updated: 06 February 2026</p>
-          </div>
-        </div>
-      </section>
-    </Layout>
-  );
-};
-
-export default PrivacyPolicy;
+export default function PrivacyPolicy() { return <LegalPage title="Privacy Policy" intro="How information is handled when you use UzbekSoc forms, activities and website services, and how to exercise your rights." sections={sections} />; }

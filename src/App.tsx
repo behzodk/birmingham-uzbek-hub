@@ -16,6 +16,7 @@ import FormFilled from "./pages/FormFilled";
 import FormInactive from "./pages/FormInactive";
 import FormSuccess from "./pages/FormSuccess";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 import { ScrollToTop } from "./components/ScrollToTop";
 import MerchStore from "./pages/MerchStore";
 import MerchStoreDetail from "./pages/MerchStoreDetail";
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="/forms/:slug/filled" element={<FormFilled />} />
             <Route path="/forms/:slug/success" element={<FormSuccess />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
             <Route path="/blog" element={<News />} />
             <Route path="/blog/:slug" element={<NewsDetail />} />
             <Route path="/news" element={<BlogRedirect />} />

@@ -55,8 +55,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-secondary transition-colors">
-                  Data & Terms
+                <Link to="/terms" className="hover:text-secondary transition-colors">
+                  Website and Event Terms
                 </Link>
               </li>
             </ul>

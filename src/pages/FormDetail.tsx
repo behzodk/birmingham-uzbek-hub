@@ -892,11 +892,12 @@ const FormDetail = () => {
             })}
 
             <p className="font-body text-sm text-muted-foreground">
-              By submitting, you agree to our{" "}
+              UzbekSoc uses your answers to manage this form and related activity. Required fields are marked. Read our{" "}
               <Link to="/privacy" className="underline font-semibold hover:text-foreground">
                 Privacy Policy
-              </Link>
-              .
+              </Link>{" "}
+              for information about how your details are handled and your rights. See our{" "}
+              <Link to="/terms" className="underline font-semibold hover:text-foreground">Website and Event Terms</Link> for registration conditions.
             </p>
 
             <div className="game-submit-row flex flex-col sm:flex-row sm:items-center gap-4">

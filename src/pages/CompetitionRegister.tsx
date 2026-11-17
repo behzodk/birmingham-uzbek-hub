@@ -278,6 +278,7 @@ const CompetitionRegister = () => {
                     </div>
                   </div>
 
+                  <p className="text-sm leading-relaxed text-muted-foreground">UzbekSoc uses your entry and contact details to manage this competition. Check the competition page for what will be published. Read the <a href="/privacy" className="underline">Privacy Policy</a> and <a href="/terms" className="underline">Website and Event Terms</a> before entering. Do not upload confidential material.</p>
                   <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
